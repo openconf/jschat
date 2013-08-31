@@ -1,0 +1,16 @@
+{
+  "name": "angular-app-server",
+  "description": "Back end server to support our angular app",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "~3.0",
+    "passport": "~0.1.12",
+    "nconf": "latest",
+    "secure.me": "latest",
+    "underscore": "latest",
+    "async": "latest",
+    "passport-github": "~0.1.5",
+    "mongojs": "~0.9.0"
+  }
+}
