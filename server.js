@@ -18,7 +18,14 @@ require('./src/middleware/authMiddleware.js')(app);
 
 require('./src/middlewareSetup.js')(app);
 
-//require('./src/webservices')(app);
+require('./src/webservice')(app);
+
+
+//generate timelimited socket session token for session. 
+// open sockets with engine.io
+// rooms with engine.io-rooms
+// reconnect with engine.io-reconnect
+
 
 app.get('/config', app.access.free, function(req, res) {
   //TODO: cleanup config before sending back
@@ -35,4 +42,5 @@ var server = http.createServer(app);
 server.listen(nconf.get('server:port'));
 console.log('Angular App Server - listening on port: ' + nconf.get('server:port'));
 
+require('./src/socket/engine.js')(server);
 

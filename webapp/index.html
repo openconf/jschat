@@ -9,7 +9,7 @@
         <title>geekchat</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
+        <script src="/jquery.js"></script>
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
     </head>
@@ -21,7 +21,36 @@
         <!-- Add your site or application content here -->
         <p>chat here</p>
         <a href="/auth/github">Login github</a>
+        <script src="/engine.io.js"></script>
+        
 
+        <script>
+         
+          var socket = new eio.Socket('ws://localhost:8080/');
+          function js(data){
+            return JSON.parse(data);
+          }
+          function str(data){
+            return JSON.stringify(data);
+          }
+          
+          socket.on('open', function () {
+            $.ajax({
+              url:"/api/me"
+            }).done(function(data){
+              socket.send(str({t:'authorization', user: data}));
+            });
+   
+
+            socket.on('message', function (data) { 
+              console.log(data);
+            });
+            socket.on('close', function () { });
+            setInterval(function(){
+              socket.send(str({t:"msg", m:"HI"}));
+            }, 500);
+          }); 
+        </script>
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
             (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
