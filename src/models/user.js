@@ -1,4 +1,5 @@
 var mongojs = require('mongojs');
+var _ = require('underscore');
 
 module.exports = function(db){
   
@@ -24,6 +25,27 @@ module.exports = function(db){
 
         cb(null, users[0]);
       }
+    },
+    user: function(user){
+      var u = {
+        joinRoom: function(roomId, cb){
+          // check if user already have the roomId in rooms
+          db.user.update({_id: mongojs.ObjectId(user._id), 
+                          'rooms':{ $nin : [ roomId ] }}, 
+                            { $push: {'rooms' : roomId}}, joinUserObjectRoom(user, roomId, cb));
+        }
+      }
+      
+      return u;
     }
+  }
+}
+
+function joinUserObjectRoom(user, roomId, cb){
+  return function(err, dbuser){
+    if(!user.rooms) user.rooms = [];
+    user.rooms.push(roomId);
+    user.rooms = _(user.rooms).uniq();
+    cb(err, dbuser);
   }
 }

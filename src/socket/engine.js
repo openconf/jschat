@@ -2,7 +2,7 @@ var engine = require('engine.io');
 var signer = require('secure.me')({salt:nconf.get('security:salt')}).signer({salt:nconf.get('security:salt')});
 var async = require('async');
 var Rooms = require('engine.io-rooms');
-
+var UserModel = require('../models').user;
 
 var err = function(msg){
   return {
@@ -26,7 +26,7 @@ module.exports = function(server){
           async.apply(logger, socket, data),
           async.apply(authorization, socket, data),
           async.apply(statusMsg, socket, data),
-          async.apply(scopeData, socket, data),
+          async.apply(scopeMsgData, socket, data),
           async.apply(sysMsg, socket, data),
           async.apply(writingStatus, socket, data),
           async.apply(message, socket, data),
@@ -42,8 +42,10 @@ module.exports = function(server){
 
 function scopeData(socket, data){
   return data.send = function(){
+    socket.room(data.r).send(JSON.stringify(data));
+    console.log("sent in room + " + data.r);
     delete data.send;
-    return socket.room(data.r).send(data);
+    return 
   }
 }
 
@@ -59,9 +61,11 @@ function authorization(socket, data, next){
     if(signer.validate(data.user)){
       socket.user = data.user;
       // suscribe for casted messages
-      socket.user.rooms.forEach(function(room){
-        socket.join(room);
-      });
+      if(socket.user.rooms){ 
+        socket.user.rooms.forEach(function(room){
+          socket.join(room);
+        });
+      }
       // subscribe for direct messages
       return;
     } else {
@@ -75,13 +79,14 @@ function statusMsg(socket, data, next){
   //change status of user, broadcast it (online, offline, away, dnd)
   //handle offline somehow
   //save all states to a user collection
+  next();
 }
 
 
 
 
 
-function scopeData(socket, data, next){
+function scopeMsgData(socket, data, next){
   // room Id's
   if(data.r) {
     // check if room/s
@@ -106,7 +111,15 @@ function scopeData(socket, data, next){
 
 function sysMsg(socket, data, next){
   if(data.t == "sys"){
-    
+    console.log("sys");
+    var user = UserModel.user(socket.user);
+    if(data.m == "joinRoom"){
+      console.log("startJoining");
+      user.joinRoom(data.r, function(){
+        console.log("user joined room");
+        console.log(arguments);
+      })
+    }
   }
   // join room (put in user the room, and put in room the user)
   next();
@@ -116,10 +129,12 @@ function writingStatus(socket, data, next){
   //broadcast writing message
   //send writing message once per second
   //do not send it to offline/away guys (think about it)
+  next();
 }
 
 function message(socket, data, next){
   //broadcast simple message to scope
+  console.log("sendind data");
   data.send && data.send();
   next();
 }
@@ -140,6 +155,7 @@ function saveMessageInDB(socket, data, next){
   // save in DB, emit error if saving failed
 }
 
-function handleErrors(socket, data, err){
-  socket.send(JSON.stringify(data));
+function handleErrors( err,data, socket){
+  //socket.send(JSON.stringify(data));
+  console.log(err);
 }

@@ -21,11 +21,29 @@
         <!-- Add your site or application content here -->
         <p>chat here</p>
         <a href="/auth/github">Login github</a>
+        <input type="text" id="roomname" name="room.name"/>
+        <button onclick="createRoom()">create</button>
         <script src="/engine.io.js"></script>
-        
-
+        <input type="text" id="roomId" name="roomid"/>
+        <button onclick="joinRoom()">join</button>
+        <textarea id="chat" placeholder="typein"></textarea>
+        <button onclick="sendMsg()">submit</button>
         <script>
-         
+          var inRoom = null;
+          
+          function sendMsg(){
+            socket.send(str({t:'msg', r:inRoom, m: $('#chat').val()}))
+          }
+          
+          function createRoom(){
+            $.ajax({
+              type:"POST",
+              url:"/api/rooms",
+              data:{name: $('#roomname').val()}
+            }).done(function(data){
+              console.log(data);
+            });
+          }
           var socket = new eio.Socket('ws://localhost:8080/');
           function js(data){
             return JSON.parse(data);
@@ -34,6 +52,11 @@
             return JSON.stringify(data);
           }
           
+          function joinRoom(){
+            socket.send(str({t:'sys', r: $('#roomId').val(), m:"joinRoom"}));
+            inRoom = $('#roomId').val();
+          }
+
           socket.on('open', function () {
             $.ajax({
               url:"/api/me"
@@ -46,10 +69,7 @@
               console.log(data);
             });
             socket.on('close', function () { });
-            setInterval(function(){
-              socket.send(str({t:"msg", m:"HI"}));
-            }, 500);
-          }); 
+            }); 
         </script>
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>

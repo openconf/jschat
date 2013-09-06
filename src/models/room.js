@@ -15,6 +15,7 @@ module.exports = function(db){
       return db.user.findOne({_id: mongojs.ObjectId(id)}, cb);
     },
     create: function(room, cb){
+      // check if room withhhs name exists - error if exists
       db.room.save(room ,cb);
     }
   }
