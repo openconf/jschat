@@ -1,9 +1,11 @@
 var rooms = {};
+var _ = require('underscore');
 
 module.exports = function(server){
   server.on('connection', function(socket){
     socket.join = joinRoom(socket);
     socket.to = toRoom(socket);
+    socket.leave = leaveRoom(socket);
   });
   return server;
 }
@@ -14,6 +16,15 @@ function joinRoom(socket){
     socket._rooms.push(name);
     if(!rooms[name]) rooms[name] = [];
     rooms[name].push(socket);
+  }
+}
+
+function leaveRoom(socket){
+  return function(name, cb){
+    socket._rooms.splice(socket._rooms.indexOf(name), 1);
+    _(rooms[name]).find(function(s){
+      return s.id == socket.id;
+    });
   }
 }
 
