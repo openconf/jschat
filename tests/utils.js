@@ -9,7 +9,12 @@ module.exports = function(){
     authenticate: authenticate,
     authSock:authSock,
     getSignedUser: getSignedUser,
-    clean: clean
+    clean: clean,
+    url:url
+  }
+
+  function url(u){
+    return "http://" + nconf.get("server:hostname") + u;
   }
 
   function clean(collection, cb){

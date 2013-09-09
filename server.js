@@ -9,6 +9,7 @@ nconf.argv()
      .env()
      .file({ file: './config/' + APP_ENV + '.config.json' });
 
+nconf.set("server:hostname", nconf.get("server:port")?nconf.get("server:host") + ":" +  nconf.get("server:port") : nconf.get("host"));
 
 // Setup app
 var express = require('express');
