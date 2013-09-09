@@ -3,6 +3,10 @@
   "description": "Back end server to support our angular app",
   "version": "0.0.1",
   "private": true,
+  "scripts":{
+    "start":"node server.js",
+    "test": "node ./node_modules/grunt-cli/bin/grunt run"
+  },
   "dependencies": {
     "express": "~3.0",
     "passport": "~0.1.12",
