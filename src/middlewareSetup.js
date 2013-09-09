@@ -9,8 +9,9 @@ var util = require('util');
 var fs = require('fs');
 
 var User = require('./models').user;
+var nock = require('nock');
+
 module.exports = function(app){
-  
   passport.use(new GitHubStrategy({
     clientID: nconf.get('github:GITHUB_CLIENT_ID'),
     clientSecret: nconf.get('github:GITHUB_CLIENT_SECRET'),

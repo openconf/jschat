@@ -50,8 +50,13 @@ function scopeData(socket, data){
 }
 
 function logger(socket, data, next){
-  console.log(data);
   console.log(data.t + " : socket msg, user: " + socket.user);
+ /* data.r && socket.room(data.r).clients(function(err, clients) {
+    console.log(clients + "- users in the room " + data.r); // output array of socket ids
+  });
+*/
+
+
   next();
 }
 
@@ -111,13 +116,14 @@ function scopeMsgData(socket, data, next){
 
 function sysMsg(socket, data, next){
   if(data.t == "sys"){
-    console.log("sys");
     var user = UserModel.user(socket.user);
     if(data.m == "joinRoom"){
-      console.log("startJoining");
-      user.joinRoom(data.r, function(){
-        console.log("user joined room");
+      socket.join(data.r.toString(), function(){
         console.log(arguments);
+      });
+      user.joinRoom(data.r, function(err){
+        !err && console.log("user " + socket.user._id + " joined room " + data.r);
+        err && console.log(err);
       })
     }
   }

@@ -14,6 +14,12 @@
     "mongojs": "~0.9.0",
     "engine.io": "~0.7.9",
     "engine.io-client": "~0.7.9",
-    "engine.io-rooms": "~0.1.1"
+    "engine.io-rooms": "~0.1.1",
+    "mocha": "~1.12.1",
+    "chai": "~1.7.2",
+    "request": "~2.27.0",
+    "grunt": "~0.4.1",
+    "grunt-cli": "~0.1.9",
+    "grunt-mocha-test": "~0.6.3"
   }
 }
