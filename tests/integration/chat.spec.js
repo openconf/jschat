@@ -11,6 +11,10 @@ var user2 = {
   name: "User2",
   id: 101
 }
+before(function(done){
+  utils.clean("user", done);
+});
+
 describe("authenticate users", function(){
   var sock1, sock2;
   before(function(done){

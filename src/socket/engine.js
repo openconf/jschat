@@ -1,8 +1,9 @@
 var engine = require('engine.io');
 var signer = require('secure.me')({salt:nconf.get('security:salt')}).signer({salt:nconf.get('security:salt')});
 var async = require('async');
-var Rooms = require('engine.io-rooms');
+//var Rooms = require('engine.io-rooms');
 var UserModel = require('../models').user;
+var rooms = require('./rooms.js');
 
 var err = function(msg){
   return {
@@ -13,7 +14,7 @@ var err = function(msg){
 
 module.exports = function(server){
   server = engine.attach(server);
-  server = Rooms(server);
+  server = rooms(server);
   server.on('connection', function(socket){
     socket.on('message', function(data){
       try{
@@ -42,7 +43,7 @@ module.exports = function(server){
 
 function scopeData(socket, data){
   return data.send = function(){
-    socket.room(data.r).send(JSON.stringify(data));
+    socket.to(data.r).send(JSON.stringify(data));
     console.log("sent in room + " + data.r);
     delete data.send;
     return 

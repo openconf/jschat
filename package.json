@@ -14,7 +14,6 @@
     "mongojs": "~0.9.0",
     "engine.io": "~0.7.9",
     "engine.io-client": "~0.7.9",
-    "engine.io-rooms": "~0.1.1",
     "mocha": "~1.12.1",
     "chai": "~1.7.2",
     "request": "~2.27.0",

@@ -7,6 +7,9 @@ module.exports = (function(){
 
   collections.forEach(function(collection){
     models[collection] = require('./'+ collection)(db);
+    models[collection].drop = function(cb){
+      db[collection].drop(cb);
+    }
   });
   return models;
 })();

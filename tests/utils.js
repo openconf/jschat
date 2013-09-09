@@ -1,13 +1,19 @@
 var nock = require('nock');
 var _ = require("underscore");
 var request = require('request');
+var models = require('../src/models');
 
 module.exports = function(){
   return {
     setUpAuthMock: setUpAuthMock,
     authenticate: authenticate,
     authSock:authSock,
-    getSignedUser: getSignedUser
+    getSignedUser: getSignedUser,
+    clean: clean
+  }
+
+  function clean(collection, cb){
+    models[collection].drop(cb);
   }
 
   function getSignedUser(cb){
