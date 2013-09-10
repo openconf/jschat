@@ -3,9 +3,9 @@
   "description": "Back end server to support our angular app",
   "version": "0.0.1",
   "private": true,
-  "scripts":{
-    "start":"node server.js",
-    "test": "node ./node_modules/grunt-cli/bin/grunt run"
+  "scripts": {
+    "start": "node server.js",
+    "test": "node ./node_modules/grunt-cli/bin/grunt"
   },
   "dependencies": {
     "express": "~3.0",
@@ -23,6 +23,7 @@
     "request": "~2.27.0",
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.9",
-    "grunt-mocha-test": "~0.6.3"
+    "grunt-mocha-test": "~0.6.3",
+    "nock": "~0.22.1"
   }
 }
