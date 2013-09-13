@@ -12,6 +12,6 @@ logs
 results
 
 node_modules
-client
+client/components/*
 
 npm-debug.log
