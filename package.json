@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "test": "node ./node_modules/grunt-cli/bin/grunt"
+    "test": "node ./node_modules/grunt-cli/bin/grunt",
+    "compile": "compy -d client -o webapp compile",
+    "watch": "compy -d client -o webapp -s server.js server watch"
   },
   "dependencies": {
     "express": "~3.0",
@@ -24,6 +26,7 @@
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.9",
     "grunt-mocha-test": "~0.6.3",
-    "nock": "~0.22.1"
+    "nock": "~0.22.1",
+    "compy": "~0.1.4"
   }
 }

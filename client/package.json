@@ -1,0 +1,14 @@
+{
+  "name": "client",
+  "version": "0.0.0",
+  "description": "",
+  "author": "Eldar Djafarov <djkojb@gmail.com>",
+  "license": "MIT",
+  "compy": {
+    "main": "app.js",
+    "dependencies": {
+      "LearnBoost/engine.io-client": "*",
+      "component/jquery": "*"
+    }
+  }
+}

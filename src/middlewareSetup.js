@@ -1,7 +1,7 @@
 var passport = require('passport');
 var _ = require('underscore');
 var express = require('express');
-
+var compy = require('../../compy');
 var errors = require('./errors.js');
 
 var GitHubStrategy = require('passport-github').Strategy;
@@ -56,9 +56,10 @@ module.exports = function(app){
     if(req.user) console.log("UserID: " + req.user._id)
     next();
   });
-  
-  app.use(express.static(__dirname + "/../webapp/"));
-  app.use(express.directory(__dirname + "/../webapp/"));
+ 
+  app.use(compy.middleware(__dirname + "/../webapp/"));
+  /*app.use(express.static(__dirname + "/../webapp/"));
+  app.use(express.directory(__dirname + "/../webapp/"));*/
 
   app.get('/auth/github', app.access.free,
     passport.authenticate('github'),

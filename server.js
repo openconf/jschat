@@ -7,7 +7,7 @@ var APP_ENV = process.env.APP_ENV || 'development';
 nconf = require('nconf');
 nconf.argv()
      .env()
-     .file({ file: './config/' + APP_ENV + '.config.json' });
+     .file({ file: __dirname + '/config/' + APP_ENV + '.config.json' });
 
 nconf.set("server:hostname", nconf.get("server:port")?nconf.get("server:host") + ":" +  nconf.get("server:port") : nconf.get("host"));
 

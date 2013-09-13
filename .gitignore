@@ -12,5 +12,6 @@ logs
 results
 
 node_modules
+client
 
 npm-debug.log
