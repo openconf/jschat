@@ -13,5 +13,8 @@ results
 
 node_modules
 client/components/*
+mobile/components
+mobapp
+webapp
 
 npm-debug.log

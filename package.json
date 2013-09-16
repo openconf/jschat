@@ -7,7 +7,9 @@
     "start": "node server.js",
     "test": "node ./node_modules/grunt-cli/bin/grunt",
     "compile": "compy -d client -o webapp compile",
-    "watch": "compy -d client -o webapp -s server.js server watch"
+    "watch": "compy -d client -o webapp -s server.js server watch",
+    "compilemob": "compy -d mobile -o mobapp compile",
+    "watchmob":"compy -d mobile -o mobapp -s server.js server watch"
   },
   "dependencies": {
     "express": "~3.0",
