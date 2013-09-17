@@ -1,4 +1,13 @@
 var $ = require('jquery');
+var Backbone = require('backbone');
+var getByClass = require('get-by-class');
+
+var ChatView = Backbone.View.extend({
+  el: getByClass(document.body, 'container')[0],
+})
+
+
+
 var template = require('./home.html');
 $(".container").html(template);
 

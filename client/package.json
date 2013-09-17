@@ -7,8 +7,10 @@
   "compy": {
     "main": "app.js",
     "dependencies": {
-      "LearnBoost/engine.io-client": "*",
-      "component/jquery": "*"
+      "component/jquery": "*",
+      "edjafarov/backbone": "*",
+      "javve/get-by-class": "*",
+      "LearnBoost/engine.io-client": "*"
     }
   }
 }
