@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "test": "node ./node_modules/grunt-cli/bin/grunt",
+    "prepublish": "node ./node_modules/compy/bin/compy -d client install;node ./node_modules/compy/bin/compy -d mobile install",
     "compile": "node ./node_modules/compy/bin/compy -d client -o webapp compile",
     "watch": "node ./node_modules/compy/bin/compy -d client -o webapp -s server.js server watch",
     "compilemob": "node ./node_modules/compy/bin/compy -d mobile -o mobapp compile",
