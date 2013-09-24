@@ -11,7 +11,9 @@ var user2 = {
   id: 101
 }
 before(function(done){
-  utils.clean("user", done);
+  utils.useCollections(['user','room'], function(){
+    utils.clean("user", done);
+  });
 });
 
 describe("authenticate users", function(){

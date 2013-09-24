@@ -3,6 +3,10 @@ var utils = require('../utils.js')();
 var expect = require('chai').expect;
 var eio = require('engine.io-client');
 
+before(function(done){
+  utils.useCollections(['user','room'], done);
+});
+
 describe("github authenticattion", function(){
   before(function(done){
     utils.setUpAuthMock();

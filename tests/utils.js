@@ -2,6 +2,7 @@ var nock = require('nock');
 var _ = require("underscore");
 var request = require('request');
 var models = require('../src/models');
+var async = require('async');
 
 module.exports = function(){
   return {
@@ -10,8 +11,17 @@ module.exports = function(){
     authSock:authSock,
     getSignedUser: getSignedUser,
     clean: clean,
-    url:url
+    url:url,
+    useCollections:useCollections 
   }
+
+
+  function useCollections(collections, cb){
+    async.each(collections, function(item, done){
+      console.log(models[item])
+      models[item].init(done);
+    }, cb);
+  };
 
   function url(u){
     return "http://" + nconf.get("server:hostname") + u;

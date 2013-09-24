@@ -11,6 +11,9 @@ var mongojs = require('mongojs');
 module.exports = function(db){
   
   return {
+    init: function(cb){
+      return db.createCollection('room', cb);
+    },
     getById: function(id, cb){
       return db.user.findOne({_id: mongojs.ObjectId(id)}, cb);
     },
