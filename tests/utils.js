@@ -18,7 +18,6 @@ module.exports = function(){
 
   function useCollections(collections, cb){
     async.each(collections, function(item, done){
-      console.log(models[item])
       models[item].init(done);
     }, cb);
   };
@@ -31,9 +30,9 @@ module.exports = function(){
     models[collection].drop(cb);
   }
 
-  function getSignedUser(cb){
+  function getSignedUser(cb, u){
     var profile;
-    request.get('http://127.0.0.1:8080/api/me', {jar: true}, gotMe);
+    request.get('http://127.0.0.1:8080/api/me', {jar: u || true}, gotMe);
     function gotMe(err, response, body){
       try{
         profile = JSON.parse(body);
@@ -60,7 +59,7 @@ module.exports = function(){
         socket.send(JSON.stringify({
           t:'authorization', user: profile
         }));
-        process.nextTick(cb);       
+        process.nextTick(cb);
       }
     }
   }
@@ -68,7 +67,9 @@ module.exports = function(){
   function authenticate(user ,cb){
     if(_(user).isFunction()) cb = user;
     setUpAuthMock(user);
-    request.get('http://127.0.0.1:8080/auth/github/callback?code=450bab02b3f9bf0dfd44', {jar: true}, cb);
+    var u = request.jar();
+    request.get('http://127.0.0.1:8080/auth/github/callback?code=450bab02b3f9bf0dfd44', {jar: u}, cb);
+    return u;
   }
   
   
