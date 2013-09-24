@@ -1,7 +1,7 @@
 var passport = require('passport');
 var _ = require('underscore');
 var express = require('express');
-var compy = require('../../compy');
+var compy = require('compy');
 var errors = require('./errors.js');
 
 var GitHubStrategy = require('passport-github').Strategy;
