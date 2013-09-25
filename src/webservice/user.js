@@ -1,5 +1,6 @@
 var signer = require('secure.me')({salt: nconf.get('security:salt')}).signer;
 signer = signer({salt:nconf.get('security:salt')});
+
 module.exports = function(app){
   app.get('/api/me', getMe);
 }

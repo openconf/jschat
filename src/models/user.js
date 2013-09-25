@@ -38,9 +38,12 @@ module.exports = function(db){
           db.user.update({_id: mongojs.ObjectId(user._id), 
                           'rooms':{ $nin : [ roomId ] }}, 
                             { $push: {'rooms' : roomId}}, joinUserObjectRoom(user, roomId, cb));
+        },
+        edit: function(updates, cb){
+          db.user.update({_id: mongojs.ObjectId(user._id)}, 
+                            updates, joinUserObjectRoom(user, roomId, cb));
         }
       }
-      
       return u;
     }
   }
