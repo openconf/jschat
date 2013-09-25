@@ -5,7 +5,9 @@ module.exports = function(db){
   
   return {
     init: function(cb){
-      return db.createCollection('user', cb);
+      return db.createCollection('user', function(err, collection) {
+          cb();
+      });
     },
     getById: function(id, cb){
       return db.user.findOne({_id: mongojs.ObjectId(id)}, cb);
