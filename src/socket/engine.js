@@ -16,6 +16,7 @@ module.exports = function(server){
   server = engine.attach(server);
   server = rooms(server);
   server.on('connection', function(socket){
+    // TODO: change status of a user to online
     socket.on('message', function(data){
       try{
         data = JSON.parse(data);
@@ -38,6 +39,8 @@ module.exports = function(server){
         }
       );
     });
+    // TODO: socket on close
+    // socket that was closed should find corresponding user and change it's status to offline.
   });
 }
 
@@ -82,6 +85,11 @@ function authorization(socket, data, next){
 }
 
 function statusMsg(socket, data, next){
+  //TODO: think about statuses and possibly depricate.
+  // reasoning: 
+  // usually you do not need instant status of a user. You always can just pool for a status
+  //of those users that are displayed right now [ /api/users?_id=1,2,3,4&slice=status or smth like this]
+  // on a frontend statuses coud cache themselves, expire in 2-3 sec and pool only those that displayed
   //change status of user, broadcast it (online, offline, away, dnd)
   //handle offline somehow
   //save all states to a user collection

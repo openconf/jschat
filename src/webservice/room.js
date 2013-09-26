@@ -17,34 +17,34 @@ function createNewRoom(req, res, next){
   newRoom.owner = req.user._id;
 
   Room.create(newRoom, function(err, room){
-      res.json(room);
+    res.json(room);
   });
 }
 
 function getRoomById(req, res, next){
-    Room.getById(req.params.id, function(err, room){
-        room ? res.json(room) : res.status(404).send('Not found');
-    });
+  Room.getById(req.params.id, function(err, room){
+    room ? res.json(room) : res.status(404).send('Not found');
+  });
 }
 
 function getRooms(req, res, next) {
-    Room.getAll(function(err, rooms){
-        rooms && rooms.length ? res.json(rooms) : res.status(404).send('Not found');
-    });
+  Room.getAll(function(err, rooms){
+    rooms && rooms.length ? res.json(rooms) : res.status(404).send('Not found');
+  });
 }
 
 function updateRoomById(req, res, next){
 
-    var updatedRoom = _(req.body).pick("description", "name");
-    updatedRoom.owner = req.user._id;
+  var updatedRoom = _(req.body).pick("description", "name");
+  updatedRoom.owner = req.user._id;
 
-    Room.updateById(req.params.id, updatedRoom, function(err, room){
-        res.json(room);
-    });
+  Room.updateById(req.params.id, updatedRoom, function(err, room){
+    res.json(room);
+  });
 }
 
 function deleteRoomById(req, res, next){
-    Room.deleteById(req.params.id, function(err, count){
-        res.json();
-    });
+  Room.deleteById(req.params.id, function(err, count){
+    res.json();
+  });
 }

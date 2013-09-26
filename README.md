@@ -4,6 +4,7 @@ jschat
 frontend community chat
 
 ## installation
+node 0.10.17, npm 1.3.8 checked!
 
 ```
 $ sudo npm install;
