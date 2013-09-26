@@ -58,8 +58,6 @@ module.exports = function(app){
   });
  
   app.use(compy.middleware(__dirname + "/../webapp/"));
-  /*app.use(express.static(__dirname + "/../webapp/"));
-  app.use(express.directory(__dirname + "/../webapp/"));*/
 
   app.get('/auth/github', app.access.free,
     passport.authenticate('github'),
