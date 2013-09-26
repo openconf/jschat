@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/openconf/jschat.png?branch=master)](https://travis-ci.org/openconf/jschat)
 jschat
 ======
 
