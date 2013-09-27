@@ -5,18 +5,22 @@ var eio = require('engine.io-client');
 var async = require('async');
 var _ = require('underscore');
 
-var user1 = {
+users = [{
   name: "User1",
   id: 100
-}
-var user2 = {
+},
+{
   name: "User2",
   id: 101
-}
-var user3 = {
+},
+{
   name: "User3",
   id: 102
-}
+},
+{
+  name: "UserAdmin",
+  id: 103
+}]
 
 
 before(function(done){
@@ -27,116 +31,161 @@ before(function(done){
 
 xdescribe("authenticate user with premissions", function(){
   var u;
+  //put 3 users and authenticate admin
   before(function(done){
-    u = utils.authenticate(user1, done);
-  })
-  //put 4 users
-  //get all of them by GET /api/users
-  //get specific user info by id GET /api/users/:id
-  //edit user data by PUT /api/users/:id if you have premissions to edit user
-  //delete user data by DELETE /api/users/:id if you have premissions to delete user
-  //edit self profile by PUT /api/me if user is /me
-  //delete profile by DELETE /api/me if user is /me
-  //get profile by /api/me
-  //
-  /*
-  describe("GET /api/users get all users", function(){
-    var gotRooms;
-    before(function(){
-      request.get(utils.url('/api/rooms/'), {jar: u},function(err, request, body){
-        expect(request).to.have.property("statusCode", 200);
-        gotRooms = JSON.parse(body);
-        done();
-      })
+    async.each(users, function(user, next){
+      return utils.authenticate(user, next);
+    }, function(err, res){
+      u = res;
+      done();
     });
-    it('It should return right number of results', function(){
-      expect(gotRooms).to.have.length(rooms.length);
-    })
-    it('names should be the same', function(){
-      var names = _(gotRooms).pluck('name');
-      expect(_.difference(names, rooms)).to.be.empty;
-    })
   })
-
-
-  xdescribe("GET /api/users/:id user should be able to get user info by Id", function(){
+//get profile by /api/me
+  xdescribe("GET /api/me should return user profile", function(){
     var gotUser;
     before(function(done){
-      request.get(utils.url('/api/users/' + room._id), {jar: u },function(err, request, body){
-        expect(request).to.have.property("statusCode", 200);
-        getRoom = JSON.parse(body);
+      request.get(utils.url('/api/me'), {jar: u[1] }, gotU1);
+      function gotU1(err, req, body){
+        gotUser = JSON.parse(body);
         done();
-      })
+      }
     })
-    it('returned gotUser should have props from roomMock', function(){
-      expect(getRoom).to.have.property('name', roomMock.name);
-      expect(getRoom).to.have.property('description', roomMock.description);
-      expect(getRoom).to.have.property('_id');
+    it('the name/id should be same', function(){
+      expect(gotUser).to.have.property('name', users[1].name);
+      expect(gotUser).to.have.property('id', users[1].id);
     });
-    it('getRoom should have owner - reference to the user that created the room', function(){
-      expect(getRoom).to.have.property('owner');
-    });
-  });
+  })
 
-  xdescribe("PUT /api/rooms/:id user should edit room", function(){
-    var getRoom;
+
+  //edit self profile by PUT /api/me if user is /me
+  xdescribe("PUT /api/me should edit self", function(){
+    var gotUser;
     before(function(done){
-      request.put(utils.url('/api/rooms/' + room._id), {jar:u, form:{name:"newName"}}, function(err, request, body){
-        expect(request).to.have.property("statusCode", 200);
-        request.get(utils.url('/api/rooms/' + room._id), {jar: u},function(err, request, body){
+      request.get(utils.url('/api/me'), {jar: u[1] }, gotU1);
+      function gotU1(err, req, body){
+        var user2 = JSON.parse(body);
+        request.put(utils.url('/api/me'), {jar: u[1], form:{name:"MyNewName"} },function(err, request, body){
           expect(request).to.have.property("statusCode", 200);
-          getRoom = JSON.parse(body);
+          gotUser = JSON.parse(body);
           done();
         })
-      })
+      }
     })
-    it('returned getRoom should have new name', function(){
-      expect(getRoom).to.have.property('name', "newName");
+    it('returned gotUser should have new name', function(){
+      expect(gotUser).to.have.property('name', "MyNewName");
     });
-  });
+  })
 
-  xdescribe("DELETE /api/rooms/:id user should delete the room", function(){
+
+  //delete profile by DELETE /api/me if user is /me
+  xdescribe("DELETE /api/me  should delete self", function(){
     var statusCode;
     before(function(done){
-      request.del(utils.url('/api/rooms/' + room._id), {jar: u},function(err, request, body){
-        expect(request).to.have.property("statusCode", 200);
-        request.get(utils.url('/api/rooms/' + room._id), {jar: u},function(err, request, body){
-          statusCode = request.statusCode;
-          done();
+      request.get(utils.url('/api/me'), {jar: u[1] }, gotU1);
+
+      function gotU1(err, req, body){
+        var user2 = JSON.parse(body);
+        
+        request.del(utils.url('/api/me'), {jar: u[1]},function(err, req, body){
+          expect(req).to.have.property("statusCode", 200);
+          request.get(utils.url('/api/users/' + user2._id), {jar: u[3]},function(err, req, body){
+            statusCode = req.statusCode;
+            u[1] = utils.authenticate(user, done);
+          })
         })
-      })
+      }
     })
-    it('the room should not exist anymore thus statusCode should be 404', function(){
+    it('the user should not exist anymore thus statusCode should be 404', function(){
       expect(statusCode).to.equal(404);
     });
   });
-})
 
 
-xdescribe("create several rooms", function(){
-  var rooms = [1,2,3,4];
-  before(function(done){
-    async.each(rooms, function(item, cb){
-      var mock = _(roomMock).extend({name : item});
-      request.post(utils.url('/api/rooms'),{form: mock, jar: u}, cb);
-    }, done);
-  })
-  describe("GET /api/rooms get all rooms", function(){
-    var gotRooms;
+  //get all users by GET /api/users
+  xdescribe("GET /api/users get all users", function(){
+    var gotUsers;
     before(function(){
-      request.get(utils.url('/api/rooms/'), {jar: u},function(err, request, body){
+      request.get(utils.url('/api/users/'), {jar: u[3]},function(err, request, body){
         expect(request).to.have.property("statusCode", 200);
-        gotRooms = JSON.parse(body);
+        gotUsers = JSON.parse(body);
         done();
       })
     });
     it('It should return right number of results', function(){
-      expect(gotRooms).to.have.length(rooms.length);
+      expect(gotUsers).to.have.length(userss.length);
     })
     it('names should be the same', function(){
-      var names = _(gotRooms).pluck('name');
-      expect(_.difference(names, rooms)).to.be.empty;
+      var names = _(gotUsers).pluck('name');
+      expect(_.difference(names, _(users).pluck('name'))).to.be.empty;
     })
-  })
-  */
+  });
+
+
+
+  
+  //get specific user info by id GET /api/users/:id
+  xdescribe("GET /api/users/:id user should be able to get user info by Id", function(){
+    var gotUser;
+    before(function(done){
+      request.get(utils.url('/api/me'), {jar: u[3] }, gotMe);
+
+      function gotMe(err, req, body){
+        var admin = JSON.parse(body);
+        request.get(utils.url('/api/users/' + admin._id), {jar: u[3] },function(err, request, body){
+          expect(request).to.have.property("statusCode", 200);
+          gotUser = JSON.parse(body);
+          done();
+        })
+      }
+    })
+    it('returned gotUser should have props from user[3]', function(){
+      expect(gotUser).to.have.property('name', users[3].name);
+      expect(gotUser).to.have.property('_id');
+    });
+  });
+ 
+  //TODO: to edit/delete user, admin should have appropriate priviliges/features
+  
+  //edit user data by PUT /api/users/:id if you have premissions to edit user
+  xdescribe("PUT /api/users/:id should edit user", function(){
+    var gotUser;
+    before(function(done){
+      request.get(utils.url('/api/me'), {jar: u[1] }, gotU1);
+
+      function gotU1(err, req, body){
+        var user2 = JSON.parse(body);
+        request.put(utils.url('/api/users/' + user2._id), {jar: u[3], form:{name:"newName"} },function(err, request, body){
+          expect(request).to.have.property("statusCode", 200);
+          gotUser = JSON.parse(body);
+          done();
+        })
+      }
+    })
+
+    it('returned gotUser should have new name', function(){
+      expect(gotUser).to.have.property('name', "newName");
+    });
+  });
+
+  //delete user data by DELETE /api/users/:id if you have premissions to delete user
+  xdescribe("DELETE /api/users/:id user should delete the user", function(){
+    var statusCode;
+    before(function(done){
+      request.get(utils.url('/api/me'), {jar: u[2] }, gotU2);
+
+      function gotU2(err, req, body){
+        var user3 = JSON.parse(body);
+        request.del(utils.url('/api/users/' + user3._id), {jar: u[3]},function(err, req, body){
+          expect(req).to.have.property("statusCode", 200);
+          request.get(utils.url('/api/users/' + user3._id), {jar: u[3]},function(err, req, body){
+            statusCode = req.statusCode;
+            done();
+          })
+        })
+      }
+    })
+    it('the user should not exist anymore thus statusCode should be 404', function(){
+      expect(statusCode).to.equal(404);
+    });
+  });
 })

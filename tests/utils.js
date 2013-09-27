@@ -64,6 +64,10 @@ module.exports = function(){
     }
   }
 
+  function userCan(features, user, cb){
+    ///TODO: add features for user//models.user.update
+  }
+
   function authenticate(user ,cb){
     if(_(user).isFunction()) cb = user;
     setUpAuthMock(user);
