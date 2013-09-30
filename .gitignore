@@ -7,14 +7,15 @@ lib-cov
 *.pid
 *.gz
 
+.idea
 pids
 logs
 results
 
 node_modules
-client/components/*
+client/components
 mobile/components
-mobapp
 webapp
+mobapp
 
 npm-debug.log

@@ -1,16 +1,26 @@
 {
-  "name": "client",
-  "version": "0.0.0",
-  "description": "",
-  "author": "Eldar Djafarov <djkojb@gmail.com>",
-  "license": "MIT",
-  "compy": {
-    "main": "app.js",
-    "dependencies": {
-      "component/jquery": "*",
-      "edjafarov/backbone": "*",
-      "javve/get-by-class": "*",
-      "LearnBoost/engine.io-client": "*"
+    "name": "client",
+    "version": "0.0.0",
+    "description": "",
+    "author": "Eldar Djafarov <djkojb@gmail.com>",
+    "license": "MIT",
+
+    "compy": {
+        "main": "Main.js",
+
+        "local": [
+            "backbone",
+            "backbone.composite",
+            "backbone.databinding",
+            "backbone.module",
+            "backbone.schema",
+            "globalize",
+            "jquery",
+            "underscore"
+        ],
+
+        "paths": [
+            "libraries"
+        ]
     }
-  }
 }

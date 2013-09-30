@@ -1,0 +1,13 @@
+{
+    "name": "backbone.module",
+    "main": "backbone.module.js",
+
+    "scripts": [
+        "backbone.module.js"
+    ],
+
+    "local": [
+        "backbone",
+        "underscore"
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "name": "globalize",
+    "main": "globalize.js",
+
+    "scripts": [
+        "globalize.js"
+    ]
+}

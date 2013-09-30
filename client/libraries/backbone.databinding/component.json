@@ -1,0 +1,13 @@
+{
+    "name": "backbone.databinding",
+    "main": "backbone.databinding.js",
+
+    "scripts": [
+        "backbone.databinding.js"
+    ],
+
+    "local": [
+        "backbone",
+        "underscore"
+    ]
+}

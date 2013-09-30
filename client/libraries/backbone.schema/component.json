@@ -1,0 +1,14 @@
+{
+    "name": "backbone.schema",
+    "main": "backbone.schema.js",
+
+    "scripts": [
+        "backbone.schema.js"
+    ],
+
+    "local": [
+        "backbone",
+        "globalize",
+        "underscore"
+    ]
+}

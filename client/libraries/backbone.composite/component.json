@@ -1,0 +1,13 @@
+{
+    "name": "backbone.composite",
+    "main": "backbone.composite.js",
+
+    "scripts": [
+        "backbone.composite.js"
+    ],
+
+    "local": [
+        "backbone",
+        "underscore"
+    ]
+}

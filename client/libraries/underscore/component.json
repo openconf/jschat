@@ -1,0 +1,8 @@
+{
+    "name": "underscore",
+    "main": "underscore.js",
+
+    "scripts": [
+        "underscore.js"
+    ]
+}

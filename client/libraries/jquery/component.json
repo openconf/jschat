@@ -1,0 +1,8 @@
+{
+    "name": "jquery",
+    "main": "jquery.js",
+
+    "scripts": [
+        "jquery.js"
+    ]
+}
