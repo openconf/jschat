@@ -29,19 +29,22 @@
     ////////////////////
 
     var Module = Backbone.Module = function (namespace, callback) {
-        var scope = window, tokens = namespace.split('.'), main = tokens.pop();
+        var scope = window, packageNames = namespace.split('.'), className = packageNames.pop();
 
-        _.each(tokens, function (token) {
-            var layer = scope[token];
+        _.each(packageNames, function (packageName) {
+            var layer = scope[packageName];
 
             if (!layer) {
-                layer = scope[token] = {};
+                layer = scope[packageName] = {};
             }
 
             scope = layer;
         });
 
-        scope = scope[main] = _.isFunction(callback) ? callback.call(scope) : callback;
+        scope = scope[className] = _.isFunction(callback) ? callback.call({
+            namespace: namespace,
+            className: className
+        }) : callback;
 
         return scope;
     };

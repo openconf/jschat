@@ -12,6 +12,8 @@
             "backbone",
             "backbone.composite",
             "backbone.databinding",
+            "backbone.iobind",
+            "backbone.iosync",
             "backbone.module",
             "backbone.schema",
             "globalize",
