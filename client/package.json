@@ -1,7 +1,7 @@
 {
-    "name": "client",
-    "version": "0.0.0",
-    "description": "",
+    "name": "JSChat",
+    "version": "0.0.1",
+    "description": "The client part of JSChat project.",
     "author": "Eldar Djafarov <djkojb@gmail.com>",
     "license": "MIT",
 
