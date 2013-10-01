@@ -5,9 +5,17 @@ module.exports = (function () {
 
     ////////////////////
 
-    require('./views/pages/HomePage.js');
+    var Application = require('./Application.js');
 
-    return new JSChat.views.pages.HomePage({
-        el: 'body'
-    }).render();
+    ////////////////////
+
+    require('./routers/HomePageRouter.js'); // JSChat.routers.HomePageRouter
+
+    ////////////////////
+
+    return Application.create({
+        routers: {
+            homePageRouter: new JSChat.routers.HomePageRouter()
+        }
+    }).start();
 }());

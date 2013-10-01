@@ -8,12 +8,14 @@
     "compy": {
         "main": "Main.js",
 
+        "dependencies": {
+            "learnboost/engine.io-client": "*"
+        },
+
         "local": [
             "backbone",
             "backbone.composite",
             "backbone.databinding",
-            "backbone.iobind",
-            "backbone.iosync",
             "backbone.module",
             "backbone.schema",
             "globalize",

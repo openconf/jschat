@@ -3,7 +3,8 @@ module.exports = (function () {
 
     var _ = require('underscore'),
         Backbone = require('backbone'),
-        Globalize = require('globalize');
+        Globalize = require('globalize'),
+        Socket = require('engine.io');
 
     ////////////////////
 
@@ -16,14 +17,12 @@ module.exports = (function () {
         require('backbone.schema')
     );
 
-    require('backbone.iosync');
-    require('backbone.iobind');
-
     ////////////////////
 
     return _.extend(window, {
         _: _,
         Backbone: Backbone,
-        Globalize: Globalize
+        Globalize: Globalize,
+        Socket: Socket
     });
 }());
