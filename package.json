@@ -10,7 +10,7 @@
     "compile": "node ./node_modules/compy/bin/compy -d client -o webapp compile",
     "watch": "node ./node_modules/compy/bin/compy -d client -o webapp -s server.js server watch",
     "compilemob": "node ./node_modules/compy/bin/compy -d mobile -o mobapp compile",
-    "watchmob":"node ./node_modules/compy/bin/compy -d mobile -o mobapp -s server.js server watch"
+    "watchmob": "node ./node_modules/compy/bin/compy -d mobile -o mobapp -s server.js server watch"
   },
   "dependencies": {
     "express": "~3.0",
@@ -30,6 +30,6 @@
     "grunt-cli": "~0.1.9",
     "grunt-mocha-test": "~0.6.3",
     "nock": "~0.22.1",
-    "compy": "~0.1.5"
+    "compy": "~0.1.10"
   }
 }
