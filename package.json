@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "test": "node ./node_modules/grunt-cli/bin/grunt",
+    "test": "npm run compile & node ./node_modules/grunt-cli/bin/grunt",
     "setup": "node ./node_modules/compy/bin/compy -d client install & node ./node_modules/compy/bin/compy -d mobile install",
     "compile": "node ./node_modules/compy/bin/compy -d client -o webapp compile",
     "watch": "node ./node_modules/compy/bin/compy -d client -o webapp -s server.js server watch",
