@@ -5,7 +5,8 @@
   "main": "index.js",
   "author": "",
   "license": "MIT",
-  "compy":{
-    "main":"mobapp.js"
+  "compy": {
+    "main": "mobapp.js",
+    "dependencies": null
   }
 }
