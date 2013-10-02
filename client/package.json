@@ -1,26 +1,30 @@
 {
-  "name": "JSChat",
-  "version": "0.0.1",
-  "description": "The client part of JSChat project.",
-  "author": "Eldar Djafarov <djkojb@gmail.com>",
-  "license": "MIT",
-  "compy": {
-    "main": "Main.js",
-    "dependencies": {
-      "edjafarov/backbone":"*",
-      "edjafarov/underscore": "*",
-      "LearnBoost/engine.io-client": "*"
-    },
-    "local": [
-      "backbone.composite",
-      "backbone.databinding",
-      "backbone.module",
-      "backbone.schema",
-      "globalize",
-      "jquery"
-    ],
-    "paths": [
-      "libraries"
-    ]
-  }
+    "name": "JSChat",
+    "version": "0.0.1",
+    "description": "The client part of JSChat project.",
+    "author": "Eldar Djafarov <djkojb@gmail.com>",
+    "license": "MIT",
+
+    "compy": {
+        "main": "Main.js",
+
+        "dependencies": {
+            "edjafarov/backbone": "*",
+            "edjafarov/underscore": "*",
+            "learnboost/engine.io-client": "*"
+        },
+
+        "local": [
+            "backbone.composite",
+            "backbone.databinding",
+            "backbone.module",
+            "backbone.schema",
+            "globalize",
+            "jquery"
+        ],
+
+        "paths": [
+            "libraries"
+        ]
+    }
 }
