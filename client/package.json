@@ -5,6 +5,10 @@
     "author": "Eldar Djafarov <djkojb@gmail.com>",
     "license": "MIT",
 
+    "dependencies": {
+        "component-less": "*"
+    },
+
     "compy": {
         "main": "Main.js",
 
@@ -19,6 +23,7 @@
             "backbone.databinding",
             "backbone.module",
             "backbone.schema",
+            "bootstrap",
             "globalize",
             "jquery"
         ],

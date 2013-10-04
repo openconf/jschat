@@ -5,6 +5,7 @@
     "scripts": [
         "backbone.module.js"
     ],
+
     "dependencies": {
       "edjafarov/backbone": "*",
       "edjafarov/underscore": "*"

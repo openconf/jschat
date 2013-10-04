@@ -41,10 +41,7 @@
             scope = layer;
         });
 
-        scope = scope[className] = _.isFunction(callback) ? callback.call({
-            namespace: namespace,
-            className: className
-        }) : callback;
+        scope = scope[className] = _.isFunction(callback) ? callback() : callback;
 
         return scope;
     };

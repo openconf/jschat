@@ -6,11 +6,12 @@
         "backbone.schema.js"
     ],
 
+    "dependencies": {
+        "edjafarov/backbone": "*",
+        "edjafarov/underscore": "*"
+    },
+
     "local": [
         "globalize"
-    ],
-    "dependencies": {
-      "edjafarov/backbone": "*",
-      "edjafarov/underscore": "*"
-    }
+    ]
 }

@@ -17,6 +17,8 @@ module.exports = (function () {
         require('backbone.schema')
     );
 
+    require('bootstrap');
+
     ////////////////////
 
     return _.extend(window, {
