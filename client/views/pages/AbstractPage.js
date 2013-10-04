@@ -1,11 +1,19 @@
 module.exports = Backbone.Module('JSChat.views.pages.AbstractPage', function () {
     'use strict';
 
-    var AbstractView = require('../AbstractView.js');
+    var AbstractCompositeView = require('../AbstractCompositeView.js');
 
     ////////////////////
 
-    return AbstractView.extend({
-        el: document.body
+    return AbstractCompositeView.extend({
+        el: document.body,
+
+        constructor: function (options) {
+            this.initialize = _.wrap(this.initialize, function (fn, options) {
+                return fn.call(this, options);
+            });
+
+            AbstractCompositeView.call(this, options);
+        }
     });
 });

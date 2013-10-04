@@ -7,8 +7,6 @@ module.exports = Backbone.Module('JSChat.views.AbstractView', function () {
 
     return BBView.extend({
         constructor: function (options) {
-            this.composite = new Backbone.Composite(this);
-
             this.initialize = _.wrap(this.initialize, function (fn, options) {
                 return fn.call(this, options);
             });

@@ -5,12 +5,8 @@ module.exports = Backbone.Module('JSChat.collections.AbstractCollection', functi
 
     ////////////////////
 
-    require('../models/AbstractModel.js'); // JSChat.models.AbstractModel
-
-    ////////////////////
-
     return BBCollection.extend({
-        model: JSChat.models.AbstractModel,
+        model: require('../models/AbstractModel.js'),
 
         constructor: function (models, options) {
             this.initialize = _.wrap(this.initialize, function (fn, models, options) {
