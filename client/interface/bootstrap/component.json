@@ -1,0 +1,34 @@
+{
+    "name": "bootstrap",
+
+    "scripts": [
+        "affix.js",
+        "alert.js",
+        "button.js",
+        "carousel.js",
+        "collapse.js",
+        "dropdown.js",
+        "modal.js",
+        "popover.js",
+        "scrollspy.js",
+        "tab.js",
+        "tooltip.js",
+        "transition.js"
+    ],
+
+    "styles": [
+        "styles/bootstrap.less",
+        "styles/theme.less"
+    ],
+
+    "fonts": [
+        "fonts/glyphicons-halflings-regular.eot",
+        "fonts/glyphicons-halflings-regular.svg",
+        "fonts/glyphicons-halflings-regular.ttf",
+        "fonts/glyphicons-halflings-regular.woff"
+    ],
+
+    "local": [
+        "jquery"
+    ]
+}

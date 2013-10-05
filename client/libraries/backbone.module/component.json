@@ -7,7 +7,7 @@
     ],
 
     "dependencies": {
-      "edjafarov/backbone": "*",
-      "edjafarov/underscore": "*"
+        "edjafarov/backbone": "*",
+        "edjafarov/underscore": "*"
     }
 }
