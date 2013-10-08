@@ -32,16 +32,17 @@ module.exports = function(server){
 
 
 function logger(socket, data, next){
-  console.log(data.__cbid + " : socket msg, user: " + socket.user);
+  console.log(data.type + " : socket msg, user: " + socket.user);
   data.path && console.log(data.path + " - call to path ");
+  next();
 };
 
 function authorization(socket, data, next){
   // rewrite for authorization through DB/ since we can!
   if(socket.user) return next();
-  if(data.t == "authorization"){
+  if(data.type == "authorization"){
     if(signer.validate(data.user)){
-      socket.user = data.user;
+      socket.__proto__.user = data.user;//add to proto
       // suscribe for casted messages
       if(socket.user.rooms){ 
         socket.user.rooms.forEach(function(room){
@@ -49,12 +50,12 @@ function authorization(socket, data, next){
         });
       }
       // subscribe for direct messages
-      return;
+      return socket.json({});
     } else {
-      return next(err("user object is not trusted - Not authorized"));
+      return next("user object is not trusted - Not authorized");
     }
   }
-  return next(err("Not authorized"));
+  return next("Not authorized");
 }
 
 

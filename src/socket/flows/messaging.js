@@ -8,6 +8,7 @@ module.exports = function(server){
 
 function createMessage(socket, data, next){
   //TODO: save message in DB and pass it over to next for broadcasting
+  next();
 }
 function readMessages(socket, data, next){
   //TODO: read messages from DB 
@@ -27,4 +28,6 @@ function deleteMessage(socket, data, next){
 
 function roomBroadcast(socket, data, next){
   //TODO: broadcast cmd to room with id from socket.params['id']
+  socket.to(socket.params['id']).send(data);
+  socket.json({});
 }

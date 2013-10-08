@@ -32,6 +32,6 @@
     "grunt-mocha-test": "~0.6.3",
     "nock": "~0.22.1",
     "compy": "~0.1.11",
-    "socker": "~0.1.0"
+    "socker": "~0.1.1"
   }
 }

@@ -43,11 +43,13 @@ module.exports = function(){
     }
   }
 
-  function authSock(socket, cb){
+  function authSock(socket, jar, cb){
     var profile;
-    request.get('http://127.0.0.1:8080/api/me', {jar: true}, gotMe);
+    request.get('http://127.0.0.1:8080/api/me', {jar: jar}, gotMe);
     function gotMe(err, response, body){
-      
+      if(response.statusCode !== 200){
+        throw new Error("User is not authorized " + body);
+      }
       try{
         profile = JSON.parse(body);
       }catch(e){
@@ -56,10 +58,9 @@ module.exports = function(){
       if (socket.readyState == 'open') return sendAuthorization();
       socket.on('open', sendAuthorization);
       function sendAuthorization(){
-        socket.send(JSON.stringify({
-          t:'authorization', user: profile
-        }));
-        process.nextTick(cb);
+        socket.serve({
+          type:'authorization', user: profile
+        }, cb);
       }
     }
   }
