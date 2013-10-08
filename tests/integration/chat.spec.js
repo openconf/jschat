@@ -16,7 +16,7 @@ before(function(done){
   });
 });
 
-describe("authenticate users", function(){
+xdescribe("authenticate users", function(){
   var sock1, sock2;
   before(function(done){
     utils.authenticate(user1, function(){
