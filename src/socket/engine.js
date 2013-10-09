@@ -13,6 +13,17 @@ module.exports = function(server){
   
   server = rooms(server);
   socker(server);
+
+  server.sock.can = function(premission){
+    return function(socket, data, next){
+      if(socket.user.premissions && socket.user.premissions[premission]){
+        next();
+      }
+      //TODO: remove when implemented
+      return next();
+      next("you have no ehough premissions to do that");
+    }
+  }
   
   server.sock.use(logger);
   server.sock.use(authorization);

@@ -9,7 +9,8 @@
     "dependencies": {
       "edjafarov/backbone":"*",
       "edjafarov/underscore": "*",
-      "LearnBoost/engine.io-client": "*"
+      "LearnBoost/engine.io-client": "*",
+      "edjafarov/socker": "*"
     },
     "local": [
       "backbone.composite",

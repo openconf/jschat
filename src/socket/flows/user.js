@@ -10,18 +10,18 @@ module.exports = function(server){
   //server.sock.when('DELETE /api/user/:id', server.sock.can('deleteUser'), deleteUser);
 }
 
-function readProfile(){
+function readProfile(socket, data, next){
+  socket.json(socket.user);
+}
+
+function updateProfile(socket, data, next){
   //TODO: implement
 }
 
-function updateProfile(){
+function readUsers(socket, data, next){
   //TODO: implement
 }
 
-function readUsers(){
-  //TODO: implement
-}
-
-function readUser(){
+function readUser(socket, data, next){
   //TODO: implement
 }

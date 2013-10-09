@@ -2,7 +2,8 @@ var request = require('request');
 var utils = require('../utils.js')();
 var expect = require('chai').expect;
 var eio = require('engine.io-client');
-var sockerClient = require('../../node_modules/socker/socker.client.js');
+var sockerClient = require('socker').client;
+console.log(require('socker'));
 var user1 = {
   name: "User1",
   id: 100
@@ -58,58 +59,20 @@ describe("authenticate users", function(){
         });
       })
 
-      xdescribe("pass message from user1 into room", function(){
-        var message="";
+      describe("pass message from user1 into room", function(){
+        var message;
         before(function(done){
           sock2.on("message", function(data){
-            message+=data;
+            message = JSON.parse(data);
           });
           sock1.serve('CREATE /api/room/' + room._id + '/messages',{ message:"testMessage"}, done);
         })
-        it('',function(){})
-      });
-    
-    });
-
-
- 
-  })
-  xdescribe("create room by last user", function(){
-    var roomId;
-    before(function(done){
-      request.post(utils.url('/api/rooms'),{form:{name:"testName"}, jar:true}, function(err, request, body){
-        expect(request).to.have.property("statusCode", 200);
-        roomId = JSON.parse(body)._id;
-        done();
-      })
-    })
-
-    describe("join room by user1 and user2", function(){
-      before(function(done){
-        sock1.send(JSON.stringify({t:"sys",r:roomId,m:"joinRoom"}));
-        sock2.send(JSON.stringify({t:"sys",r:roomId,m:"joinRoom"}));
-        setTimeout(done, 200);
-      })
-
-      describe("pass message from user1 into room", function(){
-        var message="";
-        before(function(done){
-          sock2.on("message", function(data){
-            message+=data;
-          });
-          sock1.send(JSON.stringify({t:'msg',r:roomId,m:"testMessage"}));
-          setTimeout(done, 200);
-        })
-
-        it('will survive', function(done){
-          expect(JSON.parse(message)).to.have.property("m", "testMessage");
+        it('the message should be passed', function(done){
+          expect(message).to.have.property("message", "testMessage");
           done();
         })
-      })
-      
-    })
-    
+        //TODO:check the message was saved in DB
+      });
+    });
   })
-  
-
 })
