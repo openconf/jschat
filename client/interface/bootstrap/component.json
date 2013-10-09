@@ -1,24 +1,27 @@
 {
     "name": "bootstrap",
+    "main": "bootstrap.js",
 
     "scripts": [
-        "affix.js",
-        "alert.js",
-        "button.js",
-        "carousel.js",
-        "collapse.js",
-        "dropdown.js",
-        "modal.js",
-        "popover.js",
-        "scrollspy.js",
-        "tab.js",
-        "tooltip.js",
-        "transition.js"
+        "bootstrap.js",
+
+        "scripts/affix.js",
+        "scripts/alert.js",
+        "scripts/button.js",
+        "scripts/carousel.js",
+        "scripts/collapse.js",
+        "scripts/dropdown.js",
+        "scripts/modal.js",
+        "scripts/popover.js",
+        "scripts/scrollspy.js",
+        "scripts/tab.js",
+        "scripts/tooltip.js",
+        "scripts/transition.js"
     ],
 
     "styles": [
-        "styles/bootstrap.less",
-        "styles/theme.less"
+        "bootstrap.less",
+        "theme.less"
     ],
 
     "fonts": [

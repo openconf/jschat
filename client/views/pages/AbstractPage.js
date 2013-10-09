@@ -6,7 +6,7 @@ module.exports = Backbone.Module('JSChat.views.pages.AbstractPage', function () 
     ////////////////////
 
     return AbstractCompositeView.extend({
-        el: document.body,
+        el: 'body > .container',
 
         constructor: function (options) {
             this.initialize = _.wrap(this.initialize, function (fn, options) {
