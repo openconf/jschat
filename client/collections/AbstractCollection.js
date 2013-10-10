@@ -1,16 +1,12 @@
-module.exports = Backbone.Module('JSChat.collections.AbstractCollection', function () {
+module.exports = (function () {
     'use strict';
 
     var BBCollection = Backbone.Collection;
 
     ////////////////////
 
-    require('../models/AbstractModel.js'); // JSChat.models.AbstractModel
-
-    ////////////////////
-
     return BBCollection.extend({
-        model: JSChat.models.AbstractModel,
+        model: require('../models/AbstractModel.js'),
 
         constructor: function (models, options) {
             this.initialize = _.wrap(this.initialize, function (fn, models, options) {
@@ -20,4 +16,4 @@ module.exports = Backbone.Module('JSChat.collections.AbstractCollection', functi
             BBCollection.call(this, models, options);
         }
     });
-});
+}());

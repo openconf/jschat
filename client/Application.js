@@ -1,4 +1,4 @@
-module.exports = Backbone.Module('JSChat.Application', function () {
+module.exports = (function () {
     'use strict';
 
     var BBHistory = Backbone.history, jQuery = Backbone.$;
@@ -18,15 +18,17 @@ module.exports = Backbone.Module('JSChat.Application', function () {
             jQuery.when.apply(jQuery, deferreds).then(doneFilter);
 
             return this;
-        })
-    }, {
+        }),
+
         create: function (options) {
             _.extend(this, {
                 bootstrap: options.bootstrap,
                 routers: options.routers
             });
 
+            this.start(options);
+
             return this;
         }
     });
-});
+}());

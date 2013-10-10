@@ -5,8 +5,9 @@
     "scripts": [
         "backbone.databinding.js"
     ],
+
     "dependencies": {
-      "edjafarov/backbone": "*",
-      "edjafarov/underscore": "*"
+        "edjafarov/backbone": "*",
+        "edjafarov/underscore": "*"
     }
 }

@@ -9,13 +9,23 @@ module.exports = (function () {
 
     ////////////////////
 
-    require('./routers/HomePageRouter.js'); // JSChat.routers.HomePageRouter
+    var HomePageRouter = require('./routers/HomePageRouter.js'),
+        RoomPageRouter = require('./routers/RoomPageRouter.js'),
+        UserPageRouter = require('./routers/UserPageRouter.js');
 
     ////////////////////
 
-    return Application.create({
+    var application = Application.create({
+        bootstrap: {
+            // Models and collection which must be loaded before application started
+        },
+
         routers: {
-            homePageRouter: new JSChat.routers.HomePageRouter()
+            homePageRouter: new HomePageRouter(),
+            roomPageRouter: new RoomPageRouter(),
+            userPageRouter: new UserPageRouter()
         }
-    }).start();
+    });
+
+    return application;
 }());
