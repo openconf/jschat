@@ -20,3 +20,13 @@ $ npm run setup
 * npm run watch - watches client folder changes and refresh browser - server is also running
 * npm run compilemob - same for mobile
 * npm run watchmod - same for mobile
+
+## Contributors
+Ordered by date of first contribution.
+[Auto-generated](http://github.com/dtrejo/node-authors) on Thu Oct 10 2013 05:59:08 GMT-0300 (BRT).
+
+- [Eldar Djafarov aka `edjafarov`](https://github.com/edjafarov)
+- [Dmitriy Kulichkin aka `dkulichkin`](https://github.com/dkulichkin)
+- [Dmytro Nemoga aka `DreamTheater`](https://github.com/DreamTheater)
+ 
+
