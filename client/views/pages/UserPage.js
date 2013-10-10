@@ -1,4 +1,4 @@
-module.exports = Backbone.Module('JSChat.views.pages.UserPage', function () {
+module.exports = (function () {
     'use strict';
 
     var AbstractPage = require('./AbstractPage.js');
@@ -8,4 +8,4 @@ module.exports = Backbone.Module('JSChat.views.pages.UserPage', function () {
     return AbstractPage.extend({
         template: require('./UserPage.html')
     });
-});
+}());

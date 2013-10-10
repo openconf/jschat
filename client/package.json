@@ -21,7 +21,6 @@
         "local": [
             "backbone.composite",
             "backbone.databinding",
-            "backbone.module",
             "backbone.schema",
             "bootstrap",
             "globalize",

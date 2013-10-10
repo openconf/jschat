@@ -1,4 +1,4 @@
-module.exports = Backbone.Module('JSChat.views.AbstractView', function () {
+module.exports = (function () {
     'use strict';
 
     var BBView = Backbone.View;
@@ -24,4 +24,4 @@ module.exports = Backbone.Module('JSChat.views.AbstractView', function () {
             return this;
         }
     });
-});
+}());

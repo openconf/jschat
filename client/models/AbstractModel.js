@@ -1,4 +1,4 @@
-module.exports = Backbone.Module('JSChat.models.AbstractModel', function () {
+module.exports = (function () {
     'use strict';
 
     var BBModel = Backbone.Model;
@@ -18,4 +18,4 @@ module.exports = Backbone.Module('JSChat.models.AbstractModel', function () {
             BBModel.call(this, attributes, options);
         }
     });
-});
+}());

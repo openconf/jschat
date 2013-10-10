@@ -1,4 +1,4 @@
-module.exports = Backbone.Module('JSChat.routers.AbstractRouter', function () {
+module.exports = (function () {
     'use strict';
 
     var BBRouter = Backbone.Router;
@@ -14,4 +14,4 @@ module.exports = Backbone.Module('JSChat.routers.AbstractRouter', function () {
             BBRouter.call(this, options);
         }
     });
-});
+}());

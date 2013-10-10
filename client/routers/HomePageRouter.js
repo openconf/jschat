@@ -1,21 +1,26 @@
-module.exports = Backbone.Module('JSChat.routers.HomePageRouter', function () {
+module.exports = (function () {
     'use strict';
 
     var AbstractRouter = require('./AbstractRouter.js');
 
     ////////////////////
 
-    require('../views/pages/HomePage.js'); // JSChat.views.pages.HomePage
+    var HomePage = require('../views/pages/HomePage.js');
 
     ////////////////////
 
     return AbstractRouter.extend({
         routes: {
-            '(/)': 'index'
+            // FIXME: Redirection should be configured on web-server
+            '': function () {
+                this.navigate('home', true);
+            },
+
+            'home': 'index'
         },
 
         index: function () {
-            new JSChat.views.pages.HomePage().render();
+            var homePage = new HomePage().render();
         }
     });
-});
+}());

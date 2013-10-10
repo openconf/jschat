@@ -13,7 +13,6 @@ module.exports = (function () {
     },
         require('backbone.composite'),
         require('backbone.databinding'),
-        require('backbone.module'),
         require('backbone.schema')
     );
 

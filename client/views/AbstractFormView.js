@@ -1,4 +1,4 @@
-module.exports = Backbone.Module('JSChat.views.AbstractFormView', function () {
+module.exports = (function () {
     'use strict';
 
     var AbstractModelView = require('./AbstractModelView.js');
@@ -26,4 +26,4 @@ module.exports = Backbone.Module('JSChat.views.AbstractFormView', function () {
             return this;
         }
     });
-});
+}());
