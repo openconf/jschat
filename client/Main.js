@@ -17,7 +17,7 @@ module.exports = (function () {
 
     var application = Application.create({
         bootstrap: {
-            // Models and collection which must be loaded before application started
+            // Models and collections which must be loaded before application started
         },
 
         routers: {
