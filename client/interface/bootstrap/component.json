@@ -4,7 +4,6 @@
 
     "scripts": [
         "bootstrap.js",
-
         "scripts/affix.js",
         "scripts/alert.js",
         "scripts/button.js",
