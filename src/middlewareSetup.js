@@ -61,13 +61,17 @@ module.exports = function(app){
 
   app.get('/auth/github', app.access.free,
     passport.authenticate('github'),
-    function(req,res){})
+    function(req,res){});
   app.get('/auth/github/callback', app.access.free,
     passport.authenticate('github', {failureRedirect:"/auth/linkedin/failure"}),
     function(req, res, next){
       res.redirect('/');
     }
-  )
+  );
+
+  app.get('/', function(req, res) {
+    res.send(200);
+  })
 
 
 };

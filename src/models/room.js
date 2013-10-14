@@ -19,12 +19,12 @@ module.exports = function(db){
     getById: function(id, cb){
       db.room.findOne({_id: mongojs.ObjectId(id)}, cb);
     },
-    getAll: function(cb){
-      db.room.find().toArray(cb);
+    getAll: function(ownerId, cb){
+      db.room.find({owner: ownerId}).toArray(cb);
     },
     updateById: function(id, room, cb){
       room._id = mongojs.ObjectId(id);
-      db.room.update({_id: room._id}, room, function(err, count) {
+      db.room.update({_id: room._id}, room, function(err) {
         cb(err, room);
       });
     },
