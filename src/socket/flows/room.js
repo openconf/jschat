@@ -29,7 +29,7 @@ function leaveRoom(socket, data, next){
   //remove from socket
 }
 
-function createRoom(socket, data){
+function createRoom(socket, data, next){
   var newRoom = _(data).pick("description", "name");
   newRoom.owner = socket.user._id;
 
@@ -50,7 +50,7 @@ function readRooms(socket, data, next){
   });
 }
 
-function readRoom(socket){
+function readRoom(socket, data, next){
   Room.getById(socket.params['id'], function(err, room, next){
     if(err){
       return next(err);
