@@ -7,7 +7,7 @@ module.exports = (function () {
 
     return _.extend(BBHistory, {
         start: _.wrap(BBHistory.start, function (fn, options) {
-            var deferreds = _.map(this.bootstrap, function (reference) {
+            var promises = _.map(this.bootstrap, function (reference) {
                     return reference.fetch();
                 }),
 
@@ -15,20 +15,13 @@ module.exports = (function () {
                     fn.call(this, options);
                 }, this);
 
-            jQuery.when.apply(jQuery, deferreds).then(doneFilter);
+            jQuery.when.apply(jQuery, promises).then(doneFilter);
 
             return this;
         }),
 
-        create: function (options) {
-            _.extend(this, {
-                bootstrap: options.bootstrap,
-                routers: options.routers
-            });
-
-            this.start(options);
-
-            return this;
+        create: function (configuration) {
+            return _.extend(this, configuration).start();
         }
     });
 }());
