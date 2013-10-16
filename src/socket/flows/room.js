@@ -5,6 +5,7 @@ var UserModel = require('../../models').user;
 module.exports = function(server){
   server.sock.when('CREATE /api/rooms', createRoom);
   server.sock.when('READ /api/rooms', readRooms);
+  server.sock.when('READ /api/roomsbyowner/', readRoomsByOwner);
   server.sock.when('READ /api/room/:id', readRoom);
   server.sock.when('UPDATE /api/room/:id', server.sock.can('updateRoom'), updateRoom);
   server.sock.when('DELETE /api/room/:id', server.sock.can('deleteRoom'), deleteRoom);
@@ -33,7 +34,7 @@ function createRoom(socket, data, next){
   var newRoom = _(data).pick("description", "name");
   newRoom.owner = socket.user._id;
 
-  Room.create(newRoom, function(err, room, next){
+  Room.create(newRoom, function(err, room){
     if(err){
       return next(err);
     }
@@ -42,7 +43,16 @@ function createRoom(socket, data, next){
 }
 
 function readRooms(socket, data, next){
-  Room.getAll(socket.user._id, function(err, rooms, next) {
+  Room.getAll(function(err, rooms) {
+    if(err){
+      return next(err);
+    }
+    socket.json({statusCode: 200, rooms: rooms});
+  });
+}
+
+function readRoomsByOwner(socket, data,next) {
+  Room.getByOwnerId(socket.user._id, function(err, rooms) {
     if(err){
       return next(err);
     }
@@ -51,7 +61,7 @@ function readRooms(socket, data, next){
 }
 
 function readRoom(socket, data, next){
-  Room.getById(socket.params['id'], function(err, room, next){
+  Room.getById(socket.params['id'], function(err, room){
     if(err){
       return next(err);
     }

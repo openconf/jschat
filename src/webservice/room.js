@@ -28,7 +28,7 @@ function getRoomById(req, res, next){
 }
 
 function getRooms(req, res, next) {
-  Room.getAll(req.user._id, function(err, rooms){
+  Room.getAll(function(err, rooms){
     rooms && rooms.length ? res.json(rooms) : res.status(404).send('Not found');
   });
 }

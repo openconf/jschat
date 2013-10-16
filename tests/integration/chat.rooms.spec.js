@@ -27,7 +27,7 @@ before(function(done){
  * An identic socket-based suite is below...
 */
 
-describe("authenticate user", function(){
+xdescribe("authenticate user", function(){
   var u;
   before(function(done){
     u = utils.authenticate(user1, done);
@@ -134,12 +134,9 @@ describe("authenticate user", function(){
 });
 
 
-/*
- *
+/**
  * A new suite for testing rooms handling logic, based on sockets
- *
  */
-
 describe("Socket based authenticate users", function(){
   var sock1;
   before(function(done){
