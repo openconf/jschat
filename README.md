@@ -1,21 +1,36 @@
-[![Build Status](https://travis-ci.org/openconf/jschat.png?branch=master)](https://travis-ci.org/openconf/jschat)
+[travis-badge]: https://travis-ci.org/openconf/jschat.png
+[travis-link]: https://travis-ci.org/openconf/jschat
+
+[gemnasium-badge]: https://gemnasium.com/openconf/jschat.png
+[gemnasium-link]: https://gemnasium.com/openconf/jschat
+
 # JSChat
+
+[![Build Status][travis-badge]][travis-link]
+[![Dependency Status][gemnasium-badge]][gemnasium-link]
+
 The JavaScript community chat.
 
 ## Installation
-`node 0.10.17`, `npm 1.3.8` checked!
+Prerequisites:
+  - `node` ~ `0.10.17`
+  - `npm` ~ `1.3.8`
 
-```
-$ sudo npm install;
-$ npm run setup
-```
+Five steps to start developing:
+  - `npm install`
+  - `npm run setup`
+  - `npm run compile` or `npm run compilemob`
+  - `npm run watch` or `npm run watchmob`
+  - Go to [http://localhost:8080](http://localhost:8080)
+
+If you have any troubles, try to do the same with administrator permissions.
 
 ## Scripts
   - `npm start` - just starts server
   - `npm test` - runs server tests
   - `npm run compile` - compiles client folder
-  - `npm run watch` - watches client folder changes and refresh browser (server is also running)
   - `npm run compilemob` - same for mobile
+  - `npm run watch` - watches client folder changes and refresh browser (server is also running)
   - `npm run watchmod` - same for mobile
 
 ## Contributors
