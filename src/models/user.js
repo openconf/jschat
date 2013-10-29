@@ -31,6 +31,15 @@ module.exports = function(db){
         cb(null, users[0]);
       }
     },
+    getAllUsers: function(cb) {
+      db.user.find().toArray(cb);
+    },
+    updateById: function(id, updates, cb) {
+      delete updates._id;
+      db.user.update({_id: mongojs.ObjectId(id)}, updates, function(err) {
+        cb(err, updates);
+      });
+    },
     user: function(user){
       var u = {
         joinRoom: function(roomId, cb){
@@ -40,8 +49,16 @@ module.exports = function(db){
                             { $push: {'rooms' : roomId}}, joinUserObjectRoom(user, roomId, cb));
         },
         edit: function(updates, cb){
-          db.user.update({_id: mongojs.ObjectId(user._id)}, 
-                            updates, joinUserObjectRoom(user, roomId, cb));
+          /*db.user.update({_id: mongojs.ObjectId(user._id)},
+                            updates, joinUserObjectRoom(user, roomId, cb));*/
+          delete updates._id;
+          db.user.update({_id: mongojs.ObjectId(user._id)}, updates, function(err) {
+            cb(err, updates);
+          });
+
+        },
+        delete: function(cb) {
+          db.user.remove({_id: mongojs.ObjectId(user._id)}, cb);
         }
       }
       return u;
