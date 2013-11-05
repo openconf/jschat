@@ -1,36 +1,28 @@
 {
-    "name": "JSChat",
-    "version": "0.0.1",
-    "description": "The client part of JSChat project.",
-    "author": "Eldar Djafarov <djkojb@gmail.com>",
-    "license": "MIT",
-
+  "name": "JSChat",
+  "version": "0.0.1",
+  "description": "The client part of JSChat project.",
+  "author": "Eldar Djafarov <djkojb@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "component-less": "https://github.com/edjafarov/component-less/tarball/master",
+    "component-jsx": "latest"
+  },
+  "compy": {
+    "main": "Main.js",
     "dependencies": {
-        "component-less": "https://github.com/edjafarov/component-less/tarball/master"
+      "edjafarov/socker": "*",
+      "edjafarov/underscore": "*",
+      "learnboost/engine.io-client": "*",
+      "paulmillr/exoskeleton": "master"
     },
-
-    "compy": {
-        "main": "Main.js",
-
-        "dependencies": {
-            "edjafarov/backbone": "*",
-            "edjafarov/socker": "*",
-            "edjafarov/underscore": "*",
-            "learnboost/engine.io-client": "*"
-        },
-
-        "local": [
-            "backbone.composite",
-            "backbone.databinding",
-            "backbone.schema",
-            "bootstrap",
-            "globalize",
-            "jquery"
-        ],
-
-        "paths": [
-            "interface",
-            "libraries"
-        ]
-    }
+    "local": [
+      "bootstrap",
+      "IScroll"
+    ],
+    "paths": [
+      "interface",
+      "libraries"
+    ]
+  }
 }

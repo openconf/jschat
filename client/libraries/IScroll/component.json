@@ -1,0 +1,7 @@
+{
+  "name": "IScroll",
+  "description": "component-bootstrap",
+  "version": "0.0.1",
+  "scripts": ["iscroll.js"],
+  "main":"iscroll.js"
+}

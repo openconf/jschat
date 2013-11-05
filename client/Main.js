@@ -1,31 +1,15 @@
-module.exports = (function () {
-    'use strict';
-
-    require('./Environment.js');
-
-    ////////////////////
-
-    var Application = require('./Application.js');
-
-    ////////////////////
-
-    var HomePageRouter = require('./routers/HomePageRouter.js'),
-        RoomPageRouter = require('./routers/RoomPageRouter.js'),
-        UserPageRouter = require('./routers/UserPageRouter.js');
-
-    ////////////////////
-
-    var application = Application.create({
-        bootstrap: {
-            // Models and collections which must be loaded before application started
-        },
-
-        routers: {
-            homePageRouter: new HomePageRouter(),
-            roomPageRouter: new RoomPageRouter(),
-            userPageRouter: new UserPageRouter()
-        }
+var backbone = require('exoskeleton');
+var _ = require('underscore');
+var app = function(){
+}
+_.extend(app,{
+  router: require('./router.js'),
+  run: function () {
+    backbone.history.start({
+      pushState: false,
+      root: '/'
     });
-
-    return application;
-}());
+  }
+})
+app.run();
+module.exports = app;
