@@ -4,6 +4,7 @@ var express = require('express');
 var compy = require('compy');
 var errors = require('./errors.js');
 
+
 var GitHubStrategy = require('passport-github').Strategy;
 var util = require('util');
 var fs = require('fs');
@@ -37,23 +38,34 @@ module.exports = function(app){
     User.getById(id, done);
   });
 
-
   //compress all output
 //  app.use(express.compress());
-
   // Serve up the favicon
 //  app.use(express.favicon(nconf.get('server:clientDistFolder') + '/favicon.ico'));
+  nconf.set('sessions',{
+    parser: express.cookieParser(),
+    key: 'sid',
+    secret: nconf.get('security:salt')
+  })
 
   app.use(express.logger());                                  // Log requests to the console
   app.use(express.bodyParser());                              // Extract the data from the body of the request - this is needed by the LocalStrategy authenticate method
-  app.use(express.cookieParser());  // Hash cookies with this secret
-  app.use(express.session({secret:nconf.get('security:salt')}));                           // Store the session in the (secret) cookie
+  app.use(nconf.get('sessions:parser'));  // Hash cookies with this secret
+  
+  app.use(express.session({
+    secret: 'secret',
+    store: app.ms,
+    key: 'sid'
+  }));                           // Store the session in the (secret) cookie
   app.use(passport.initialize());
   app.use(passport.session());
 
   //put the user inside request
   app.use(function(req,res,next){
-    if(req.user) console.log("UserID: " + req.user._id)
+    if(req.user) {
+      console.log("UserID: " + req.user._id)
+      req.session.user = req.user;
+    }
     next();
   });
  

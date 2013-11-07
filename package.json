@@ -31,7 +31,9 @@
     "grunt-cli": "~0.1.9",
     "grunt-mocha-test": "~0.6.3",
     "nock": "~0.22.1",
-    "compy": "~0.1.13",
-    "socker": "~0.1.2"
+    "compy": "~0.1.22",
+    "socker": "~0.1.2",
+    "engine.io-session": "0.0.3",
+    "connect": "~2.11.0"
   }
 }

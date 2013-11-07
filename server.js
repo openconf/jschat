@@ -14,7 +14,8 @@ nconf.set("server:hostname", nconf.get("server:port")?nconf.get("server:host") +
 // Setup app
 var express = require('express');
 var app = express();
-
+var MemoryStore = new express.session.MemoryStore();
+app.ms = MemoryStore;
 require('./src/middleware/authMiddleware.js')(app);
 
 require('./src/middlewareSetup.js')(app);
@@ -42,6 +43,6 @@ app.use(require('./src/middleware/errorHandling.js'));
 var server = http.createServer(app);
 server.listen(nconf.get('server:port'));
 console.log('Angular App Server - listening on port: ' + nconf.get('server:port'));
-
+server.ms = MemoryStore;
 require('./src/socket/engine.js')(server);
 

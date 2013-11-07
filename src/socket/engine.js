@@ -1,5 +1,7 @@
 var engine = require('engine.io');
 var signer = require('secure.me')({salt:nconf.get('security:salt')}).signer({salt:nconf.get('security:salt')});
+var eioSession = require('engine.io-session');
+
 
 var socker = require('socker');
 
@@ -9,6 +11,7 @@ var UserModel = require('../models').user;
 var rooms = require('./rooms.js');
 
 module.exports = function(server){
+  var ms = server.ms;
   server = engine.attach(server);
   
   server = rooms(server);
@@ -27,12 +30,23 @@ module.exports = function(server){
   
   server.sock.use(logger);
   server.sock.use(authorization);
-  
+  server.sock.use(function(err, socket, data, next){
+    socket.json({
+      type: "ERROR",
+      err: err,
+      data: data});
+  });
   require('./flows/room.js')(server);
   require('./flows/messaging.js')(server);
   require('./flows/user.js')(server);
-
-  server.on('connection', function(socket){
+  server.on('connection', eioSession({
+    cookieParser:nconf.get('sessions:parser'),
+    store: ms,
+    key: 'sid',
+    secret: 'secret' 
+  }));
+  server.on('session', function(socket, session){
+    socket.user = session.user;
     socker.attach(socket);
     // TODO: change status of a user to online
     // TODO: socket on close

@@ -12,17 +12,22 @@
     "main": "Main.js",
     "dependencies": {
       "edjafarov/socker": "*",
+      "edjafarov/bbsocker.sync": "*",
       "edjafarov/underscore": "*",
       "learnboost/engine.io-client": "*",
       "paulmillr/exoskeleton": "master"
     },
     "local": [
       "bootstrap",
-      "IScroll"
+      "IScroll",
+      "davy"
     ],
     "paths": [
       "interface",
       "libraries"
+    ],
+    "files":[
+      "./libraries/React/react.js"
     ]
   }
 }
