@@ -1,6 +1,8 @@
 /** @jsx React.DOM */
 var backbone = require('exoskeleton');
-var MeModel = require('./models/Me');
+var Me = require('./models/Me');
+//var RoomModel = require('./models/Room');
+
 var router = backbone.Router.extend({
   routes: {
     '': 'main',
@@ -12,20 +14,17 @@ var router = backbone.Router.extend({
   },
   room: function (id){
     console.log('room', id);
-    var me = new MeModel();
-    me.fetch({
+    
+    Me.fetch({
       success: function(){
-        console.log(arguments);
+        var ChatRoom = require('./reacts/ChatRoom');
+        var t = React.renderComponent(<ChatRoom me={Me}/>, document.body.children[0]);
       },
       error:function(model, err){
         var Login = require('./reacts/Login');
         React.renderComponent(<Login/>, document.body.children[0]);
       }
     });
-    
-    var ChatRoom = require('./reacts/ChatRoom');
-    var t = React.renderComponent(<ChatRoom/>, document.body.children[0]);
-    console.log(t);
   }
 });
 module.exports = new router();
