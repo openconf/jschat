@@ -13,7 +13,7 @@
     "dependencies": {
       "edjafarov/socker": "*",
       "edjafarov/bbsocker.sync": "*",
-      "edjafarov/underscore": "*",
+      "jashkenas/underscore": "*",
       "learnboost/engine.io-client": "*",
       "paulmillr/exoskeleton": "master"
     },
