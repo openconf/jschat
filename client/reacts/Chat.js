@@ -3,11 +3,17 @@ var ParticipantsList = require('./ParticipantsList');
 var MessagesList = require('./MessagesList');
 var MessageBox = require('./MessageBox');
 
+
+var Messages = MessagesList(function(item){
+  return <div>{item.text}</div>
+})
+
 module.exports = React.createClass({
   render: function(){
+    console.log(this.props);
     return <div>
       <ParticipantsList/>
-      <MessagesList/>
+      <Messages items={this.props.messages}/>
       <MessageBox/>
     </div>;
   }

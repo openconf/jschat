@@ -6,11 +6,11 @@ module.exports = function(server){
   server.sock.when('CREATE /api/rooms', createRoom);
   server.sock.when('READ /api/rooms', readRooms);
   server.sock.when('READ /api/roomsbyowner/', readRoomsByOwner);
-  server.sock.when('READ /api/room/:id', readRoom);
-  server.sock.when('UPDATE /api/room/:id', server.sock.can('updateRoom'), updateRoom);
-  server.sock.when('DELETE /api/room/:id', server.sock.can('deleteRoom'), deleteRoom);
-  server.sock.when('JOIN /api/room/:id', joinRoom);
-  server.sock.when('LEAVE /api/room/:id', leaveRoom);
+  server.sock.when('READ /api/rooms/:id', readRoom);
+  server.sock.when('UPDATE /api/rooms/:id', server.sock.can('updateRoom'), updateRoom);
+  server.sock.when('DELETE /api/rooms/:id', server.sock.can('deleteRoom'), deleteRoom);
+  server.sock.when('JOIN /api/rooms/:id', joinRoom);
+  server.sock.when('LEAVE /api/rooms/:id', leaveRoom);
 }
 
 function joinRoom(socket, data, next){
@@ -31,7 +31,9 @@ function leaveRoom(socket, data, next){
 }
 
 function createRoom(socket, data, next){
+  console.log(data);
   var newRoom = _(data).pick("description", "name");
+  console.log(newRoom);
   newRoom.owner = socket.user._id;
 
   Room.create(newRoom, function(err, room){

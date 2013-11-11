@@ -174,7 +174,7 @@ describe("Socket based authenticate users", function(){
       var getRoom;
 
       before(function(done){
-        sock1.serve('READ /api/room/' + room._id, function(err, data){
+        sock1.serve('READ /api/rooms/' + room._id, function(err, data){
           expect(err).to.be.not.ok;
           getRoom = data;
           done();
@@ -198,9 +198,9 @@ describe("Socket based authenticate users", function(){
       var getRoom;
 
       before(function(done){
-        sock1.serve('UPDATE /api/room/' + room._id, _.extend(roomMock, {name: 'newName'}), function(err, data){
+        sock1.serve('UPDATE /api/rooms/' + room._id, _.extend(roomMock, {name: 'newName'}), function(err, data){
           expect(err).to.be.not.ok;
-          sock1.serve('READ /api/room/' + room._id, function(err, data){
+          sock1.serve('READ /api/rooms/' + room._id, function(err, data){
             expect(err).to.be.not.ok;
             getRoom = data;
             done();
@@ -219,10 +219,10 @@ describe("Socket based authenticate users", function(){
       var statusCode;
 
       before(function(done){
-        sock1.serve('DELETE /api/room/' + room._id, function(err, data){
+        sock1.serve('DELETE /api/rooms/' + room._id, function(err, data){
           expect(err).to.be.not.ok;
           expect(data).to.have.property("statusCode", 200);
-          sock1.serve('READ /api/room/' + room._id, function(err, data){
+          sock1.serve('READ /api/rooms/' + room._id, function(err, data){
             expect(err).to.be.not.ok;
             expect(data).to.have.property("statusCode");
             statusCode = data.statusCode;
