@@ -14,7 +14,7 @@ module.exports = React.createClass({
     return <div>
       <ParticipantsList/>
       <Messages items={this.props.messages}/>
-      <MessageBox/>
+      <MessageBox chat={this.props.chat}/>
     </div>;
   }
 })

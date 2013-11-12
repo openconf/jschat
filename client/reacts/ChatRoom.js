@@ -15,10 +15,12 @@ module.exports = React.createClass({
   },
   getMessages: function(){
     var messages = new MessagesCollection([], {roomId: this.props.roomId});
+    var that = this;
     messages.fetch({
-      success:function(model, data){
-        this.setState({messages: data.messages});
-      }.bind(this)
+      success: function(model, data){
+        console.log(data);
+        that.setState({messages: data.messages});
+      }
     })
   },
   getInitialState: function(){
