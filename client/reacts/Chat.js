@@ -10,11 +10,6 @@ var Messages = MessagesList(function(item){
 
 module.exports = React.createClass({
   render: function(){
-    console.log(this.props);
-    return <div>
-      <ParticipantsList/>
-      <Messages items={this.props.messages}/>
-      <MessageBox chat={this.props.chat}/>
-    </div>;
+    return ;
   }
 })

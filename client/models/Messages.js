@@ -8,7 +8,7 @@ var MessageCollection = Exo.Collection.extend({
   initialize: function(models, options){
     this.roomId = options.roomId;
   },
-  model: MessageModel,
+  model: MessageModel
 })
 
 module.exports = MessageCollection;

@@ -9,7 +9,7 @@ module.exports = React.createClass({
   fetchRooms: function(){
     rooms.fetch({
       success:function(model, data){
-        this.setState({rooms: data.rooms})
+        this.setState({rooms: data})
       }.bind(this)
     })
   },

@@ -18,7 +18,7 @@ function readMessages(socket, data, next){
   //TODO: read messages from DB 
   //limit em somehow
   Message.room(socket.params.id).getMessages(function(err, messages){
-    socket.json({messages:messages});
+    socket.json(messages);
   });
 }
 
@@ -54,6 +54,7 @@ function deleteMessage(socket, data, next){
 
 function roomBroadcast(socket, data, next){
   //TODO: broadcast cmd to Message with id from socket.params['id']
-  socket.to(socket.params['id']).send(JSON.stringify(data));
+  console.log("BROADCASTING");
+  //socket.to(socket.params['id']).send(JSON.stringify(data));
   socket.json({});
 }

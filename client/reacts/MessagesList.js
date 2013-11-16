@@ -7,6 +7,7 @@ module.exports = function(itemClass){
     iscroll: null,
     scrollDirectionDown: true,
     scroll: function(e){
+      if(this.autoscrolling) return;
       this.scrollDirectionDown = e.y < this.lastScrollPosition
 
       if(this.props.onTop && e.y == 0 ){
@@ -25,21 +26,29 @@ module.exports = function(itemClass){
         this.props.onGetToTop(e);
       }
     },
-    scrollToBottom: function(){
-      this.iscroll.scrollTo(0, this.iscroll.maxScrollY, 200);
+    scrollToBottom: function(time){
+      this.autoscrolling = true;
+      this.iscroll.scrollTo(0, this.iscroll.maxScrollY, time);
     },
     componentDidMount: function(){
       this.iscroll = new IScroll(this.getDOMNode(), {
         mouseWheel: true,
         scrollbars: true
       });
+      
+      /*
       this.lastScrollHeight = this.iscroll.scrollerHeight;
-      var checkPosition = setInterval(function(){
-        if(this.iscroll.y !== this.lastScrollPosition){
-          this.scroll.call(this, this.iscroll);
+      /*var checkPosition = setInterval(function(){
+        if(this.iscroll.y !== this.lastScrollPosition && !this.autoscrolling){
+          //this.scroll.call(this, this.iscroll);
           this.lastScrollPosition = this.iscroll.y;
         }
       }.bind(this), 30);
+      this.iscroll.on('scrollEnd', function(){
+        if(!this.autoscrolling) return;
+        this.autoscrolling = false;
+        this.lastScrollPosition = this.iscroll.y;
+      }.bind(this));*/
     },
     lastScrollHeight: null,
     componentDidUpdate:function(){
@@ -55,7 +64,7 @@ module.exports = function(itemClass){
     render: function() {
       return <div onScroll ={this.notify} style={{height: "100px",width: "300px", 'overflow-y':'scroll'}}>
         <div id="scroller" >
-          {this.props.items.map(itemClass)}
+          {this.props.items && this.props.items.map(itemClass)}
         </div>
       </div>;
     }

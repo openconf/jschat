@@ -1,45 +1,57 @@
 /** @jsx React.DOM */
 var ContactList = require('./ContactList');
-var Chat = require('./Chat');
-var RoomModel = require('../models/Room');
-var MessagesCollection = require('../models/Messages');
+var ParticipantsList = require('./ParticipantsList');
+var MessagesList = require('./MessagesList')(function(item){
+    return <div>{item.text}</div>
+  });
+var MessageModel = require('../models/Message');
 
 module.exports = React.createClass({
-  getChat: function(){
-    var room = new RoomModel({id:this.props.roomId});
-    room.fetch({
-      success:function(model, room){
-        this.setState({chat: room});
+  mixins: [require('./BackboneMixin')],
+  getInitialState: function(){
+    return {
+      textBoxValue: ''
+    }
+  },
+  handleTyping: function(evt){
+    this.setState({textBoxValue: evt.target.value});
+  },
+  sendMessage: function(){
+    this.props.messages.create(new MessageModel({
+      text: this.state.textBoxValue
+      }),{
+      success: function(){
+        this.setState({textBoxValue:''});
+        this.refs.messagesList.scrollToBottom(200);
+      }.bind(this)
+    });
+  },
+  getBackboneModels : function(){
+    return [this.props.room, this.props.messages]
+  },
+  componentDidMount: function(){
+    this.props.room.fetch()
+    this.props.messages.fetch({
+      success: function(){
+        this.refs.messagesList.scrollToBottom();
       }.bind(this)
     })
   },
-  getMessages: function(){
-    var messages = new MessagesCollection([], {roomId: this.props.roomId});
-    var that = this;
-    messages.fetch({
-      success: function(model, data){
-        console.log(data);
-        that.setState({messages: data.messages});
-      }
-    })
-  },
-  getInitialState: function(){
-    this.getChat();
-    this.getMessages();
-    return {
-      chat: {
-        id: this.props.roomId
-      },
-      messages: [],
-      me: this.props.me
-    }
-  },
   render: function(){
+    var rawMessages = this.props.messages && 
+      this.props.messages.toJSON();
+    rawMessages = rawMessages  || [];
     return <div>
       <div>Hi, {this.props.me.get('github').displayName}</div>
-      <h3>{this.state.chat.name}</h3>
+      <h3>{this.props.room.get('name')}</h3>
       <ContactList/>
-      <Chat chat = {this.state.chat} messages = {this.state.messages}/>
+      <div>
+        <ParticipantsList/>
+        <MessagesList items={rawMessages} ref="messagesList"/>
+        <textarea onChange={this.handleTyping} value={this.state.textBoxValue}></textarea>
+        <button onClick={this.sendMessage}>Send</button>
+      </div>
     </div>
+
   }
 })

@@ -49,7 +49,7 @@ function readRooms(socket, data, next){
     if(err){
       return next(err);
     }
-    socket.json({statusCode: 200, rooms: rooms});
+    socket.json(rooms);
   });
 }
 

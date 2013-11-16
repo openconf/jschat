@@ -17,7 +17,12 @@ var router = backbone.Router.extend({
     Me.fetch({
       success: function(){
         var ChatRoom = require('./reacts/ChatRoom');
-        var t = React.renderComponent(<ChatRoom me={Me} roomId = {id}/>, document.body.children[0]);
+        var Room = require('./models/Room');
+        var Messages = require('./models/Messages');
+        var t = React.renderComponent(<ChatRoom me={Me} 
+          room = {new Room({id : id})}
+          messages = {new Messages(null, {roomId: id})}/>,
+        document.body.children[0]);
       },
       error:function(model, err){
         var Login = require('./reacts/Login');
