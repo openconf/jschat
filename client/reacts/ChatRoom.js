@@ -45,11 +45,13 @@ module.exports = React.createClass({
       <div>Hi, {this.props.me.get('github').displayName}</div>
       <h3>{this.props.room.get('name')}</h3>
       <ContactList/>
-      <div>
-        <ParticipantsList/>
-        <MessagesList items={rawMessages} ref="messagesList"/>
-        <textarea onChange={this.handleTyping} value={this.state.textBoxValue}></textarea>
-        <button onClick={this.sendMessage}>Send</button>
+      <div className="chat">
+        <ParticipantsList className="participants"/>
+        <MessagesList items={rawMessages} ref="messagesList" className="messages"/>
+        <div className="form">
+          <textarea onChange={this.handleTyping} value={this.state.textBoxValue}></textarea>
+          <button onClick={this.sendMessage}>Send</button>
+        </div>
       </div>
     </div>
 

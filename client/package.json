@@ -18,12 +18,10 @@
       "paulmillr/exoskeleton": "master"
     },
     "local": [
-      "bootstrap",
       "IScroll",
       "davy"
     ],
     "paths": [
-      "interface",
       "libraries"
     ],
     "files":[
