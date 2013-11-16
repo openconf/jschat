@@ -2,7 +2,7 @@
 var ContactList = require('./ContactList');
 var ParticipantsList = require('./ParticipantsList');
 var MessagesList = require('./MessagesList')(function(item){
-    return <div>{item.text}</div>
+    return <div className='msg'>{item.text}</div>
   });
 var MessageModel = require('../models/Message');
 
@@ -41,16 +41,18 @@ module.exports = React.createClass({
     var rawMessages = this.props.messages && 
       this.props.messages.toJSON();
     rawMessages = rawMessages  || [];
-    return <div>
+    return <div className="container">
       <div>Hi, {this.props.me.get('github').displayName}</div>
       <h3>{this.props.room.get('name')}</h3>
-      <ContactList/>
-      <div className="chat">
-        <ParticipantsList className="participants"/>
-        <MessagesList items={rawMessages} ref="messagesList" className="messages"/>
-        <div className="form">
-          <textarea onChange={this.handleTyping} value={this.state.textBoxValue}></textarea>
-          <button onClick={this.sendMessage}>Send</button>
+      <div className="row">
+        <ContactList />
+        <div className="chat col-md-9 com-sm-7">
+          <ParticipantsList className="participants"/>
+          <MessagesList items={rawMessages} ref="messagesList" />
+          <div className="form">
+            <textarea onChange={this.handleTyping} value={this.state.textBoxValue}></textarea>
+            <button onClick={this.sendMessage}>Send</button>
+          </div>
         </div>
       </div>
     </div>

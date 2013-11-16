@@ -5,7 +5,7 @@
   "author": "Eldar Djafarov <djkojb@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "component-less": "https://github.com/edjafarov/component-less/tarball/master",
+    "component-lesser": "latest",
     "component-jsx": "latest"
   },
   "compy": {
@@ -15,7 +15,13 @@
       "edjafarov/bbsocker.sync": "*",
       "jashkenas/underscore": "*",
       "learnboost/engine.io-client": "*",
-      "paulmillr/exoskeleton": "master"
+      "paulmillr/exoskeleton": "master",
+      "bscomp/forms": "*",
+      "bscomp/normalize": "*",
+      "bscomp/type": "*",
+      "bscomp/responsive-utilities": "*",
+      "bscomp/grid": "*",
+      "bscomp/variables": "*"
     },
     "local": [
       "IScroll",
@@ -24,7 +30,7 @@
     "paths": [
       "libraries"
     ],
-    "files":[
+    "files": [
       "./libraries/React/react.js"
     ]
   }

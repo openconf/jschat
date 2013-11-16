@@ -3,6 +3,6 @@ var Contact = require('./Contact');
 
 module.exports = React.createClass({
   render: function(){
-    return <div><Contact/></div>
+    return <div className="col-sm-4 col-md-2 "><Contact/></div>
   }
 })

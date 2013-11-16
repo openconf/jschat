@@ -62,9 +62,11 @@ module.exports = function(itemClass){
       this.lastScrollHeight = this.iscroll.scrollerHeight;
     },
     render: function() {
-      return <div onScroll ={this.notify} style={{height: "100px",width: "300px", 'overflow-y':'scroll'}}>
-        <div id="scroller" >
-          {this.props.items && this.props.items.map(itemClass)}
+      return <div className="messagesList">
+        <div onScroll ={this.notify}>
+          <div id="scroller" >
+            {this.props.items && this.props.items.map(itemClass)}
+          </div>
         </div>
       </div>;
     }
