@@ -1,7 +1,7 @@
 var request = require('request');
 var utils = require('../utils.js')();
 var expect = require('chai').expect;
-var eio = require('engine.io-client');
+var eio = require('../socketClientPatched');
 var sockerClient = require('socker').client;
 console.log(require('socker'));
 var user1 = {
@@ -22,15 +22,21 @@ describe("authenticate users", function(){
   var sock1, sock2;
   before(function(done){
     var jar1 = utils.authenticate(user1, function(){
-      sock1 = eio('ws://' + nconf.get("server:hostname"));
+      sock1 = eio('ws://' + nconf.get("server:hostname"),{
+          transports:['websocket'],
+          header:{"Cookie":jar1.cookies[0].str}
+        });
       sockerClient(sock1);
-      utils.authSock(sock1, jar1, authUser2);
+      authUser2()
     });
     function authUser2(){
       var jar2 = utils.authenticate(user2, function(){
-        sock2 = eio('ws://' + nconf.get("server:hostname"));
+        sock2 = eio('ws://' + nconf.get("server:hostname"),{
+          transports:['websocket'],
+          header:{"Cookie":jar2.cookies[0].str}
+        });
         sockerClient(sock2);
-        utils.authSock(sock2, jar2, done);
+        done()
       });
     }
   });
@@ -38,6 +44,7 @@ describe("authenticate users", function(){
   describe("create room by last user", function(){
     var room;
     before(function(done){
+      console.log(sock1.serve.toString());
       sock1.serve('CREATE /api/rooms', {name:"testName"}, function(err, data){
         expect(err).to.be.not.ok;
         room = data;
@@ -50,9 +57,9 @@ describe("authenticate users", function(){
 
     describe("join room by user1 and user2", function(){
       before(function(done){
-        sock1.serve('JOIN /api/room/' + room._id, function(err){
+        sock1.serve('JOIN /api/rooms/' + room._id, function(err){
           expect(err).to.be.not.ok;
-          sock2.serve('JOIN /api/room/' + room._id, function(err){
+          sock2.serve('JOIN /api/rooms/' + room._id, function(err){
             expect(err).to.be.not.ok;
             done();
           });
@@ -65,7 +72,7 @@ describe("authenticate users", function(){
           sock2.on("message", function(data){
             message = JSON.parse(data);
           });
-          sock1.serve('CREATE /api/room/' + room._id + '/messages',{ message:"testMessage"}, done);
+          sock1.serve('CREATE /api/rooms/' + room._id + '/messages',{ message:"testMessage"}, done);
         })
         it('the message should be passed', function(done){
           expect(message).to.have.property("message", "testMessage");

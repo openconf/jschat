@@ -39,6 +39,7 @@ module.exports = function(server){
   require('./flows/room.js')(server);
   require('./flows/messaging.js')(server);
   require('./flows/user.js')(server);
+  
   server.on('connection', eioSession({
     cookieParser:nconf.get('sessions:parser'),
     store: ms,
@@ -57,6 +58,7 @@ module.exports = function(server){
 
 
 function logger(socket, data, next){
+ console.log(data, "!!!!!!!!!!!!");
   console.log(data.type + " : socket msg, user: " + socket.user);
   data.path && console.log(data.path + " - call to path ");
   next();

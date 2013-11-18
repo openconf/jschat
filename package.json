@@ -7,7 +7,7 @@
     "start": "node server.js",
     "test": "npm run setup; npm run compile; node ./node_modules/grunt-cli/bin/grunt",
     "t": "node ./node_modules/grunt-cli/bin/grunt",
-    "setup": "cd client && npm install && cd .. && node ./node_modules/compy/bin/compy -d client install && node ./node_modules/compy/bin/compy -d mobile install",
+    "setup": "cd test/socketClientPatched && npm install && cd ../../client && npm install && cd .. && node ./node_modules/compy/bin/compy -d client install && node ./node_modules/compy/bin/compy -d mobile install",
     "compile": "node ./node_modules/compy/bin/compy -d client -o webapp compile",
     "watch": "node ./node_modules/compy/bin/compy -d client -o webapp -s server.js server watch",
     "compilemob": "node ./node_modules/compy/bin/compy -d mobile -o mobapp compile",
@@ -35,5 +35,10 @@
     "socker": "~0.1.4",
     "engine.io-session": "0.0.3",
     "connect": "~2.11.0"
+
+  },
+  "devDependencies": {
+    "ws": "~0.4.31",
+    "rewire": "~2.0.0"
   }
 }
