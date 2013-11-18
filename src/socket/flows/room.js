@@ -29,6 +29,14 @@ function leaveRoom(socket, data, next){
   //TODO: implement
   // remove from DB
   //remove from socket
+  var user = UserModel.user(socket.user);
+  user.leaveRoom(socket.params['id'], function(err, result){
+    if(err){
+      return next(err);
+    }
+    socket.leave(socket.params['id']);
+    socket.json({result: result});
+  });
 }
 
 function createRoom(socket, data, next){

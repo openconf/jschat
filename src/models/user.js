@@ -48,9 +48,20 @@ module.exports = function(db){
                           'rooms':{ $nin : [ roomId ] }}, 
                             { $push: {'rooms' : roomId}}, joinUserObjectRoom(user, roomId, cb));
         },
+        leaveRoom: function(roomId, cb){
+          // check if user already have the roomId in rooms
+          db.user.findOne({_id: mongojs.ObjectId(user._id)}, gotUser);
+          function gotUser(err, resUser){
+            var index = resUser.rooms.indexOf(roomId);
+            if(!!~index){
+              resUser.rooms.splice(index, 1);
+            }
+            db.user.update({_id: mongojs.ObjectId(user._id)},
+                          { $set: {rooms: resUser.rooms}}, 
+                             leaveUserObjectRoom(user, roomId, cb));
+          }
+        },
         edit: function(updates, cb){
-          /*db.user.update({_id: mongojs.ObjectId(user._id)},
-                            updates, joinUserObjectRoom(user, roomId, cb));*/
           delete updates._id;
           db.user.update({_id: mongojs.ObjectId(user._id)}, updates, function(err) {
             cb(err, updates);
@@ -71,6 +82,16 @@ function joinUserObjectRoom(user, roomId, cb){
     if(!user.rooms) user.rooms = [];
     user.rooms.push(roomId);
     user.rooms = _(user.rooms).uniq();
+    cb(err, dbuser);
+  }
+}
+function leaveUserObjectRoom(user, roomId, cb){
+  return function(err, dbuser){
+    if(!user.rooms) user.rooms = [];
+    var index = user.rooms.indexOf(roomId);
+    if(!!~index){
+      user.rooms.splice(index, 1);
+    }
     cb(err, dbuser);
   }
 }
