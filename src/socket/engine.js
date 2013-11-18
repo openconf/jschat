@@ -58,7 +58,6 @@ module.exports = function(server){
 
 
 function logger(socket, data, next){
- console.log(data, "!!!!!!!!!!!!");
   console.log(data.type + " : socket msg, user: " + socket.user);
   data.path && console.log(data.path + " - call to path ");
   next();
