@@ -20,9 +20,6 @@ require('./src/middleware/authMiddleware.js')(app);
 
 require('./src/middlewareSetup.js')(app);
 
-require('./src/webservice')(app);
-
-
 //generate timelimited socket session token for session. 
 // open sockets with engine.io
 // rooms with engine.io-rooms
