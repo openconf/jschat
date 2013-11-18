@@ -10,7 +10,6 @@ before(function(done){
 describe("github authenticattion", function(){
   before(function(done){
     utils.setUpAuthMock();
-    console.log(utils.url('/auth/github/callback?code=450bab02b3f9bf0dfd44'))
     request.get(utils.url('/auth/github/callback?code=450bab02b3f9bf0dfd44'), {jar: true},gotAuthResponse);
     function gotAuthResponse(err, response, body){
       expect(response).to.have.property('statusCode', 200);
@@ -21,8 +20,8 @@ describe("github authenticattion", function(){
   it("works!", function(done){
     done()
   });
-
-  describe("GET /api/me endoint returns user profile", function(){
+  //todo write test for socket authentication
+  xdescribe("GET /api/me endoint returns user profile", function(){
     var profile;
     before(function(done){
       request.get(utils.url('/api/me'), {jar: true},gotMe);
