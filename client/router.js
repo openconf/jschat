@@ -23,7 +23,6 @@ var router = backbone.Router.extend({
         var Messages = require('./models/Messages');
         var messages = new Messages(null, {roomId: id});
 
-
         var component = React.renderComponent(<ChatRoom me={Me} 
           room = {new Room({id : id})}
           messages = {messages}

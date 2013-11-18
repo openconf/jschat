@@ -33,6 +33,7 @@ module.exports = React.createClass({
     this.props.room.join({
       success: function(model, response){
         this.props.me.fetch()
+        this.props.room.fetch()
       }.bind(this)
     });
   },
@@ -40,6 +41,7 @@ module.exports = React.createClass({
     this.props.room.leave({
       success: function(model, response){
         this.props.me.fetch()
+        this.props.room.fetch()
       }.bind(this)
     });
   },
@@ -65,6 +67,11 @@ module.exports = React.createClass({
       return this.props.room.get('id') === id;
     }.bind(this));
   },
+  onKeyDown: function(e){
+    if(e.keyCode === 13 && !e.shiftKey){
+      this.sendMessage()
+    }
+  },
   render: function(){
     var rawMessages = this.props.messages && 
       this.props.messages.toJSON();
@@ -77,13 +84,12 @@ module.exports = React.createClass({
       <div className="row">
         <ContactList rooms={this.props.rooms} room={this.props.room}/>
         <div className="chat col-md-9 com-sm-7">
-          <ParticipantsList className="participants" />
+          <ParticipantsList  />
           <MessagesList items={rawMessages} ref="messagesList" />
           <div className="form">
             <textarea onChange={this.handleTyping} 
                   value={this.state.textBoxValue} 
-                  disabled={!this.meJoinedTheRoom()}></textarea>
-            <button onClick={this.sendMessage}>Send</button>
+                  disabled={!this.meJoinedTheRoom()} onKeyDown={this.onKeyDown}></textarea>
           </div>
         </div>
       </div>

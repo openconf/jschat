@@ -37,6 +37,25 @@ module.exports = function(db){
         cb(err, room);
       });
     },
+    join: function(rid, uid, cb){
+      db.room.update({_id: mongojs.ObjectId(rid),
+                          'users':{ $nin : [ uid ] }},
+                            { $push: {'users' : uid}}, cb);
+    },
+    leave: function(rid, uid, cb){
+      db.room.update({_id: mongojs.ObjectId(rid),
+                          'users':{ $nin : [ uid ] }},
+                            { $push: {'users' : uid}}, cb);
+      db.room.findOne({_id: mongojs.ObjectId(rid)}, gotRoom);
+      function gotRoom(err, resRoom){
+        var index = resRoom.users.indexOf(uid);
+        if(!!~index){
+          resRoom.users.splice(index, 1);
+        }
+        db.room.update({_id: mongojs.ObjectId(rid)},
+                      { $set: {users: resRoom.users}},cb);
+      }
+    },
     create: function(room, cb){
       db.room.save(room ,cb);
     },

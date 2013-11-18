@@ -16,13 +16,20 @@ module.exports = function(server){
 
 function joinRoom(socket, data, next){
   var user = UserModel.user(socket.user);
-  user.joinRoom(socket.params['id'], function(err, result){
+  user.joinRoom(socket.params['id'], userUpdated);
+  function userUpdated(err, result){
+    if(err){
+      return next(err);
+    }
+    Room.join(socket.params['id'], user._id, roomUpdated);
+  }
+  function roomUpdated(err, result){
     if(err){
       return next(err);
     }
     socket.join(socket.params['id']);
     socket.json({result: result});
-  });
+  };
 }
 
 function leaveRoom(socket, data, next){
@@ -30,13 +37,22 @@ function leaveRoom(socket, data, next){
   // remove from DB
   //remove from socket
   var user = UserModel.user(socket.user);
-  user.leaveRoom(socket.params['id'], function(err, result){
+  user.leaveRoom(socket.params['id'], userUpdated);
+
+  function userUpdated(err, result){
+    if(err){
+      return next(err);
+    }
+    Room.leave(socket.params['id'], user._id, roomUpdated);
+  }
+  
+  function roomUpdated(err, result){
     if(err){
       return next(err);
     }
     socket.leave(socket.params['id']);
     socket.json({result: result});
-  });
+  };
 }
 
 function createRoom(socket, data, next){
