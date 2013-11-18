@@ -21,8 +21,12 @@ module.exports = function(db){
     getById: function(id, cb){
       db.room.findOne({_id: mongojs.ObjectId(id)}, cb);
     },
-    getAll: function(cb){
-      db.room.find().toArray(cb);
+    getAll: function(options, cb){
+      if(!cb) {
+        cb = options;
+        options = {};
+      }
+      db.room.find(options).toArray(cb);
     },
     getByOwnerId: function(ownerId, cb){
       db.room.find({owner: ownerId}).toArray(cb);

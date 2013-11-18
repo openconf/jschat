@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var Room = require('../../models').room;
 var UserModel = require('../../models').user;
+var mongojs = require('mongojs');
 
 module.exports = function(server){
   server.sock.when('CREATE /api/rooms', createRoom);
@@ -31,7 +32,6 @@ function leaveRoom(socket, data, next){
 }
 
 function createRoom(socket, data, next){
-  console.log(data);
   var newRoom = _(data).pick("description", "name");
   console.log(newRoom);
   newRoom.owner = socket.user._id;
@@ -45,7 +45,20 @@ function createRoom(socket, data, next){
 }
 
 function readRooms(socket, data, next){
-  Room.getAll(function(err, rooms) {
+  var options;
+  if(data){
+    if(data.ids){
+      var ids = data.ids.map(function(id){
+        return mongojs.ObjectId(id);
+      });
+      options = {
+        _id:{
+          $in: ids
+        }
+      }
+    }
+  }
+  Room.getAll(options, function(err, rooms) {
     if(err){
       return next(err);
     }

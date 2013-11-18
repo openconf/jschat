@@ -5,6 +5,9 @@ var MessagesList = require('./MessagesList')(function(item){
     return <div className='msg'>{item.text}</div>
   });
 var MessageModel = require('../models/Message');
+var backbone = require('exoskeleton');
+
+
 
 module.exports = React.createClass({
   mixins: [require('./BackboneMixin')],
@@ -27,10 +30,11 @@ module.exports = React.createClass({
     });
   },
   getBackboneModels : function(){
-    return [this.props.room, this.props.messages]
+    return [this.props.room, this.props.messages, this.props.rooms]
   },
-  componentDidMount: function(){
+  refresh: function(){
     this.props.room.fetch()
+    this.props.rooms.fetch({attrs: {ids: this.props.me.get('rooms')}});
     this.props.messages.fetch({
       success: function(){
         this.refs.messagesList.scrollToBottom();
@@ -45,9 +49,9 @@ module.exports = React.createClass({
       <div>Hi, {this.props.me.get('github').displayName}</div>
       <h3>{this.props.room.get('name')}</h3>
       <div className="row">
-        <ContactList />
+        <ContactList rooms={this.props.rooms} room={this.props.room}/>
         <div className="chat col-md-9 com-sm-7">
-          <ParticipantsList className="participants"/>
+          <ParticipantsList className="participants" />
           <MessagesList items={rawMessages} ref="messagesList" />
           <div className="form">
             <textarea onChange={this.handleTyping} value={this.state.textBoxValue}></textarea>
@@ -59,3 +63,5 @@ module.exports = React.createClass({
 
   }
 })
+
+

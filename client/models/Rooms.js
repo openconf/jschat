@@ -9,4 +9,4 @@ var RoomCollection = Exo.Collection.extend({
   }
 })
 
-module.exports = new RoomCollection();
+module.exports = RoomCollection;

@@ -16,13 +16,31 @@ var router = backbone.Router.extend({
     console.log('room', id);
     Me.fetch({
       success: function(){
+        React.unmountComponentAtNode(document.body.children[0]);
         var ChatRoom = require('./reacts/ChatRoom');
         var Room = require('./models/Room');
+        var Rooms = require('./models/Rooms');
         var Messages = require('./models/Messages');
-        var t = React.renderComponent(<ChatRoom me={Me} 
+        var messages = new Messages(null, {roomId: id});
+
+
+        var component = React.renderComponent(<ChatRoom me={Me} 
           room = {new Room({id : id})}
-          messages = {new Messages(null, {roomId: id})}/>,
+          messages = {messages}
+          rooms = {new Rooms()} />,
         document.body.children[0]);
+        component.refresh();
+        backbone.socket.addEventListener("message", function(data){
+          try{
+            data = JSON.parse(data);
+          }catch(e){
+            console.log('cant parse data', data);
+          }
+          if(data._rid == id){
+            messages.push(data);
+            component.refs.messagesList.scrollToBottom();
+          }
+        });
       },
       error:function(model, err){
         var Login = require('./reacts/Login');

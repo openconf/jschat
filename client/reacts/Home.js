@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
-var rooms = require('../models/Rooms');
+var RoomsModel = require('../models/Rooms');
 var room = require('../models/Room');
-
+var rooms = new RoomsModel();
 var aRoom = function(data){
   return <div><a href={'#room/' + data._id} target="_self">{data.name}</a></div>
 }

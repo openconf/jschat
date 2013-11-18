@@ -1,7 +1,7 @@
 var engine = require('engine.io');
 var signer = require('secure.me')({salt:nconf.get('security:salt')}).signer({salt:nconf.get('security:salt')});
 var eioSession = require('engine.io-session');
-
+var _ = require('underscore');
 
 var socker = require('socker');
 
@@ -64,22 +64,15 @@ function logger(socket, data, next){
 
 function authorization(socket, data, next){
   // rewrite for authorization through DB/ since we can!
-  if(socket.user) return next();
-  if(data.type == "authorization"){
-    if(signer.validate(data.user)){
-      socket.__proto__.user = data.user;//add to proto
-      // suscribe for casted messages
-      if(socket.user.rooms){ 
-        socket.user.rooms.forEach(function(room){
-          socket.join(room);
-        });
-      }
-      // subscribe for direct messages
-      return socket.json({});
-    } else {
-      return next("user object is not trusted - Not authorized");
+  if(_.isEmpty(socket._rooms)){
+    if(socket.user && socket.user.rooms){
+      socket.user.rooms.forEach(function(room){
+        socket.join(room)
+      })
     }
   }
+  if(socket.user) return next();
+
   return next("Not authorized");
 }
 

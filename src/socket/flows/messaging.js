@@ -55,6 +55,6 @@ function deleteMessage(socket, data, next){
 function roomBroadcast(socket, data, next){
   //TODO: broadcast cmd to Message with id from socket.params['id']
   console.log("BROADCASTING");
-  //socket.to(socket.params['id']).send(JSON.stringify(data));
+  socket.to(socket.params['id']).send(JSON.stringify(data));
   socket.json({});
 }
