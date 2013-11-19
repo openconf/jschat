@@ -1,6 +1,6 @@
 {
   "mongo": {
-    "db": "chat"
+    "db": "/chat"
   },
   "security": {
     "salt":"geekchat"
