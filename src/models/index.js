@@ -1,7 +1,7 @@
 var mongojs = require('mongojs');
 var collections = ['user', 'room', 'message'];
 
-var db = mongojs(nconf.get('mongo:url') + nconf.get('mongo:db'), collections);
+var db = mongojs(nconf.get('mongo:url')||process.env.MONGOLAB_URI + nconf.get('mongo:db'), collections);
 module.exports = (function(){
   var models = {};
 

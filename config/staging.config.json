@@ -1,0 +1,15 @@
+{
+  "mongo": {
+    "db": "chat"
+  },
+  "security": {
+    "salt":"geekchat"
+  },
+  "server": {
+    "host":"localhost"
+  },
+  "github":{
+    "GITHUB_CLIENT_ID":"0bb5305f1db7d2816fa3",
+    "GITHUB_CLIENT_SECRET":"32d469aa1334e0a29caac7a20054fa57c0c26088"
+  }
+}

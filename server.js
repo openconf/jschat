@@ -38,7 +38,7 @@ app.use(require('./src/middleware/errorHandling.js'));
 
 // Start up the server on the port specified in the config
 var server = http.createServer(app);
-server.listen(nconf.get('server:port'));
+server.listen(nconf.get('server:port') || process.env.PORT);
 console.log('Angular App Server - listening on port: ' + nconf.get('server:port'));
 server.ms = MemoryStore;
 require('./src/socket/engine.js')(server);

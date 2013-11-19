@@ -1,5 +1,5 @@
 var backbone = require('exoskeleton');
-var socket = require('engine.io')('ws://127.0.0.1:8080');
+var socket = require('engine.io')(location.origin.replace(/^http/, 'ws'));
 require('socker-client')(socket);
 backbone.socket = socket;
 require('bbsocker.sync')(backbone);
