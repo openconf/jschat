@@ -1,7 +1,7 @@
 var passport = require('passport');
 var _ = require('underscore');
 var express = require('express');
-var compy = require('compy');
+
 var errors = require('./errors.js');
 
 
@@ -68,9 +68,13 @@ module.exports = function(app){
     }
     next();
   });
- 
-  app.use(compy.middleware(__dirname + "/../webapp/"));
 
+  if(process.env.APP_ENV == 'development'){
+    var compy = require('compy');
+    app.use(compy.middleware(__dirname + "/../webapp/"));
+  } else {
+    app.use(express.static(__dirname + "/../webapp/"));
+  }
   app.get('/auth/github', app.access.free,
     passport.authenticate('github'),
     function(req,res){});
