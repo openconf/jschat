@@ -21,7 +21,8 @@
       "bscomp/type": "*",
       "bscomp/responsive-utilities": "*",
       "bscomp/grid": "*",
-      "bscomp/variables": "*"
+      "bscomp/variables": "*",
+      "bscomp/navbar": "*"
     },
     "local": [
       "IScroll",

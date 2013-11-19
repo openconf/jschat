@@ -6,6 +6,7 @@ var MessagesList = require('./MessagesList')(function(item){
   });
 var MessageModel = require('../models/Message');
 var backbone = require('exoskeleton');
+var Nav = require('./Nav.js');
 var _ = require('underscore');
 
 
@@ -76,8 +77,8 @@ module.exports = React.createClass({
     var rawMessages = this.props.messages && 
       this.props.messages.toJSON();
     rawMessages = rawMessages  || [];
-    return <div className="container">
-      <div>Hi, {this.props.me.get('github').displayName}</div>
+    return <div><Nav me={this.props.me}/>
+    <div className="container">
       <h3>{this.props.room.get('name')} <button onClick={this.joinRoom}>join</button>
                   <button onClick={this.leaveRoom}>leave</button>
       </h3>
@@ -94,7 +95,7 @@ module.exports = React.createClass({
         </div>
       </div>
     </div>
-
+  </div>
   }
 })
 

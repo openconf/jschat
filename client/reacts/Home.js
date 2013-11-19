@@ -4,7 +4,9 @@ var room = require('../models/Room');
 var rooms = new RoomsModel();
 var aRoom = function(data){
   return <div><a href={'#room/' + data._id} target="_self">{data.name}</a></div>
-}
+  }
+  var Nav = require('./Nav.js');
+
 module.exports = React.createClass({
   mixins: [require('./BackboneMixin')],
   getBackboneModels: function(){
@@ -40,10 +42,12 @@ module.exports = React.createClass({
     this.fetchRooms();
   },
   render: function(){
-    return <div>
+    return <div><Nav me={this.props.me}/>
+    <div className="container">
       {this.state.rooms.map(aRoom)}
       <input type="text" onChange = {this.newRoomNameHandle}/>
       <button onClick={this.createRoom}>Create</button>
     </div>
+  </div>
   }
 });
