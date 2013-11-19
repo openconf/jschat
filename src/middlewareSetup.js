@@ -16,7 +16,7 @@ module.exports = function(app){
   passport.use(new GitHubStrategy({
     clientID: nconf.get('github:GITHUB_CLIENT_ID'),
     clientSecret: nconf.get('github:GITHUB_CLIENT_SECRET'),
-    callbackURL: "http://127.0.0.1:8080/auth/github/callback"
+    callbackURL: "http://"+ nconf.get('server:hostname') + "/auth/github/callback"
     },
     function(token, tokenSecret, profile, done) {
       User.getGithubUser(profile, gotUser);
@@ -79,7 +79,7 @@ module.exports = function(app){
     passport.authenticate('github'),
     function(req,res){});
   app.get('/auth/github/callback', app.access.free,
-    passport.authenticate('github', {failureRedirect:"/auth/linkedin/failure"}),
+    passport.authenticate('github', {failureRedirect:"/auth/github/failure"}),
     function(req, res, next){
       res.redirect('/');
     }

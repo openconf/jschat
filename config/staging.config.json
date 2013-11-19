@@ -6,7 +6,7 @@
     "salt":"geekchat"
   },
   "server": {
-    "host":"localhost"
+    "host":"stormy-spire-5782.herokuapp.com"
   },
   "github":{
     "GITHUB_CLIENT_ID":"0bb5305f1db7d2816fa3",

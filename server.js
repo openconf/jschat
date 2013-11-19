@@ -9,6 +9,7 @@ nconf.argv()
      .env()
      .file({ file: __dirname + '/config/' + APP_ENV + '.config.json' });
 
+nconf.set("server:port", nconf.get("server:port") || process.env.PORT);
 nconf.set("server:hostname", nconf.get("server:port")?nconf.get("server:host") + ":" +  nconf.get("server:port") : nconf.get("host"));
 
 // Setup app
@@ -38,7 +39,7 @@ app.use(require('./src/middleware/errorHandling.js'));
 
 // Start up the server on the port specified in the config
 var server = http.createServer(app);
-server.listen(nconf.get('server:port') || process.env.PORT);
+server.listen(nconf.get('server:port') );
 console.log('Angular App Server - listening on port: ' + nconf.get('server:port'));
 server.ms = MemoryStore;
 require('./src/socket/engine.js')(server);
