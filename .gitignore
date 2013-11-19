@@ -16,7 +16,6 @@ node_modules
 client/components
 mobile/components
 tests/socketClientPatched/node_modules
-webapp
 mobapp
 
 npm-debug.log

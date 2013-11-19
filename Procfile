@@ -1,1 +1,1 @@
-web: npm run setup; npm run compile; npm start
+web: node server.js
