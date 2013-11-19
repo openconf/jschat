@@ -5,7 +5,7 @@ var mongojs = require('mongojs');
 
 module.exports = function(server){
   server.sock.when('CREATE /api/rooms', createRoom);
-  server.sock.when('READ /api/rooms', readRooms);
+  server.sock.when('READ /api/rooms', server.sock.free, readRooms);
   server.sock.when('READ /api/roomsbyowner/', readRoomsByOwner);
   server.sock.when('READ /api/rooms/:id', readRoom);
   server.sock.when('UPDATE /api/rooms/:id', server.sock.can('updateRoom'), updateRoom);

@@ -16,9 +16,6 @@ module.exports = function(server){
 }
 
 function readProfile(socket, data, next){
-  if (!socket.user) {
-    next('404');
-  }
   socket.json(socket.user);
 }
 

@@ -6,7 +6,6 @@ var _ = require('underscore');
 var socker = require('socker');
 
 var async = require('async');
-//var Rooms = require('engine.io-rooms');
 var UserModel = require('../models').user;
 var rooms = require('./rooms.js');
 
@@ -29,13 +28,22 @@ module.exports = function(server){
   }
   
   server.sock.use(logger);
-  server.sock.use(authorization);
+  server.sock.use(roomsAutojoin);
+  /**
+   * prepare free middleware
+   */
+  server.sock.free = server.sock.replaceWith(function(socket, data, next){
+    next();
+  });
+
   server.sock.use(function(err, socket, data, next){
     socket.json({
       type: "ERROR",
       err: err,
       data: data});
   });
+  server.sock.setDefault(authorization);
+
   require('./flows/room.js')(server);
   require('./flows/messaging.js')(server);
   require('./flows/user.js')(server);
@@ -56,15 +64,18 @@ module.exports = function(server){
 }
 
 
-
+/**
+ * log incoming socket calls
+ */
 function logger(socket, data, next){
   console.log(data.type + " : socket msg, user: " + socket.user);
   data.path && console.log(data.path + " - call to path ");
   next();
 };
-
-function authorization(socket, data, next){
-  // rewrite for authorization through DB/ since we can!
+/**
+ * join user to rooms if the user is just logged in
+ */
+function roomsAutojoin(socket, data, next){
   if(_.isEmpty(socket._rooms)){
     if(socket.user && socket.user.rooms){
       socket.user.rooms.forEach(function(room){
@@ -72,55 +83,19 @@ function authorization(socket, data, next){
       })
     }
   }
-  if(socket.user) return next();
+  next();
+}
 
+/**
+ * check authorization
+ */
+function authorization(socket, data, next){
+  if(socket.user) return next();
   return next("Not authorized");
 }
 
 
-
-/*`
-
-function scopeData(socket, data){
-  return data.send = function(){
-    socket.to(data.r).send(JSON.stringify(data));
-    console.log("sent in room + " + data.r);
-    delete data.send;
-    return 
-  }
-}
-
-function logger(socket, data, next){
-  console.log(data.t + " : socket msg, user: " + socket.user);
- /* data.r && socket.room(data.r).clients(function(err, clients) {
-    console.log(clients + "- users in the room " + data.r); // output array of socket ids
-  });
-* /
-
-
-  next();
-}
-
-function authorization(socket, data, next){
-  if(socket.user) return next();
-  if(data.t == "authorization"){
-    if(signer.validate(data.user)){
-      socket.user = data.user;
-      // suscribe for casted messages
-      if(socket.user.rooms){ 
-        socket.user.rooms.forEach(function(room){
-          socket.join(room);
-        });
-      }
-      // subscribe for direct messages
-      return;
-    } else {
-      return next(err("user object is not trusted - Not authorized"));
-    }
-  }
-  return next(err("Not authorized"));
-}
-
+/*
 function statusMsg(socket, data, next){
   //TODO: think about statuses and possibly depricate.
   // reasoning: 

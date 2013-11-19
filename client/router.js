@@ -2,6 +2,7 @@
 var backbone = require('exoskeleton');
 var Me = require('./models/Me');
 //var RoomModel = require('./models/Room');
+var Rooms = require('./models/Rooms');
 
 var router = backbone.Router.extend({
   routes: {
@@ -10,7 +11,8 @@ var router = backbone.Router.extend({
   },
   main: function () {
     var Home = require('./reacts/Home');
-    React.renderComponent(<Home/>, document.body.children[0]);
+    React.unmountComponentAtNode(document.body.children[0]);
+    React.renderComponent(<Home me={Me} rooms={new Rooms()}/>, document.body.children[0]);
   },
   room: function (id){
     console.log('room', id);
@@ -19,7 +21,7 @@ var router = backbone.Router.extend({
         React.unmountComponentAtNode(document.body.children[0]);
         var ChatRoom = require('./reacts/ChatRoom');
         var Room = require('./models/Room');
-        var Rooms = require('./models/Rooms');
+        
         var Messages = require('./models/Messages');
         var messages = new Messages(null, {roomId: id});
 
@@ -28,7 +30,9 @@ var router = backbone.Router.extend({
           messages = {messages}
           rooms = {new Rooms()} />,
         document.body.children[0]);
+
         component.refresh();
+
         backbone.socket.addEventListener("message", function(data){
           try{
             data = JSON.parse(data);
