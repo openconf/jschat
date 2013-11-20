@@ -16,7 +16,7 @@ module.exports = function(app){
   passport.use(new GitHubStrategy({
     clientID: nconf.get('github:GITHUB_CLIENT_ID'),
     clientSecret: nconf.get('github:GITHUB_CLIENT_SECRET'),
-    callbackURL: "http://"+ nconf.get('server:hostname') + "/auth/github/callback"
+    callbackURL: "http://"+ nconf.get('server:host') + "/auth/github/callback"
     },
     function(token, tokenSecret, profile, done) {
       User.getGithubUser(profile, gotUser);
