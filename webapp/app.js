@@ -10457,8 +10457,21 @@ var backbone = require('exoskeleton');
 var Me = require('./models/Me');
 //var RoomModel = require('./models/Room');
 var Rooms = require('./models/Rooms');
-
-
+var processMessage;
+backbone.socket.addEventListener("message", function(data){
+  try{
+    data = JSON.parse(data);
+  }catch(e){
+    console.log('cant parse data', data);
+  }
+  if(processMessage){
+    processMessage.call(this, data);
+  }/*
+  if(data._rid == id){
+    messages.push(data);
+    component.refs.messagesList.scrollToBottom();
+    }*/
+});
 var router = backbone.Router.extend({
   routes: {
     '': 'main',
@@ -10489,18 +10502,13 @@ var router = backbone.Router.extend({
         document.body.children[0]);
 
         component.refresh();
-
-        backbone.socket.addEventListener("message", function(data){
-          try{
-            data = JSON.parse(data);
-          }catch(e){
-            console.log('cant parse data', data);
-          }
-          if(data._rid == id){
+        processMessage = function(data){
+          if(data._rid == id && messages && component){
             messages.push(data);
             component.refs.messagesList.scrollToBottom();
           }
-        });
+        }
+
       } else {
         var Login = require('./reacts/Login');
         React.renderComponent(Login(null), document.body.children[0]);
