@@ -6,7 +6,8 @@
     "salt":"geekchat"
   },
   "server": {
-    "host":"stormy-spire-5782.herokuapp.com"
+    "host":"stormy-spire-5782.herokuapp.com",
+    "callbackurl":"http://stormy-spire-5782.herokuapp.com/auth/github/callback"
   },
   "github":{
     "GITHUB_CLIENT_ID":"0bb5305f1db7d2816fa3",

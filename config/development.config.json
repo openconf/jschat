@@ -8,7 +8,8 @@
   },
   "server": {
     "host":"localhost",
-    "port": 8080
+    "port": 8080,
+    "callbackurl":"http://127.0.0.1:8080/auth/github/callback"
   },
   "github":{
     "GITHUB_CLIENT_ID":"0bb5305f1db7d2816fa3",
