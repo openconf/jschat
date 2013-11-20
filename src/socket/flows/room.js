@@ -21,7 +21,7 @@ function joinRoom(socket, data, next){
     if(err){
       return next(err);
     }
-    Room.join(socket.params['id'], user._id, roomUpdated);
+    Room.join(socket.params['id'], socket.user._id, roomUpdated);
   }
   function roomUpdated(err, result){
     if(err){
@@ -43,7 +43,7 @@ function leaveRoom(socket, data, next){
     if(err){
       return next(err);
     }
-    Room.leave(socket.params['id'], user._id, roomUpdated);
+    Room.leave(socket.params['id'], socket.user._id, roomUpdated);
   }
   
   function roomUpdated(err, result){

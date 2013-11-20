@@ -12,6 +12,7 @@ function createMessage(socket, data, next){
   // user should be a part of a Message
   // user should not be banned from Message
   //TODO: save message in DB and pass it over to next for broadcasting
+  data.uid = socket.user._id;
   Message.room(socket.params.id).createMessage(data, next);
 }
 function readMessages(socket, data, next){
@@ -54,7 +55,6 @@ function deleteMessage(socket, data, next){
 
 function roomBroadcast(socket, data, next){
   //TODO: broadcast cmd to Message with id from socket.params['id']
-  console.log("BROADCASTING");
   socket.to(socket.params['id']).send(JSON.stringify(data));
-  socket.json({});
+  socket.json(data);
 }

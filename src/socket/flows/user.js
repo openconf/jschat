@@ -8,11 +8,11 @@ module.exports = function(server){
   server.sock.when('DELETE /api/me', deleteProfile);
 
   server.sock.when('READ /api/users', readUsers);
-  server.sock.when('READ /api/user/:id', readUser);
+  server.sock.when('READ /api/users/:id', readUser);
   
   // server.sock.can - implement first
-  server.sock.when('UPDATE /api/user/:id', server.sock.can('updateUser'), updateUser);
-  server.sock.when('DELETE /api/user/:id', server.sock.can('deleteUser'), deleteUser);
+  server.sock.when('UPDATE /api/users/:id', server.sock.can('updateUser'), updateUser);
+  server.sock.when('DELETE /api/users/:id', server.sock.can('deleteUser'), deleteUser);
 }
 
 function readProfile(socket, data, next){

@@ -1,8 +1,15 @@
 /** @jsx React.DOM */
 var ContactList = require('./ContactList');
 var ParticipantsList = require('./ParticipantsList');
+var ContactFactory = require('../models/ContactFactory');
 var MessagesList = require('./MessagesList')(function(item){
-    return <div className='msg'>{item.text}</div>
+  if(!item._id) return;
+  var user = ContactFactory.getContactModel(item.uid);
+  var github = user && user.get('github');
+  var name = github && (github.displayName || '@' + github.username);
+  var date = new Date(parseInt(item._id.slice(0,8), 16)*1000);
+  var dateString = [date.getHours(), date.getMinutes()].join(":");
+    return <div className='msg'>[{dateString}] {name}: {item.text}</div>
   });
 var MessageModel = require('../models/Message');
 var backbone = require('exoskeleton');
@@ -68,6 +75,13 @@ module.exports = React.createClass({
       return this.props.room.get('id') === id;
     }.bind(this));
   },
+  leaveJoinButton: function(){
+    if(this.meJoinedTheRoom()){
+      return <button onClick={this.leaveRoom}>leave</button>;
+    } else {
+      return <button onClick={this.joinRoom}>join</button>;
+    }
+  },
   onKeyDown: function(e){
     if(e.keyCode === 13 && !e.shiftKey){
       this.sendMessage()
@@ -79,13 +93,11 @@ module.exports = React.createClass({
     rawMessages = rawMessages  || [];
     return <div><Nav me={this.props.me}/>
     <div className="container">
-      <h3>{this.props.room.get('name')} <button onClick={this.joinRoom}>join</button>
-                  <button onClick={this.leaveRoom}>leave</button>
-      </h3>
+      <h3>{this.props.room.get('name')} {this.leaveJoinButton()}</h3>
       <div className="row">
         <ContactList rooms={this.props.rooms} room={this.props.room}/>
         <div className="chat col-md-9 com-sm-7">
-          <ParticipantsList  />
+          <ParticipantsList room={this.props.room}/>
           <MessagesList items={rawMessages} ref="messagesList" />
           <div className="form">
             <textarea onChange={this.handleTyping} 

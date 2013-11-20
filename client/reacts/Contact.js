@@ -1,10 +1,15 @@
 /** @jsx React.DOM */
+var ContactModel = require('../models/Contact');
+
 module.exports = React.createClass({
+  mixins: [require('./BackboneMixin')],
+  getBackboneModels : function(){
+    return [this.props.user]
+  },
   render: function(){
-    return <div>
-      <img src={this.props.pic}/>
-      <span className={this.props.contact_status}></span>
-      <span className="contactName">{this.props.contact_name}</span>
-    </div>
+    var github = this.props.user && this.props.user.get('github');
+    return <span className = "label label-default">
+      {github && (github.displayName || '@' + github.username)}
+    </span>
   }
 });

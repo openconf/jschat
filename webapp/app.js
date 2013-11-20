@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 19-11-2013
+* 20-11-2013
 */
 
 
@@ -7841,6 +7841,8 @@ _.extend(History.prototype, Events, {
 
 
 
+
+
 require.register("IScroll/iscroll.js", function(exports, require, module){
 /*! iScroll v5.0.6 ~ (c) 2008-2013 Matteo Spinelli ~ http://cubiq.org/license */
 module.exports = (function (window, document, Math) {
@@ -9922,6 +9924,87 @@ module.exports = function(){
 }
 
 });
+require.register("JSChat/models/Contact.js", function(exports, require, module){
+var Exo = require('exoskeleton');
+
+var Contact = Exo.Model.extend({
+  urlRoot: "/api/users",
+  initialize: function(){
+    console.log("Initialize USERS");
+  }
+})
+
+module.exports = Contact;
+
+});
+require.register("JSChat/models/ContactFactory.js", function(exports, require, module){
+var contactModelsCache = {};
+var ContactModel = require('./Contact');
+var ContactsCollection = require('./Contacts');
+var _ = require('underscore');
+/**
+ * this Factory should minimize calls to server for contacts information:
+ * - any new cache model with ID defined will be fetched
+ * - any model that doesn't have ID will be watched untill it get's the ID
+ * - any collection will be watched untill it get's models with ID's and those will be saved 
+ *   in cache
+ */
+module.exports = {
+  getContactModel: function(id){
+    if(id && contactModelsCache[id]){
+      return contactModelsCache[id];
+    }
+    var contact = new ContactModel({id: id});
+    if(contact.get('id')){
+      contact.fetch();
+      return putInCache.call(contact);
+    }
+    contact.on('change', putInCache, contact);
+    return contact;
+  },
+  getContactsCollection: function(){
+    var collection = new ContactsCollection();
+    collection.on('change', processCollection, collection);
+    return collection;
+  }
+}
+
+
+function processCollection(){
+  _(this.models).each(function(contact){
+    var modelId = contact.get('id');
+    if(!modelId) return;
+    if(contactModelsCache[modelId]){
+      return contactModelsCache[modelId].set(contact.toJSON());
+    }
+    putInCache.call(contact);
+  });
+}
+
+function putInCache(){
+  if(this.get('id')){
+    contactModelsCache[this.get('id')] = this;
+    this.off('change', putInCache);
+  }
+  return this;
+}
+
+});
+require.register("JSChat/models/Contacts.js", function(exports, require, module){
+var Exo = require('exoskeleton');
+var ContactModel = require('./Contact');
+
+var ContactsCollection = Exo.Collection.extend({
+  url: "/api/users",
+  model: ContactModel,
+  initialize: function(){
+    console.log("Initialize ContactsCollection");
+  }
+})
+
+module.exports = ContactsCollection;
+
+});
 require.register("JSChat/models/Me.js", function(exports, require, module){
 var Exo = require('exoskeleton');
 
@@ -10023,8 +10106,15 @@ require.register("JSChat/reacts/ChatRoom.js", function(exports, require, module)
 /** @jsx React.DOM */
 var ContactList = require('./ContactList');
 var ParticipantsList = require('./ParticipantsList');
+var ContactFactory = require('../models/ContactFactory');
 var MessagesList = require('./MessagesList')(function(item){
-    return React.DOM.div( {className:"msg"}, item.text)
+  if(!item._id) return;
+  var user = ContactFactory.getContactModel(item.uid);
+  var github = user && user.get('github');
+  var name = github && (github.displayName || '@' + github.username);
+  var date = new Date(parseInt(item._id.slice(0,8), 16)*1000);
+  var dateString = [date.getHours(), date.getMinutes()].join(":");
+    return React.DOM.div( {className:"msg"}, "[",dateString,"] ", name,": ", item.text)
   });
 var MessageModel = require('../models/Message');
 var backbone = require('exoskeleton');
@@ -10090,6 +10180,13 @@ module.exports = React.createClass({
       return this.props.room.get('id') === id;
     }.bind(this));
   },
+  leaveJoinButton: function(){
+    if(this.meJoinedTheRoom()){
+      return React.DOM.button( {onClick:this.leaveRoom}, "leave");
+    } else {
+      return React.DOM.button( {onClick:this.joinRoom}, "join");
+    }
+  },
   onKeyDown: function(e){
     if(e.keyCode === 13 && !e.shiftKey){
       this.sendMessage()
@@ -10101,13 +10198,11 @@ module.exports = React.createClass({
     rawMessages = rawMessages  || [];
     return React.DOM.div(null, Nav( {me:this.props.me}),
     React.DOM.div( {className:"container"}, 
-      React.DOM.h3(null, this.props.room.get('name'), React.DOM.button( {onClick:this.joinRoom}, "join"),
-                  React.DOM.button( {onClick:this.leaveRoom}, "leave")
-      ),
+      React.DOM.h3(null, this.props.room.get('name'), this.leaveJoinButton()),
       React.DOM.div( {className:"row"}, 
         ContactList( {rooms:this.props.rooms, room:this.props.room}),
         React.DOM.div( {className:"chat col-md-9 com-sm-7"}, 
-          ParticipantsList(null  ),
+          ParticipantsList( {room:this.props.room}),
           MessagesList( {items:rawMessages, ref:"messagesList"} ),
           React.DOM.div( {className:"form"}, 
             React.DOM.textarea( {onChange:this.handleTyping, 
@@ -10126,12 +10221,17 @@ module.exports = React.createClass({
 });
 require.register("JSChat/reacts/Contact.js", function(exports, require, module){
 /** @jsx React.DOM */
+var ContactModel = require('../models/Contact');
+
 module.exports = React.createClass({
+  mixins: [require('./BackboneMixin')],
+  getBackboneModels : function(){
+    return [this.props.user]
+  },
   render: function(){
-    return React.DOM.div(null, 
-      React.DOM.img( {src:this.props.pic}),
-      React.DOM.span( {className:this.props.contact_status}),
-      React.DOM.span( {className:"contactName"}, this.props.contact_name)
+    var github = this.props.user && this.props.user.get('github');
+    return React.DOM.span( {className:  "label label-default"}, 
+      github && (github.displayName || '@' + github.username)
     )
   }
 });
@@ -10335,10 +10435,18 @@ module.exports = React.createClass({
 require.register("JSChat/reacts/ParticipantsList.js", function(exports, require, module){
 /** @jsx React.DOM */
 var Contact = require('./Contact');
+var ContactFactory = require('../models/ContactFactory');
+
+var ContactItem = function(item){
+  var user = ContactFactory.getContactModel(item);
+  return Contact( {user:  user});
+}
 
 module.exports = React.createClass({
   render: function(){
-    return React.DOM.div( {className:"participants"}, "Participants",Contact(null))
+    var participants = this.props.room.toJSON();
+    participants.users = participants.users||[];
+    return React.DOM.div( {className:"participants"}, participants.users.map(ContactItem))
   }
 });
 
@@ -10349,7 +10457,7 @@ var backbone = require('exoskeleton');
 var Me = require('./models/Me');
 //var RoomModel = require('./models/Room');
 var Rooms = require('./models/Rooms');
-Me.fetch();
+
 
 var router = backbone.Router.extend({
   routes: {
@@ -10358,67 +10466,51 @@ var router = backbone.Router.extend({
   },
   main: function () {
     var Home = require('./reacts/Home');
+    Me.fetch();
     React.unmountComponentAtNode(document.body.children[0]);
     React.renderComponent(Home( {me:Me, rooms:new Rooms()}), document.body.children[0]);
   },
   room: function (id){
     console.log('room', id);
-    if(Me.get('_id')){
-      React.unmountComponentAtNode(document.body.children[0]);
-      var ChatRoom = require('./reacts/ChatRoom');
-      var Room = require('./models/Room');
-      
-      var Messages = require('./models/Messages');
-      var messages = new Messages(null, {roomId: id});
+    Me.fetch({success: gotProfile, error: gotProfile});
+    function gotProfile(){
+      if(Me.get('_id')){
+        React.unmountComponentAtNode(document.body.children[0]);
+        var ChatRoom = require('./reacts/ChatRoom');
+        var Room = require('./models/Room');
+        
+        var Messages = require('./models/Messages');
+        var messages = new Messages(null, {roomId: id});
 
-      var component = React.renderComponent(ChatRoom( {me:Me, 
-        room:  new Room({id : id}),
-        messages:  messages,
-        rooms:  new Rooms()} ),
-      document.body.children[0]);
+        var component = React.renderComponent(ChatRoom( {me:Me, 
+          room:  new Room({id : id}),
+          messages:  messages,
+          rooms:  new Rooms()} ),
+        document.body.children[0]);
 
-      component.refresh();
+        component.refresh();
 
-      backbone.socket.addEventListener("message", function(data){
-        try{
-          data = JSON.parse(data);
-        }catch(e){
-          console.log('cant parse data', data);
-        }
-        if(data._rid == id){
-          messages.push(data);
-          component.refs.messagesList.scrollToBottom();
-        }
-      });
-    } else {
-      var Login = require('./reacts/Login');
-      React.renderComponent(Login(null), document.body.children[0]);
+        backbone.socket.addEventListener("message", function(data){
+          try{
+            data = JSON.parse(data);
+          }catch(e){
+            console.log('cant parse data', data);
+          }
+          if(data._rid == id){
+            messages.push(data);
+            component.refs.messagesList.scrollToBottom();
+          }
+        });
+      } else {
+        var Login = require('./reacts/Login');
+        React.renderComponent(Login(null), document.body.children[0]);
+      }
     }
   }
 });
 module.exports = new router();
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/socker.client.js");
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/index.js");
 require.alias("edjafarov-socker/socker.client.js", "socker-client/index.js");
@@ -10482,6 +10574,8 @@ require.alias("paulmillr-exoskeleton/exoskeleton.js", "paulmillr-exoskeleton/ind
 
 
 
+
+
 require.alias("IScroll/iscroll.js", "JSChat/deps/IScroll/iscroll.js");
 require.alias("IScroll/iscroll.js", "JSChat/deps/IScroll/index.js");
 require.alias("IScroll/iscroll.js", "IScroll/index.js");
@@ -10492,6 +10586,28 @@ require.alias("davy/davy.js", "JSChat/deps/davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("JSChat/Main.js", "JSChat/index.js");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 var scripts = document.getElementsByTagName('script');
 for(var i=0; i < scripts.length; i++){
   var dataMain = scripts[i].getAttribute('data-main');
