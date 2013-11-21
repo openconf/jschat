@@ -10027,26 +10027,16 @@ module.exports = new Profile();
 });
 require.register("JSChat/models/Message.js", function(exports, require, module){
 var Exo = require('exoskeleton');
+var ContactFactory = require('./ContactFactory');
 
 var Message = Exo.Model.extend({
   initialize: function(){
     this.transformData();
-    this.formatMessage();
     this.on('change', this.transformData.bind(this));
-    this.on('change', this.formatMessage.bind(this));
   },
   transformData: function(){
     if(this.get('_id')) this.date = new Date(parseInt(this.get('_id').slice(0,8), 16)*1000);
-  },
-  formatMessage: function(){
-    if(!this.get('_id')) return;
-    var dateString = [this.date.getHours(), this.date.getMinutes()].join(":");
-    this.formattedMessage = "[" + dateString + "] " + (this.__user && this.__user.name) + ": " + this.get('text');
-  },
-  bindUser: function(user){
-    this.__user = user;
-    user.on('change', this.formatMessage.bind(this));
-    this.formatMessage();
+    if(this.get('uid') && !this.__user) this.__user = ContactFactory.getContactModel(this.get('uid'));
   }
 })
 
@@ -10440,17 +10430,18 @@ module.exports = function(itemClass){
       });
       // populate User model inside object
       this.props.messages.models.forEach(function(model){
+        console.log(model);
         populateUser(model,this)
       }.bind(this));
       this.props.messages.on('change add remove', function(){
         this.props.messages.models.forEach(function(model){
-          if(!model.__user || !model.__user.get('id')) populateUser(model, this);
+          if(model.__user && !model.__user.injected) populateUser(model, this);
         }.bind(this));
-      }.bind(this))
+      }.bind(this));
+
       function populateUser(message, component){
-        var user = ContactFactory.getContactModel(message.get('uid'));
-        message.bindUser(user);
-        component.injectModel(user);
+        message.__user.injected = true;
+        component.injectModel(message.__user);
       };
       /*
       this.lastScrollHeight = this.iscroll.scrollerHeight;
@@ -10600,28 +10591,6 @@ var router = backbone.Router.extend({
 module.exports = new router();
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/socker.client.js");
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/index.js");
 require.alias("edjafarov-socker/socker.client.js", "socker-client/index.js");
@@ -10697,6 +10666,28 @@ require.alias("davy/davy.js", "JSChat/deps/davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("JSChat/Main.js", "JSChat/index.js");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 var scripts = document.getElementsByTagName('script');
 for(var i=0; i < scripts.length; i++){
   var dataMain = scripts[i].getAttribute('data-main');

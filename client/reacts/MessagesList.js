@@ -43,17 +43,18 @@ module.exports = function(itemClass){
       });
       // populate User model inside object
       this.props.messages.models.forEach(function(model){
+        console.log(model);
         populateUser(model,this)
       }.bind(this));
       this.props.messages.on('change add remove', function(){
         this.props.messages.models.forEach(function(model){
-          if(!model.__user || !model.__user.get('id')) populateUser(model, this);
+          if(model.__user && !model.__user.injected) populateUser(model, this);
         }.bind(this));
-      }.bind(this))
+      }.bind(this));
+
       function populateUser(message, component){
-        var user = ContactFactory.getContactModel(message.get('uid'));
-        message.bindUser(user);
-        component.injectModel(user);
+        message.__user.injected = true;
+        component.injectModel(message.__user);
       };
       /*
       this.lastScrollHeight = this.iscroll.scrollerHeight;
