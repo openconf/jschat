@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 20-11-2013
+* 21-11-2013
 */
 
 
@@ -9930,7 +9930,12 @@ var Exo = require('exoskeleton');
 var Contact = Exo.Model.extend({
   urlRoot: "/api/users",
   initialize: function(){
-    console.log("Initialize USERS");
+    this.transformData();
+    this.on('change', this.transformData.bind(this));
+  },
+  transformData: function(){
+    var github = this.get('github');
+    this.name = github && (github.displayName || '@' + github.username);
   }
 })
 
@@ -9969,7 +9974,9 @@ module.exports = {
   }
 }
 
-
+/**
+ * on change of collection, get all elements and put them in chache if required
+ */
 function processCollection(){
   _(this.models).each(function(contact){
     var modelId = contact.get('id');
@@ -10023,7 +10030,23 @@ var Exo = require('exoskeleton');
 
 var Message = Exo.Model.extend({
   initialize: function(){
-    console.log("Initialize Room");
+    this.transformData();
+    this.formatMessage();
+    this.on('change', this.transformData.bind(this));
+    this.on('change', this.formatMessage.bind(this));
+  },
+  transformData: function(){
+    if(this.get('_id')) this.date = new Date(parseInt(this.get('_id').slice(0,8), 16)*1000);
+  },
+  formatMessage: function(){
+    if(!this.get('_id')) return;
+    var dateString = [this.date.getHours(), this.date.getMinutes()].join(":");
+    this.formattedMessage = "[" + dateString + "] " + (this.__user && this.__user.name) + ": " + this.get('text');
+  },
+  bindUser: function(user){
+    this.__user = user;
+    user.on('change', this.formatMessage.bind(this));
+    this.formatMessage();
   }
 })
 
@@ -10045,6 +10068,31 @@ var MessageCollection = Exo.Collection.extend({
 })
 
 module.exports = MessageCollection;
+
+});
+require.register("JSChat/models/ModelMixin.js", function(exports, require, module){
+module.exports = {
+  __syncedModels: [],
+  componentDidMount: function() {
+  // Whenever there may be a change in the Backbone data, trigger a reconcile.
+    this.getBackboneModels().forEach(this.injectModel, this);
+  },
+  componentWillUnmount: function() {
+  // Ensure that we clean up any dangling references when the component is
+    // destroyed.
+    console.log("DESTROYER");
+    this.__syncedModels.forEach(function(model) {
+      model.off(null, model.__updater, this);
+    }, this);
+  },
+  injectModel: function(model){
+    if(!~this.__syncedModels.indexOf(model)){
+      var updater = this.forceUpdate.bind(this, null);
+      model.__updater = updater;
+      model.on('add change remove', updater, this);
+    }
+  }
+};
 
 });
 require.register("JSChat/models/Room.js", function(exports, require, module){
@@ -10108,13 +10156,8 @@ var ContactList = require('./ContactList');
 var ParticipantsList = require('./ParticipantsList');
 var ContactFactory = require('../models/ContactFactory');
 var MessagesList = require('./MessagesList')(function(item){
-  if(!item._id) return;
-  var user = ContactFactory.getContactModel(item.uid);
-  var github = user && user.get('github');
-  var name = github && (github.displayName || '@' + github.username);
-  var date = new Date(parseInt(item._id.slice(0,8), 16)*1000);
-  var dateString = [date.getHours(), date.getMinutes()].join(":");
-    return React.DOM.div( {className:"msg"}, "[",dateString,"] ", name,": ", item.text)
+  if(!item.get('_id')) return;
+    return React.DOM.div( {className:"msg"}, item.formattedMessage)
   });
 var MessageModel = require('../models/Message');
 var backbone = require('exoskeleton');
@@ -10124,21 +10167,17 @@ var _ = require('underscore');
 
 module.exports = React.createClass({
   mixins: [require('./BackboneMixin')],
-  getInitialState: function(){
-    return {
-      textBoxValue: ''
-    }
-  },
   handleTyping: function(evt){
-    this.setState({textBoxValue: evt.target.value});
+    this.__textBoxValue = evt.target.value;
   },
   sendMessage: function(){
     this.props.messages.create(new MessageModel({
-      text: this.state.textBoxValue
+      text: this.__textBoxValue
       }),{
       success: function(){
-        this.setState({textBoxValue:''});
+        this.refs.textbox.getDOMNode().value = '';
         this.refs.messagesList.scrollToBottom(200);
+        this.refs.messagesList.forceUpdate();
       }.bind(this)
     });
   },
@@ -10161,7 +10200,6 @@ module.exports = React.createClass({
   getBackboneModels : function(){
     return [
             this.props.room,
-            this.props.messages,
             this.props.rooms,
             this.props.me
             ]
@@ -10193,9 +10231,6 @@ module.exports = React.createClass({
     }
   },
   render: function(){
-    var rawMessages = this.props.messages && 
-      this.props.messages.toJSON();
-    rawMessages = rawMessages  || [];
     return React.DOM.div(null, Nav( {me:this.props.me}),
     React.DOM.div( {className:"container"}, 
       React.DOM.h3(null, this.props.room.get('name'), this.leaveJoinButton()),
@@ -10203,11 +10238,13 @@ module.exports = React.createClass({
         ContactList( {rooms:this.props.rooms, room:this.props.room}),
         React.DOM.div( {className:"chat col-md-9 com-sm-7"}, 
           ParticipantsList( {room:this.props.room}),
-          MessagesList( {items:rawMessages, ref:"messagesList"} ),
+          MessagesList(  
+            {messages:this.props.messages, 
+            ref:"messagesList"} ),
           React.DOM.div( {className:"form"}, 
             React.DOM.textarea( {onChange:this.handleTyping, 
-                  value:this.state.textBoxValue, 
-                  disabled:!this.meJoinedTheRoom(), onKeyDown:this.onKeyDown})
+              disabled:!this.meJoinedTheRoom(), 
+              onKeyDown:this.onKeyDown, ref:"textbox"})
           )
         )
       )
@@ -10330,10 +10367,16 @@ module.exports = React.createClass({
 });
 require.register("JSChat/reacts/MessagesList.js", function(exports, require, module){
 /** @jsx React.DOM */
+var ContactFactory = require('../models/ContactFactory');
+
 var IScroll = require('IScroll');
 var GETTING_TO_CONST = 5;
 module.exports = function(itemClass){
   return React.createClass({
+    mixins: [require('../models/ModelMixin')],
+    getBackboneModels: function(){
+      return [this.props.messages]
+    },
     lastScrollPosition: null,
     iscroll: null,
     scrollDirectionDown: true,
@@ -10366,7 +10409,20 @@ module.exports = function(itemClass){
         mouseWheel: true,
         scrollbars: true
       });
-      
+      // populate User model inside object
+      this.props.messages.models.forEach(function(model){
+        populateUser(model,this)
+      }.bind(this));
+      this.props.messages.on('change add remove', function(){
+        this.props.messages.models.forEach(function(model){
+          if(!model.__user || !model.__user.get('id')) populateUser(model, this);
+        }.bind(this));
+      }.bind(this))
+      function populateUser(message, component){
+        var user = ContactFactory.getContactModel(message.get('uid'));
+        message.bindUser(user);
+        component.injectModel(user);
+      };
       /*
       this.lastScrollHeight = this.iscroll.scrollerHeight;
       /*var checkPosition = setInterval(function(){
@@ -10396,7 +10452,7 @@ module.exports = function(itemClass){
       return React.DOM.div( {className:"messagesList"}, 
         React.DOM.div( {onScroll: this.notify}, 
           React.DOM.div( {id:"scroller"} , 
-            this.props.items && this.props.items.map(itemClass)
+            this.props.messages && this.props.messages.models.map(itemClass)
           )
         )
       );
@@ -10466,11 +10522,7 @@ backbone.socket.addEventListener("message", function(data){
   }
   if(processMessage){
     processMessage.call(this, data);
-  }/*
-  if(data._rid == id){
-    messages.push(data);
-    component.refs.messagesList.scrollToBottom();
-    }*/
+  }
 });
 var router = backbone.Router.extend({
   routes: {
@@ -10519,6 +10571,28 @@ var router = backbone.Router.extend({
 module.exports = new router();
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/socker.client.js");
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/index.js");
 require.alias("edjafarov-socker/socker.client.js", "socker-client/index.js");
@@ -10594,28 +10668,6 @@ require.alias("davy/davy.js", "JSChat/deps/davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("JSChat/Main.js", "JSChat/index.js");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 var scripts = document.getElementsByTagName('script');
 for(var i=0; i < scripts.length; i++){
   var dataMain = scripts[i].getAttribute('data-main');

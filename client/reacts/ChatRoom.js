@@ -3,13 +3,8 @@ var ContactList = require('./ContactList');
 var ParticipantsList = require('./ParticipantsList');
 var ContactFactory = require('../models/ContactFactory');
 var MessagesList = require('./MessagesList')(function(item){
-  if(!item._id) return;
-  var user = ContactFactory.getContactModel(item.uid);
-  var github = user && user.get('github');
-  var name = github && (github.displayName || '@' + github.username);
-  var date = new Date(parseInt(item._id.slice(0,8), 16)*1000);
-  var dateString = [date.getHours(), date.getMinutes()].join(":");
-    return <div className='msg'>[{dateString}] {name}: {item.text}</div>
+  if(!item.get('_id')) return;
+    return <div className='msg'>{item.formattedMessage}</div>
   });
 var MessageModel = require('../models/Message');
 var backbone = require('exoskeleton');
@@ -19,21 +14,17 @@ var _ = require('underscore');
 
 module.exports = React.createClass({
   mixins: [require('./BackboneMixin')],
-  getInitialState: function(){
-    return {
-      textBoxValue: ''
-    }
-  },
   handleTyping: function(evt){
-    this.setState({textBoxValue: evt.target.value});
+    this.__textBoxValue = evt.target.value;
   },
   sendMessage: function(){
     this.props.messages.create(new MessageModel({
-      text: this.state.textBoxValue
+      text: this.__textBoxValue
       }),{
       success: function(){
-        this.setState({textBoxValue:''});
+        this.refs.textbox.getDOMNode().value = '';
         this.refs.messagesList.scrollToBottom(200);
+        this.refs.messagesList.forceUpdate();
       }.bind(this)
     });
   },
@@ -56,7 +47,6 @@ module.exports = React.createClass({
   getBackboneModels : function(){
     return [
             this.props.room,
-            this.props.messages,
             this.props.rooms,
             this.props.me
             ]
@@ -88,9 +78,6 @@ module.exports = React.createClass({
     }
   },
   render: function(){
-    var rawMessages = this.props.messages && 
-      this.props.messages.toJSON();
-    rawMessages = rawMessages  || [];
     return <div><Nav me={this.props.me}/>
     <div className="container">
       <h3>{this.props.room.get('name')} {this.leaveJoinButton()}</h3>
@@ -98,11 +85,13 @@ module.exports = React.createClass({
         <ContactList rooms={this.props.rooms} room={this.props.room}/>
         <div className="chat col-md-9 com-sm-7">
           <ParticipantsList room={this.props.room}/>
-          <MessagesList items={rawMessages} ref="messagesList" />
+          <MessagesList  
+            messages={this.props.messages} 
+            ref="messagesList" />
           <div className="form">
             <textarea onChange={this.handleTyping} 
-                  value={this.state.textBoxValue} 
-                  disabled={!this.meJoinedTheRoom()} onKeyDown={this.onKeyDown}></textarea>
+              disabled={!this.meJoinedTheRoom()} 
+              onKeyDown={this.onKeyDown} ref="textbox"></textarea>
           </div>
         </div>
       </div>

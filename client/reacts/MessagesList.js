@@ -1,8 +1,14 @@
 /** @jsx React.DOM */
+var ContactFactory = require('../models/ContactFactory');
+
 var IScroll = require('IScroll');
 var GETTING_TO_CONST = 5;
 module.exports = function(itemClass){
   return React.createClass({
+    mixins: [require('../models/ModelMixin')],
+    getBackboneModels: function(){
+      return [this.props.messages]
+    },
     lastScrollPosition: null,
     iscroll: null,
     scrollDirectionDown: true,
@@ -35,7 +41,20 @@ module.exports = function(itemClass){
         mouseWheel: true,
         scrollbars: true
       });
-      
+      // populate User model inside object
+      this.props.messages.models.forEach(function(model){
+        populateUser(model,this)
+      }.bind(this));
+      this.props.messages.on('change add remove', function(){
+        this.props.messages.models.forEach(function(model){
+          if(!model.__user || !model.__user.get('id')) populateUser(model, this);
+        }.bind(this));
+      }.bind(this))
+      function populateUser(message, component){
+        var user = ContactFactory.getContactModel(message.get('uid'));
+        message.bindUser(user);
+        component.injectModel(user);
+      };
       /*
       this.lastScrollHeight = this.iscroll.scrollerHeight;
       /*var checkPosition = setInterval(function(){
@@ -65,7 +84,7 @@ module.exports = function(itemClass){
       return <div className="messagesList">
         <div onScroll ={this.notify}>
           <div id="scroller" >
-            {this.props.items && this.props.items.map(itemClass)}
+            {this.props.messages && this.props.messages.models.map(itemClass)}
           </div>
         </div>
       </div>;

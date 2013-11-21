@@ -12,11 +12,7 @@ backbone.socket.addEventListener("message", function(data){
   }
   if(processMessage){
     processMessage.call(this, data);
-  }/*
-  if(data._rid == id){
-    messages.push(data);
-    component.refs.messagesList.scrollToBottom();
-    }*/
+  }
 });
 var router = backbone.Router.extend({
   routes: {

@@ -29,7 +29,9 @@ module.exports = {
   }
 }
 
-
+/**
+ * on change of collection, get all elements and put them in chache if required
+ */
 function processCollection(){
   _(this.models).each(function(contact){
     var modelId = contact.get('id');
