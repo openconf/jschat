@@ -10063,6 +10063,7 @@ var MessageCollection = Exo.Collection.extend({
   },
   initialize: function(models, options){
     this.roomId = options.roomId;
+
   },
   model: MessageModel
 })
@@ -10155,9 +10156,37 @@ require.register("JSChat/reacts/ChatRoom.js", function(exports, require, module)
 var ContactList = require('./ContactList');
 var ParticipantsList = require('./ParticipantsList');
 var ContactFactory = require('../models/ContactFactory');
-var MessagesList = require('./MessagesList')(function(item){
+var MessagesList = require('./MessagesList')(function(item, i, items){
   if(!item.get('_id')) return;
-    return React.DOM.div( {className:"msg"}, item.formattedMessage)
+  var user = function(message, previous){
+    if(previous && previous.__user && message.__user && previous.__user 
+       && message.__user === previous.__user) {
+      return;
+       }
+    if(!message.__user) return;
+    var data = message.__user.get('github');
+    var avatar = data && data._json.avatar_url;
+    return React.DOM.div( {className:"msg user"}, 
+      React.DOM.div( {className:"avatar"}, 
+        React.DOM.img( {src:avatar})
+      ),
+      React.DOM.div( {className:"nick text"}, 
+        message.__user.name,": "
+      )
+    )
+  }
+  return React.DOM.div(null, 
+    user(item, items[i-1]),
+    React.DOM.div( {className:"msg"}, 
+      React.DOM.div( {className:"time"}, 
+        item.date && ([item.date.getHours(), item.date.getMinutes()].join(":"))
+      ),
+      React.DOM.div( {className:"text"}, 
+        item.get('text') 
+      )
+
+    )
+  )
   });
 var MessageModel = require('../models/Message');
 var backbone = require('exoskeleton');

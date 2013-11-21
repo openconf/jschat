@@ -26,8 +26,36 @@
   >div{
     margin: 0 10px;
   }
-  .msg + .msg{
-    margin-top: 5px;
+  .msg{
+    &.user{
+      margin-bottom: .1em;
+    }
+    margin-bottom: 1em;
+    font-size: 1.1em;
+    .avatar{
+      width: 40px;
+      float: left;
+      img {
+        width: 30px;
+        height: 30px;
+      }
+    }
+    .nick {
+      font-weight: bold;
+      color: rgb(135, 141, 159);
+    }
+    .time{
+      width: 60px;
+      float: right;
+      color: rgb(135, 141, 159);
+    }
+    .text{
+      width: 85%;
+      padding-left: 40px;
+    }
+    +.msg{
+      margin-top: 5px;
+    }
   }
 }
 

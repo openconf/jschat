@@ -2,9 +2,37 @@
 var ContactList = require('./ContactList');
 var ParticipantsList = require('./ParticipantsList');
 var ContactFactory = require('../models/ContactFactory');
-var MessagesList = require('./MessagesList')(function(item){
+var MessagesList = require('./MessagesList')(function(item, i, items){
   if(!item.get('_id')) return;
-    return <div className='msg'>{item.formattedMessage}</div>
+  var user = function(message, previous){
+    if(previous && previous.__user && message.__user && previous.__user 
+       && message.__user === previous.__user) {
+      return;
+       }
+    if(!message.__user) return;
+    var data = message.__user.get('github');
+    var avatar = data && data._json.avatar_url;
+    return <div className="msg user">
+      <div className="avatar">
+        <img src={avatar}/>
+      </div>
+      <div className="nick text">
+        {message.__user.name}:
+      </div>
+    </div>
+  }
+  return <div>
+    {user(item, items[i-1])}
+    <div className='msg'>
+      <div className="time">
+        {item.date && ([item.date.getHours(), item.date.getMinutes()].join(":"))}
+      </div>
+      <div className="text">
+        {item.get('text')} 
+      </div>
+
+    </div>
+  </div>
   });
 var MessageModel = require('../models/Message');
 var backbone = require('exoskeleton');

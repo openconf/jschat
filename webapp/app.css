@@ -2780,6 +2780,34 @@ td.visible-print {
 .messagesList > div {
   margin: 0 10px;
 }
+.messagesList .msg {
+  margin-bottom: 1em;
+  font-size: 1.1em;
+}
+.messagesList .msg.user {
+  margin-bottom: .1em;
+}
+.messagesList .msg .avatar {
+  width: 40px;
+  float: left;
+}
+.messagesList .msg .avatar img {
+  width: 30px;
+  height: 30px;
+}
+.messagesList .msg .nick {
+  font-weight: bold;
+  color: #878d9f;
+}
+.messagesList .msg .time {
+  width: 60px;
+  float: right;
+  color: #878d9f;
+}
+.messagesList .msg .text {
+  width: 85%;
+  padding-left: 40px;
+}
 .messagesList .msg + .msg {
   margin-top: 5px;
 }
