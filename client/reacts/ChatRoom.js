@@ -2,6 +2,9 @@
 var ContactList = require('./ContactList');
 var ParticipantsList = require('./ParticipantsList');
 var ContactFactory = require('../models/ContactFactory');
+var notification = require('../services/notification');
+
+// item rendering im Messages list
 var MessagesList = require('./MessagesList')(function(item, i, items){
   if(!item.get('_id')) return;
   var user = function(message, previous){
@@ -57,6 +60,7 @@ module.exports = React.createClass({
     });
   },
   joinRoom: function(){
+    notification.access()
     this.props.room.join({
       success: function(model, response){
         this.props.me.fetch()
@@ -113,7 +117,7 @@ module.exports = React.createClass({
         <ContactList rooms={this.props.rooms} room={this.props.room}/>
         <div className="chat col-md-9 com-sm-7">
           <ParticipantsList room={this.props.room}/>
-          <MessagesList  
+          <MessagesList 
             messages={this.props.messages} 
             ref="messagesList" />
           <div className="form">

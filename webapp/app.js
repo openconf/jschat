@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 21-11-2013
+* 22-11-2013
 */
 
 
@@ -10146,6 +10146,9 @@ require.register("JSChat/reacts/ChatRoom.js", function(exports, require, module)
 var ContactList = require('./ContactList');
 var ParticipantsList = require('./ParticipantsList');
 var ContactFactory = require('../models/ContactFactory');
+var notification = require('../services/notification');
+
+// item rendering im Messages list
 var MessagesList = require('./MessagesList')(function(item, i, items){
   if(!item.get('_id')) return;
   var user = function(message, previous){
@@ -10201,6 +10204,7 @@ module.exports = React.createClass({
     });
   },
   joinRoom: function(){
+    notification.access()
     this.props.room.join({
       success: function(model, response){
         this.props.me.fetch()
@@ -10257,7 +10261,7 @@ module.exports = React.createClass({
         ContactList( {rooms:this.props.rooms, room:this.props.room}),
         React.DOM.div( {className:"chat col-md-9 com-sm-7"}, 
           ParticipantsList( {room:this.props.room}),
-          MessagesList(  
+          MessagesList( 
             {messages:this.props.messages, 
             ref:"messagesList"} ),
           React.DOM.div( {className:"form"}, 
@@ -10533,6 +10537,7 @@ var backbone = require('exoskeleton');
 var Me = require('./models/Me');
 //var RoomModel = require('./models/Room');
 var Rooms = require('./models/Rooms');
+var notification = require('./services/notification');
 var processMessage;
 backbone.socket.addEventListener("message", function(data){
   try{
@@ -10556,7 +10561,6 @@ var router = backbone.Router.extend({
     React.renderComponent(Home( {me:Me, rooms:new Rooms()}), document.body.children[0]);
   },
   room: function (id){
-    console.log('room', id);
     Me.fetch({success: gotProfile, error: gotProfile});
     function gotProfile(){
       if(Me.get('_id')){
@@ -10572,11 +10576,23 @@ var router = backbone.Router.extend({
           messages:  messages,
           rooms:  new Rooms()} ),
         document.body.children[0]);
-
         component.refresh();
+
         processMessage = function(data){
           if(data._rid == id && messages && component){
-            messages.push(data);
+            var model = messages.push(data);
+            if(model.__user && model.__user.get('github')){
+              var data = model.__user.get('github');
+              // throw notification
+              if(notification.shouldNotify()){
+                var note = notification.show(data._json.avatar_url, data.displayName || data.username, model.get('text'));
+                if(note){
+                  setTimeout(function(){
+                    note.cancel();
+                  }, 2000);
+                }
+              }
+            }
             component.refs.messagesList.scrollToBottom();
           }
         }
@@ -10589,6 +10605,29 @@ var router = backbone.Router.extend({
   }
 });
 module.exports = new router();
+
+});
+require.register("JSChat/services/notification.js", function(exports, require, module){
+module.exports = {
+  show: function(img, title, text){
+    if (window.webkitNotifications.checkPermission() == 0) {
+      var notification = window.webkitNotifications.createNotification(img, title, text);
+      notification.show();
+      return notification;
+    } else {
+      console.log("No premission for notification");
+    }
+  },
+  access: function(){
+    if (window.webkitNotifications.checkPermission() != 0) {
+      window.webkitNotifications.requestPermission();
+    }
+  },
+  shouldNotify: function(){
+    return document.hidden || document.mozHidden || document.msHidden || document.webkitHidden;
+  }
+}
+
 
 });
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/socker.client.js");

@@ -3,6 +3,7 @@ var backbone = require('exoskeleton');
 var Me = require('./models/Me');
 //var RoomModel = require('./models/Room');
 var Rooms = require('./models/Rooms');
+var notification = require('./services/notification');
 var processMessage;
 backbone.socket.addEventListener("message", function(data){
   try{
@@ -26,7 +27,6 @@ var router = backbone.Router.extend({
     React.renderComponent(<Home me={Me} rooms={new Rooms()}/>, document.body.children[0]);
   },
   room: function (id){
-    console.log('room', id);
     Me.fetch({success: gotProfile, error: gotProfile});
     function gotProfile(){
       if(Me.get('_id')){
@@ -42,11 +42,23 @@ var router = backbone.Router.extend({
           messages = {messages}
           rooms = {new Rooms()} />,
         document.body.children[0]);
-
         component.refresh();
+
         processMessage = function(data){
           if(data._rid == id && messages && component){
-            messages.push(data);
+            var model = messages.push(data);
+            if(model.__user && model.__user.get('github')){
+              var data = model.__user.get('github');
+              // throw notification
+              if(notification.shouldNotify()){
+                var note = notification.show(data._json.avatar_url, data.displayName || data.username, model.get('text'));
+                if(note){
+                  setTimeout(function(){
+                    note.cancel();
+                  }, 2000);
+                }
+              }
+            }
             component.refs.messagesList.scrollToBottom();
           }
         }
