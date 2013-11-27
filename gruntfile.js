@@ -5,7 +5,7 @@ module.exports = function(grunt){
         options:{
           reporter:"spec"
         },
-        src: ["tests/**/authentication.spec.js"]
+        src: ["tests/**/chat.user.spec.js"]
       }
     }
   });

@@ -20,12 +20,11 @@ function readProfile(socket, data, next){
 }
 
 function updateProfile(socket, data, next){
-  var user = UserModel.user(socket.user);
-  user.edit(data, function(err, userUpdated){
+  UserModel.update(socket.user.id, data, function(err, userUpdated){
     if(err){
       return next(err);
     }
-    _.extend(socket.user, userUpdated);
+    _.extend(socket.user, data);
     socket.json(userUpdated);
   });
 }
@@ -42,11 +41,11 @@ function deleteProfile(socket, data, next) {
 }
 
 function readUsers(socket, data, next){
-  UserModel.getAllUsers(function(err, users) {
+  UserModel.get(null, function(err, users) {
     if(err){
       return next(err);
     }
-    socket.json({statusCode: 200, users: users});
+    socket.json(users);
   });
 }
 

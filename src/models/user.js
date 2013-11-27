@@ -53,6 +53,40 @@ module.exports = function(c){
         return cb(err, result);
       }
     },
+    get: function(options, cb){
+      var opts = options || {count: -100}
+      var indexes = [];
+      //options
+      //- from
+      //- count
+      if (!opts.from){
+        return c.get('c:u:ctr', gotStartIndex);
+      }
+      gotStartIndex(null, opts.from);
+      // TODO: write unit tests
+      function gotStartIndex(err, index){
+        var count = opts.count;
+        var multi = c.multi();
+        if(count > 0){
+          for(var i = 0; i < count - 1 || i < 0; i++){
+            indexes.push(+ index + i);
+            multi.hgetall('c:u:' + (+index + i));
+          }
+        } else {
+          for(var i = 0; i <  (- count - 1) && (index - i) > 0; i++){
+            indexes.push(+ index - i);
+            multi.hgetall('c:u:' + (+index - i));
+          }
+        }
+        multi.exec(function(err, results){
+          if (err) return cb(err);
+          results.forEach(function(val, i){
+            results[i].id = indexes[i];
+          });
+          cb(null, results);
+        })
+      }
+    },
     create: function(data, cb){
       c.incr('c:u:ctr', newUserId);
       function newUserId(err, id){

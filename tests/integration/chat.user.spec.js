@@ -25,9 +25,7 @@ users = [{
 
 
 before(function(done){
-  utils.useCollections(['user', 'room'], function(){
-    utils.clean("user", done);
-  })
+  utils.clean(done);
 });
 
 /**
@@ -80,9 +78,10 @@ describe("authenticate user with permissions", function(){
     it('User name/id should be the same', function(){
       for (var i = 0, l = users.length; i < l; i++) {
         var user = users[i],
-            userProfile = userProfiles[i].github;
+        userProfile = userProfiles[i];
+        expect(userProfile).to.have.property('id');
         expect(userProfile).to.have.property('displayName', user.name);
-        expect(userProfile).to.have.property('id', user.id);
+        expect(userProfile).to.have.property('gh_id', String(user.id));
       }
     });
 
@@ -96,7 +95,7 @@ describe("authenticate user with permissions", function(){
         socket = sockets[0];
         socket.serve('READ /api/users', function(err, data){
           expect(err).to.be.not.ok;
-          gotUsers = data.users;
+          gotUsers = data;
           done();
         });
       });
@@ -106,8 +105,8 @@ describe("authenticate user with permissions", function(){
       });
 
       it('names should be the same', function(){
-        var names = _(_(gotUsers).pluck('github')).pluck('displayName');
-        expect(_.difference(names, _(_(userProfiles).pluck('github')).pluck('displayName'))).to.be.empty;
+        var names = _(gotUsers).pluck('displayName');
+        expect(_.difference(names, _(userProfiles).pluck('displayName'))).to.be.empty;
       });
 
     });
@@ -124,8 +123,7 @@ describe("authenticate user with permissions", function(){
         user = userProfiles[0];
         socket = sockets[0];
 
-        _.extend(user.github, {displayName: newName});
-
+        _.extend(user, {displayName: newName});
         socket.serve('UPDATE /api/me', user, function(err, data){
           expect(err).to.be.not.ok;
           socket.serve('READ /api/me', function(err, data){
@@ -138,11 +136,11 @@ describe("authenticate user with permissions", function(){
       });
 
       it('Updated user should have same _id', function(){
-        expect(updatedUser).to.have.property('_id', user._id);
+        expect(updatedUser).to.have.property('id', user.id);
       });
 
       it('Updated user should have new name', function(){
-        expect(updatedUser.github).to.have.property('displayName', newName);
+        expect(updatedUser).to.have.property('displayName', newName);
       });
 
     });
