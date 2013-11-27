@@ -18,7 +18,8 @@ module.exports = function(){
 
   function useCollections(collections, cb){
     async.each(collections, function(item, done){
-      models[item].init(done);
+      //      models[item].init(done);
+      done()
     }, cb);
   };
 
@@ -26,8 +27,8 @@ module.exports = function(){
     return "http://" + nconf.get("server:hostname") + u;
   }
 
-  function clean(collection, cb){
-    models[collection].drop(cb);
+  function clean(cb){
+    models.db.flushdb(cb);
   }
 
   function getSignedUser(cb, u){

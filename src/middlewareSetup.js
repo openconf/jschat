@@ -19,7 +19,7 @@ module.exports = function(app){
     callbackURL: nconf.get('server:callbackurl')
     },
     function(token, tokenSecret, profile, done) {
-      User.getGithubUser(profile, gotUser);
+      User.signupGithubUser(profile, gotUser);
       function gotUser(err, user){
         if(err){
           //WE can handle login errors here
@@ -31,7 +31,7 @@ module.exports = function(app){
   ))
    
   passport.serializeUser(function(user, done) {
-    done(null, user._id);
+    done(null, user.id);
   });
 
   passport.deserializeUser(function(id, done) {

@@ -1,3 +1,19 @@
+var redis = require('redis');
+client = redis.createClient();
+
+client.on('error', function(err){
+  console.log("global redis error" + err);
+});
+
+client.select(nconf.get('redis:db'), function(){
+});
+
+module.exports = {
+  user : require('./user.js')(client),
+  db : client
+}
+
+/*
 var mongojs = require('mongojs');
 var collections = ['user', 'room', 'message'];
 
@@ -13,4 +29,4 @@ module.exports = (function(){
     }
   });
   return models;
-})();
+  })();*/

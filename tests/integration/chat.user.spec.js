@@ -38,7 +38,7 @@ describe("authenticate user with permissions", function(){
   var sockets = [];
 
   beforeEach(function(done){
-    utils.clean("user", function(){
+    utils.clean(function(){
       async.eachSeries(users, function(user, next){
         var jar = utils.authenticate(user, function(){
           var socket = eio('ws://' + nconf.get("server:hostname"),{

@@ -1,3 +1,114 @@
+function transform(profile){
+  var transformer = {
+    'displayName':'displayName',
+    'gh_username':'username',
+    'gh_id':'id',
+    'email': function(config){
+      return config.emails && config.emails[0] && config.emails[0].value;
+    },
+    'gh_avatar': function(config){
+      return config._json && config._json.avatar_url;
+    },
+    'gh_bio': function(config){
+      return config._json && config._json.bio;
+    },
+    'gh_profileUrl': 'profileUrl'
+  };
+  var result = {};
+  Object.keys(transformer).forEach(function(key){
+    var val;
+    if(typeof(transformer[key]) == 'function'){
+      val = transformer[key].call(this, profile);
+    }
+    val = val || profile[transformer[key]];
+    if(val) result[key] = val;
+  });
+  return result;
+}
+
+module.exports = function(c){
+  var user = {
+    signupGithubUser: function(profile, cb){
+      c.get('c:g2id', userExists);
+      function userExists(err, id){
+        //user exists
+        if(id) return user.getById(id, cb);
+        //new user
+        var data = transform(profile);
+        user.create(data, returnUser);
+      }
+      function createG2IDRef(err, id){
+      
+      }
+      function returnUser(err, id){
+        if(err) return cb(err);
+        user.getById(id, cb);
+      }
+    },
+    getById: function(id, cb){
+      return c.hgetall('c:u:' + id, transformToObject);
+      function transformToObject(err, result){
+        if(err) return cb(err);
+        result.id = id;
+        return cb(err, result);
+      }
+    },
+    create: function(data, cb){
+      c.incr('c:u:ctr', newUserId);
+      function newUserId(err, id){
+        c.hmset.apply(c, ['c:u:' + id].concat(r2o(data), [returnId(id)]));
+      }
+      function returnId(id){
+        return function(err){
+          cb(err, id);
+        }
+      }
+    },
+    update: function(id, data, cb){
+      c.hmset.apply(c, ['c:u:' + id].concat(r2o(data), [returnId(id)]));
+      function returnId(id){
+        return function(err){
+          cb(err, id);
+        }
+      }
+    },
+    //do we need it?
+    del: function(id, cb){
+      c.del(id, cb)
+    },
+    id: function(usr){
+      return {
+        joinRoom: function(rid, cb){
+          //need to check if room exists
+          c.sadd('c:u:' + usr.id + ':rooms', rid, joinUserObjectRoom(user, rid, cb));
+        },
+        leaveRoom: function(rid, cb){
+          c.srem('c:u:' + usr.id + ':rooms', rid, leaveUserObjectRoom(user, rid, cb));
+        }
+      }
+    }
+  }
+  return user;
+}
+
+function joinUserObjectRoom(user, roomId, cb){
+  return function(err, dbuser){
+    if(!user.rooms) user.rooms = [];
+    user.rooms.push(roomId);
+    user.rooms = _(user.rooms).uniq();
+    cb(err, dbuser);
+  }
+}
+
+function r2o(data){
+  var result = [];
+  Object.keys(data).forEach(function(key){
+    result = result.concat([key, data[key]]);
+  })
+  return result;
+}
+
+/*
 var mongojs = require('mongojs');
 var _ = require('underscore');
 
@@ -44,8 +155,8 @@ module.exports = function(db){
       var u = {
         joinRoom: function(roomId, cb){
           // check if user already have the roomId in rooms
-          db.user.update({_id: mongojs.ObjectId(user._id), 
-                          'rooms':{ $nin : [ roomId ] }}, 
+          db.user.update({_id: mongojs.ObjectId(user._id),
+                          'rooms':{ $nin : [ roomId ] }},
                             { $push: {'rooms' : roomId}}, joinUserObjectRoom(user, roomId, cb));
         },
         leaveRoom: function(roomId, cb){
@@ -95,3 +206,4 @@ function leaveUserObjectRoom(user, roomId, cb){
     cb(err, dbuser);
   }
 }
+*/

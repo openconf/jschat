@@ -3,6 +3,9 @@
     "url": "localhost:27017/",
     "db": "chat"
   },
+  "redis":{
+    "db": 3
+  },
   "security": {
     "salt":"geekchat"
   },

@@ -1,16 +1,22 @@
 var request = require('request');
 var utils = require('../utils.js')();
 var expect = require('chai').expect;
-var eio = require('engine.io-client');
+var eio = require('../socketClientPatched');
+var sockerClient = require('socker').client;
+
+var user = {
+  name: "User1",
+  id: 100
+}
 
 before(function(done){
-  utils.useCollections(['user','room'], done);
+  utils.clean(done);
 });
 
 describe("github authenticattion", function(){
   before(function(done){
     utils.setUpAuthMock();
-    request.get(utils.url('/auth/github/callback?code=450bab02b3f9bf0dfd44'), {jar: true},gotAuthResponse);
+    request.get(utils.url('/auth/github/callback?code=450bab02b3f9bf0dfd44'), {jar: true}, gotAuthResponse);
     function gotAuthResponse(err, response, body){
       expect(response).to.have.property('statusCode', 200);
       done();
@@ -20,38 +26,26 @@ describe("github authenticattion", function(){
   it("works!", function(done){
     done()
   });
+  
   //todo write test for socket authentication
-  xdescribe("GET /api/me endoint returns user profile", function(){
-    var profile;
+  describe("GET /api/me endoint returns user profile", function(){
+    var profile, socket;
     before(function(done){
-      request.get(utils.url('/api/me'), {jar: true},gotMe);
-      function gotMe(err, response, body){
-        expect(response).to.have.property('statusCode', 200);
-        try{
-          profile = JSON.parse(body);
-        }catch(e){
-          throw new Error("Response is not object");
-        }
-        done();
-      }
+      var jar = utils.authenticate(user, function(){
+        socket = eio('ws://' + nconf.get("server:hostname"),{
+            transports:['websocket'],
+            header : {"Cookie": jar.cookies[0].str}
+        });
+        sockerClient(socket);
+        socket.serve('READ /api/me', function(err, data) {
+          profile = data;
+          done();
+        });
+      });
     })
     it("returns user profile", function(){
-      expect(profile).to.have.property('_id');
-    })
-
-    describe("ENGINE.IO authenticates the user", function(){
-      before(function(done){
-        var socket = eio('ws://' + nconf.get("server:hostname"));
-        socket.on('open', function(){
-          socket.send(JSON.stringify({
-            t:'authorization', user: profile
-          }));
-          done();
-        })
-      });
-      it('shouldn"t fail', function(done){
-        process.nextTick(done);
-      })
+      expect(profile).to.have.property('id');
+      expect(profile).to.have.property('gh_id', '100');
     })
   })
 })

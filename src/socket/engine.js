@@ -47,7 +47,10 @@ module.exports = function(server){
   require('./flows/room.js')(server);
   require('./flows/messaging.js')(server);
   require('./flows/user.js')(server);
-  
+
+  server.on('connection', function(){
+    console.log("CONNECTION");
+  })  
   server.on('connection', eioSession({
     cookieParser:nconf.get('sessions:parser'),
     store: ms,
