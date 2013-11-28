@@ -9934,8 +9934,7 @@ var Contact = Exo.Model.extend({
     this.on('change', this.transformData.bind(this));
   },
   transformData: function(){
-    var github = this.get('github');
-    this.name = github && (github.displayName || '@' + github.username);
+    this.name = this.get('displayName') || '@' + this.get('gh_username');
   }
 })
 
@@ -10035,7 +10034,7 @@ var Message = Exo.Model.extend({
     this.on('change', this.transformData.bind(this));
   },
   transformData: function(){
-    if(this.get('tms')) this.date = new Date(this.get('tms'));
+    if(this.get('tms')) this.date = new Date(+this.get('tms'));
     if(this.get('uid') && !this.__user) this.__user = ContactFactory.getContactModel(this.get('uid'));
   }
 })
@@ -10156,9 +10155,10 @@ var MessagesList = require('./MessagesList')(function(item, i, items){
        && message.__user === previous.__user) {
       return;
        }
-    if(!message.__user) return;
+       if(!message.__user) return;
+       console.log(message)
     var data = message.__user;
-    var avatar = data && data.gh_avatar;
+    var avatar = data.get('gh_avatar');
     return React.DOM.div( {className:"msg user"}, 
       React.DOM.div( {className:"avatar"}, 
         React.DOM.img( {src:avatar})
@@ -10288,9 +10288,8 @@ module.exports = React.createClass({
     return [this.props.user]
   },
   render: function(){
-    var github = this.props.user && this.props.user.get('github');
     return React.DOM.span( {className:  "label label-default"}, 
-      github && (github.displayName || '@' + github.username)
+      this.props.user.name
     )
   }
 });

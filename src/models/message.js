@@ -58,6 +58,7 @@ module.exports = function(c){
               results.forEach(function(val, i){
                 results[i].id = indexes[i];
               });
+              results.reverse();
               cb(null, results);
             })
           }

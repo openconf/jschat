@@ -7,8 +7,7 @@ var Contact = Exo.Model.extend({
     this.on('change', this.transformData.bind(this));
   },
   transformData: function(){
-    var github = this.get('github');
-    this.name = github && (github.displayName || '@' + github.username);
+    this.name = this.get('displayName') || '@' + this.get('gh_username');
   }
 })
 

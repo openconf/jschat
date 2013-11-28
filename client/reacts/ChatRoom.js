@@ -12,9 +12,10 @@ var MessagesList = require('./MessagesList')(function(item, i, items){
        && message.__user === previous.__user) {
       return;
        }
-    if(!message.__user) return;
+       if(!message.__user) return;
+       console.log(message)
     var data = message.__user;
-    var avatar = data && data.gh_avatar;
+    var avatar = data.get('gh_avatar');
     return <div className="msg user">
       <div className="avatar">
         <img src={avatar}/>

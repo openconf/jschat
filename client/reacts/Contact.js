@@ -7,9 +7,8 @@ module.exports = React.createClass({
     return [this.props.user]
   },
   render: function(){
-    var github = this.props.user && this.props.user.get('github');
     return <span className = "label label-default">
-      {github && (github.displayName || '@' + github.username)}
+      {this.props.user.name}
     </span>
   }
 });
