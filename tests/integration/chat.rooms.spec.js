@@ -91,7 +91,6 @@ describe("Socket based authenticate users", function(){
     describe("User should be able to edit the room", function(){
 
       var getRoom;
-
       before(function(done){
         sock1.serve('UPDATE /api/rooms/' + room.id, _.extend(roomMock, {name: 'newName'}), function(err, data){
           expect(err).to.be.not.ok;

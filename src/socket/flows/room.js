@@ -21,14 +21,14 @@ function joinRoom(socket, data, next){
     if(err){
       return next(err);
     }
-    Room.join(socket.params['id'], socket.user._id, roomUpdated);
+    Room.users(socket.user).join(socket.params['id'], roomUpdated);
   }
   function roomUpdated(err, result){
     if(err){
       return next(err);
     }
     socket.join(socket.params['id']);
-    socket.json({result: result});
+    socket.json(result);
   };
 }
 

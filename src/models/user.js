@@ -1,3 +1,5 @@
+var _ = require('underscore');
+
 function transform(profile){
   var transformer = {
     'displayName':'displayName',

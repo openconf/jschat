@@ -12,20 +12,20 @@ function createMessage(socket, data, next){
   // user should be a part of a Message
   // user should not be banned from Message
   //TODO: save message in DB and pass it over to next for broadcasting
-  data.uid = socket.user._id;
-  Message.room(socket.params.id).createMessage(data, next);
+  data.uid = socket.user.id;
+  Message.room({id:socket.params.id}).create(data, next);
 }
 function readMessages(socket, data, next){
   //TODO: read messages from DB 
   //limit em somehow
-  Message.room(socket.params.id).getMessages(function(err, messages){
+  Message.room({id:socket.params.id}).get(null, function(err, messages){
     socket.json(messages);
   });
 }
 
 function readMessage(socket, data, next){
   //TODO: read message from DB
-  Message.room(socket.params.id).getMessage(function(err, message){
+  Message.room({id:socket.params.id}).getById(socket.params.mid, function(err, message){
     socket.json(message);
   });
 }
@@ -35,7 +35,7 @@ function updateMessage(socket, data, next){
   // user who have premissions in the Message
   // user who have global premissions
   //TODO: update message in DB and pass it cmd over to next for broadcasting
-  Message.room(socket.params.id).updateMessage(socket.params.mid,  data, function(err, message){
+  Message.room({id:socket.params.id}).update(socket.params.mid,  data, function(err, message){
     socket.json(message);
     next();
   });
@@ -47,7 +47,7 @@ function deleteMessage(socket, data, next){
   // user who have premissions in the Message
   // user who have global premissions
   //TODO: del message in DB and pass cmd over to next for broadcasting
-  Message.room(socket.params.id).deleteMessage(socket.params.mid, function(err, message){
+  Message.room({id:socket.params.id}).del(socket.params.mid, function(err, message){
     socket.json({"message":"OK"});
     next();
   });

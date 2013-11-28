@@ -3,7 +3,8 @@ var utils = require('../utils.js')();
 var expect = require('chai').expect;
 var eio = require('../socketClientPatched');
 var sockerClient = require('socker').client;
-console.log(require('socker'));
+var roomModel = require('../../src/models').room;
+
 var user1 = {
   name: "User1",
   id: 100
@@ -13,9 +14,7 @@ var user2 = {
   id: 101
 }
 before(function(done){
-  utils.useCollections(['user','room'], function(){
-    utils.clean("user", done);
-  });
+  utils.clean(done);
 });
 
 describe("authenticate users", function(){
@@ -44,22 +43,23 @@ describe("authenticate users", function(){
   describe("create room by last user", function(){
     var room;
     before(function(done){
-      console.log(sock1.serve.toString());
       sock1.serve('CREATE /api/rooms', {name:"testName"}, function(err, data){
         expect(err).to.be.not.ok;
-        room = data;
-        done();
+        roomModel.getById(data, function(err, roomData){
+          room = roomData;
+          done();
+        });
       });
     })
     it('should return _id defined', function(){
-      expect(room).to.have.property('_id');
+      expect(room).to.have.property('id');
     });
 
     describe("join room by user1 and user2", function(){
       before(function(done){
-        sock1.serve('JOIN /api/rooms/' + room._id, function(err){
+        sock1.serve('JOIN /api/rooms/' + room.id, function(err){
           expect(err).to.be.not.ok;
-          sock2.serve('JOIN /api/rooms/' + room._id, function(err){
+          sock2.serve('JOIN /api/rooms/' + room.id, function(err){
             expect(err).to.be.not.ok;
             done();
           });
@@ -72,7 +72,10 @@ describe("authenticate users", function(){
           sock2.on("message", function(data){
             message = JSON.parse(data);
           });
-          sock1.serve('CREATE /api/rooms/' + room._id + '/messages',{ message:"testMessage"}, done);
+          sock1.serve('CREATE /api/rooms/' + room.id + '/messages',{ message:"testMessage"}, function(){
+            console.log(arguments);
+            done();
+          });
         })
         it('the message should be passed', function(done){
           expect(message).to.have.property("message", "testMessage");

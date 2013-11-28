@@ -83,6 +83,16 @@ module.exports = function(c){
     //do we need it?
     del: function(id, cb){
       c.del('c:r:' + id, cb)
+    },
+    users: function(usr){
+      return {
+        join: function(rid, cb){
+          c.sadd('c:r:' + rid + ':p', usr.id, cb);
+        },
+        leave: function(rid, cb){
+          c.srem('c:r:' + rid + ':p', usr.id, cb)
+        }
+      }
     }
   }
   return room;
