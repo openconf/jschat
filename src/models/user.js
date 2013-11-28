@@ -110,7 +110,7 @@ module.exports = function(c){
     del: function(id, cb){
       c.del(id, cb)
     },
-    id: function(usr){
+    of: function(usr){
       return {
         joinRoom: function(rid, cb){
           //need to check if room exists

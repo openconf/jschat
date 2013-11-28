@@ -10,6 +10,7 @@ client.select(nconf.get('redis:db'), function(){
 
 module.exports = {
   user : require('./user.js')(client),
+  room : require('./room.js')(client),
   db : client
 }
 

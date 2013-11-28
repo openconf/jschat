@@ -7,6 +7,7 @@ var _ = require('underscore');
 var sockerClient = require('socker').client;
 var ws = require('ws');
 var rewire = require('rewire');
+var roomModel = require('../../src/models').room;
 
 var user1 = {
   name: "User1",
@@ -19,9 +20,7 @@ var roomMock = {
 };
 
 before(function(done){
-  utils.useCollections(['user', 'room'], function(){
-    utils.clean("room", done);
-  });
+  utils.clean(done);
 });
 
 
@@ -48,15 +47,17 @@ describe("Socket based authenticate users", function(){
     before(function(done){
       sock1.serve('CREATE /api/rooms', roomMock, function(err, data){
         expect(err).to.be.not.ok;
-        room = data;
-        done();
+        roomModel.getById(data, function(err, roomData){
+          room = roomData;
+          done();
+        });
       });
     });
 
     it('returned room should have props from roomMock', function() {
       expect(room).to.have.property('name', roomMock.name);
       expect(room).to.have.property('description', roomMock.description);
-      expect(room).to.have.property('_id');
+      expect(room).to.have.property('id');
     });
 
     it('room should have owner - reference to the user that created the room', function(){
@@ -68,7 +69,7 @@ describe("Socket based authenticate users", function(){
       var getRoom;
 
       before(function(done){
-        sock1.serve('READ /api/rooms/' + room._id, function(err, data){
+        sock1.serve('READ /api/rooms/' + room.id, function(err, data){
           expect(err).to.be.not.ok;
           getRoom = data;
           done();
@@ -78,7 +79,7 @@ describe("Socket based authenticate users", function(){
       it('returned getRoom should have props from roomMock', function(){
         expect(getRoom).to.have.property('name', roomMock.name);
         expect(getRoom).to.have.property('description', roomMock.description);
-        expect(getRoom).to.have.property('_id');
+        expect(getRoom).to.have.property('id');
       });
 
       it('getRoom should have owner - reference to the user that created the room', function(){
@@ -92,9 +93,9 @@ describe("Socket based authenticate users", function(){
       var getRoom;
 
       before(function(done){
-        sock1.serve('UPDATE /api/rooms/' + room._id, _.extend(roomMock, {name: 'newName'}), function(err, data){
+        sock1.serve('UPDATE /api/rooms/' + room.id, _.extend(roomMock, {name: 'newName'}), function(err, data){
           expect(err).to.be.not.ok;
-          sock1.serve('READ /api/rooms/' + room._id, function(err, data){
+          sock1.serve('READ /api/rooms/' + room.id, function(err, data){
             expect(err).to.be.not.ok;
             getRoom = data;
             done();
@@ -113,10 +114,10 @@ describe("Socket based authenticate users", function(){
       var statusCode;
 
       before(function(done){
-        sock1.serve('DELETE /api/rooms/' + room._id, function(err, data){
+        sock1.serve('DELETE /api/rooms/' + room.id, function(err, data){
           expect(err).to.be.not.ok;
           expect(data).to.have.property("statusCode", 200);
-          sock1.serve('READ /api/rooms/' + room._id, function(err, data){
+          sock1.serve('READ /api/rooms/' + room.id, function(err, data){
             expect(err).to.be.not.ok;
             expect(data).to.have.property("statusCode");
             statusCode = data.statusCode;
@@ -134,21 +135,22 @@ describe("Socket based authenticate users", function(){
     describe("create several rooms", function(){
 
       var rooms = ['1','2','3','4'];
-
+      var roomIds = [];
       before(function(done){
         async.each(rooms, function(item, cb){
           var mock = _(roomMock).extend({name : item});
-          sock1.serve('CREATE /api/rooms', mock, cb);
+          sock1.serve('CREATE /api/rooms', mock, function(err, data){
+            roomIds.push(data);
+            cb();
+          });
         }, done);
       });
       // for some reason this fails on travis
       // TODO: fix
-      xdescribe("Should be able to get all the rooms of mine", function(){
-
+      describe("Should be able to get all the rooms of mine", function(){
         var gotRooms;
-
         before(function(done){
-          sock1.serve('READ /api/rooms', function(err, data){
+          sock1.serve('READ /api/rooms', {ids: roomIds}, function(err, data){
             gotRooms = data;
             done();
           });

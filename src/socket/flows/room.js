@@ -15,7 +15,7 @@ module.exports = function(server){
 }
 
 function joinRoom(socket, data, next){
-  var user = UserModel.user(socket.user);
+  var user = UserModel.of(socket.user);
   user.joinRoom(socket.params['id'], userUpdated);
   function userUpdated(err, result){
     if(err){
@@ -57,32 +57,18 @@ function leaveRoom(socket, data, next){
 
 function createRoom(socket, data, next){
   var newRoom = _(data).pick("description", "name");
-  console.log(newRoom);
-  newRoom.owner = socket.user._id;
+  newRoom.owner = socket.user.id;
 
-  Room.create(newRoom, function(err, room){
+  Room.create(newRoom, function(err, id){
     if(err){
       return next(err);
     }
-    socket.json(room);
+    socket.json(id);
   });
 }
 
 function readRooms(socket, data, next){
-  var options;
-  if(data){
-    if(data.ids){
-      var ids = data.ids.map(function(id){
-        return mongojs.ObjectId(id);
-      });
-      options = {
-        _id:{
-          $in: ids
-        }
-      }
-    }
-  }
-  Room.getAll(options, function(err, rooms) {
+  Room.get(data, function(err, rooms) {
     if(err){
       return next(err);
     }
@@ -112,7 +98,7 @@ function updateRoom(socket, data, next){
   var updatedRoom = _(data).pick("description", "name");
   updatedRoom.owner = socket.user._id;
 
-  Room.updateById(socket.params['id'], updatedRoom, function(err, room){
+  Room.update(socket.params['id'], updatedRoom, function(err, room){
     if(err){
       return next(err);
     }
@@ -121,9 +107,9 @@ function updateRoom(socket, data, next){
 }
 
 function deleteRoom(socket, data, next){
-  Room.deleteById(socket.params['id'], function(err){
-    if(err){
-      return next(err);
+  Room.del(socket.params['id'], function(err, removed){
+    if(err && removed == 1){
+      return next(err || "No room key "+ socket.params['id'] +" found");
     }
     socket.json({statusCode: 200});
   });
