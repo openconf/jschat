@@ -1,7 +1,7 @@
 var Exo = require('exoskeleton');
 
 var Profile = Exo.Model.extend({
-  urlRoot: "/api/me",
+  url: "/api/me",
   initialize: function(){
     console.log("Initialize ME");
   }

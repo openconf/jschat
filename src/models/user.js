@@ -31,16 +31,18 @@ function transform(profile){
 module.exports = function(c){
   var user = {
     signupGithubUser: function(profile, cb){
-      c.get('c:g2id', userExists);
+      c.get('c:g2id:' + profile.id, userExists);
       function userExists(err, id){
         //user exists
         if(id) return user.getById(id, cb);
         //new user
         var data = transform(profile);
-        user.create(data, returnUser);
+        user.create(data, createG2IDRef);
       }
       function createG2IDRef(err, id){
-      
+        c.set('c:g2id:' + profile.id, id, function(err){
+          returnUser(err, id);
+        });
       }
       function returnUser(err, id){
         if(err) return cb(err);
@@ -114,6 +116,9 @@ module.exports = function(c){
     },
     of: function(usr){
       return {
+        getRooms: function(cb){
+          c.smembers('c:u:' + usr.id + ':rooms', cb);
+        },
         joinRoom: function(rid, cb){
           //need to check if room exists
           c.sadd('c:u:' + usr.id + ':rooms', rid, joinUserObjectRoom(user, rid, cb));

@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 22-11-2013
+* 28-11-2013
 */
 
 
@@ -10016,7 +10016,7 @@ require.register("JSChat/models/Me.js", function(exports, require, module){
 var Exo = require('exoskeleton');
 
 var Profile = Exo.Model.extend({
-  urlRoot: "/api/me",
+  url: "/api/me",
   initialize: function(){
     console.log("Initialize ME");
   }
@@ -10035,7 +10035,7 @@ var Message = Exo.Model.extend({
     this.on('change', this.transformData.bind(this));
   },
   transformData: function(){
-    if(this.get('_id')) this.date = new Date(parseInt(this.get('_id').slice(0,8), 16)*1000);
+    if(this.get('tms')) this.date = new Date(this.get('tms'));
     if(this.get('uid') && !this.__user) this.__user = ContactFactory.getContactModel(this.get('uid'));
   }
 })
@@ -10096,11 +10096,11 @@ var Room = Exo.Model.extend({
     console.log("Initialize Room");
   },
   join: function(opts){
-    opts = _({url: this.urlRoot + '/' + this.get('_id')}).extend(opts);
+    opts = _({url: this.urlRoot + '/' + this.get('id')}).extend(opts);
     this.sync('join', this, opts);
   },
   leave: function(opts){
-    opts = _({url: this.urlRoot + '/' + this.get('_id')}).extend(opts);
+    opts = _({url: this.urlRoot + '/' + this.get('id')}).extend(opts);
     this.sync('leave', this, opts);
   }
 })
@@ -10150,15 +10150,15 @@ var notification = require('../services/notification');
 
 // item rendering im Messages list
 var MessagesList = require('./MessagesList')(function(item, i, items){
-  if(!item.get('_id')) return;
+  if(!item.get('id')) return;
   var user = function(message, previous){
     if(previous && previous.__user && message.__user && previous.__user 
        && message.__user === previous.__user) {
       return;
        }
     if(!message.__user) return;
-    var data = message.__user.get('github');
-    var avatar = data && data._json.avatar_url;
+    var data = message.__user;
+    var avatar = data && data.gh_avatar;
     return React.DOM.div( {className:"msg user"}, 
       React.DOM.div( {className:"avatar"}, 
         React.DOM.img( {src:avatar})
@@ -10177,7 +10177,6 @@ var MessagesList = require('./MessagesList')(function(item, i, items){
       React.DOM.div( {className:"text"}, 
         item.get('text') 
       )
-
     )
   )
   });
@@ -10303,7 +10302,7 @@ var _ = require('underscore');
 //var Contact = require('./Contact');
 var roomContact = function(data){
   return React.DOM.div( {className:data.current && "current"}, 
-    React.DOM.a( {href:'#room/' + data._id, target:"_self"}, data.name)
+    React.DOM.a( {href:'#room/' + data.id, target:"_self"}, data.name)
   )
 }
 
@@ -10311,7 +10310,7 @@ module.exports = React.createClass({
   render: function(){
     var rooms = this.props.rooms.toJSON();
     var roomId = this.props.room.get('id');
-    var currentRoom = _.findWhere(rooms, {_id: roomId});
+    var currentRoom = _.findWhere(rooms, {id: roomId});
     currentRoom && (currentRoom.current = true);
     return React.DOM.div( {className:"col-sm-4 col-md-2 contactList"}, 
       React.DOM.h3(null, "Rooms"),
@@ -10327,7 +10326,7 @@ var RoomsModel = require('../models/Rooms');
 var room = require('../models/Room');
 var rooms = new RoomsModel();
 var aRoom = function(data){
-  return React.DOM.div(null, React.DOM.a( {href:'#room/' + data._id, target:"_self"}, data.name))
+  return React.DOM.div(null, React.DOM.a( {href:'#room/' + data.id, target:"_self"}, data.name))
   }
   var Nav = require('./Nav.js');
 
@@ -10348,8 +10347,8 @@ module.exports = React.createClass({
     this.props.rooms.create({
       name: this.newRoomName
     }, {
-      success: function(model, roomData){
-        var newRoom = new room(roomData);
+      success: function(model, roomId){
+        var newRoom = new room({id:roomId});
         newRoom.join();
         this.fetchRooms();
       }.bind(this)
@@ -10490,9 +10489,9 @@ require.register("JSChat/reacts/Nav.js", function(exports, require, module){
 module.exports = React.createClass({
   render: function(){
     var user = function(meModel){
-      if(meModel.get('_id')){
+      if(meModel.get('id')){
         return React.DOM.li(null, 
-          React.DOM.a( {href:"#", target:"_self"}, meModel.get('github').displayName)
+          React.DOM.a( {href:"#", target:"_self"}, meModel.get('displayName'))
         );
       } else {
         return React.DOM.li(null, 
@@ -10563,7 +10562,7 @@ var router = backbone.Router.extend({
   room: function (id){
     Me.fetch({success: gotProfile, error: gotProfile});
     function gotProfile(){
-      if(Me.get('_id')){
+      if(Me.get('id')){
         React.unmountComponentAtNode(document.body.children[0]);
         var ChatRoom = require('./reacts/ChatRoom');
         var Room = require('./models/Room');

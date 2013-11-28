@@ -58,7 +58,6 @@ function leaveRoom(socket, data, next){
 function createRoom(socket, data, next){
   var newRoom = _(data).pick("description", "name");
   newRoom.owner = socket.user.id;
-
   Room.create(newRoom, function(err, id){
     if(err){
       return next(err);
@@ -90,7 +89,14 @@ function readRoom(socket, data, next){
     if(err){
       return next(err);
     }
-    room ? socket.json(room) : socket.json({err: 'Room not found', statusCode: 404});
+    if(room) {
+      Room.users().get(room.id, function(err, users){
+        room.users = users;
+        socket.json(room);
+      });
+    } else {
+      socket.json({err: 'Room not found', statusCode: 404});
+    }
   });
 }
 

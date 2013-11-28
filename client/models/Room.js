@@ -7,11 +7,11 @@ var Room = Exo.Model.extend({
     console.log("Initialize Room");
   },
   join: function(opts){
-    opts = _({url: this.urlRoot + '/' + this.get('_id')}).extend(opts);
+    opts = _({url: this.urlRoot + '/' + this.get('id')}).extend(opts);
     this.sync('join', this, opts);
   },
   leave: function(opts){
-    opts = _({url: this.urlRoot + '/' + this.get('_id')}).extend(opts);
+    opts = _({url: this.urlRoot + '/' + this.get('id')}).extend(opts);
     this.sync('leave', this, opts);
   }
 })

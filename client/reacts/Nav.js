@@ -2,9 +2,9 @@
 module.exports = React.createClass({
   render: function(){
     var user = function(meModel){
-      if(meModel.get('_id')){
+      if(meModel.get('id')){
         return <li>
-          <a href="#" target="_self">{meModel.get('github').displayName}</a>
+          <a href="#" target="_self">{meModel.get('displayName')}</a>
         </li>;
       } else {
         return <li>

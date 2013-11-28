@@ -11,14 +11,12 @@ module.exports = function(c){
     },
     get: function(options, cb){
       // set of specific id's
-      console.log(options);
-      if(options.ids){
+      if(options && options.ids){
         var multi = c.multi();
         options.ids.forEach(function(id){
           multi.hgetall('c:r:' + id);
         })
         multi.exec(function(err, results){
-          console.log(results)
           if (err) return cb(err);
           results.forEach(function(val, i){
             results[i].id = options.ids[i];
@@ -28,7 +26,8 @@ module.exports = function(c){
         return;
       }
       // oherwise a range
-      var opts = options || {count: -100}
+      var opts = options || {};
+      opts.count = opts.count || -100;
       var indexes = [];
       //options
       //- from
@@ -86,6 +85,9 @@ module.exports = function(c){
     },
     users: function(usr){
       return {
+        get: function(rid, cb){
+          c.smembers('c:r:' + rid + ':p', cb)
+        },
         join: function(rid, cb){
           c.sadd('c:r:' + rid + ':p', usr.id, cb);
         },

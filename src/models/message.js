@@ -14,7 +14,7 @@ module.exports = function(c){
         },
         get: function(options, cb){
           // set of specific id's
-          if(options.ids){
+          if(options && options.ids){
             var multi = c.multi();
             options.ids.forEach(function(id){
               multi.hgetall('c:r:' + room.id + ':' + id);
@@ -63,9 +63,10 @@ module.exports = function(c){
           }
         },
         create: function(data, cb){
-          c.incr('c:r:' + room.id + ':ctr', newRoomId);
-          function newRoomId(err, id){
-            c.hmset.apply(c, ['c:r:' + room.id + ':' + id].concat(r2o(data), [returnId(id)]));
+          c.incr('c:r:' + room.id + ':ctr', newMsgId);
+          function newMsgId(err, id){
+            data.tms = +new Date;
+            c.hmset.apply(c, ['c:r:' + room.id + ':m:' + id].concat(r2o(data), [returnId(id)]));
           }
           function returnId(id){
             return function(err){
@@ -74,7 +75,7 @@ module.exports = function(c){
           }
         },
         update: function(id, data, cb){
-          c.hmset.apply(c, ['c:r:' + room.id + ':' + id].concat(r2o(data), [returnId(id)]));
+          c.hmset.apply(c, ['c:r:' + room.id + ':m:' + id].concat(r2o(data), [returnId(id)]));
           function returnId(id){
             return function(err){
               cb(err, id);
@@ -83,7 +84,7 @@ module.exports = function(c){
         },
         //do we need it?
         del: function(id, cb){
-          c.del('c:r:' + room.id + ':' + id, cb)
+          c.del('c:r:' + room.id + ':m:' + id, cb)
         }
       }
     }

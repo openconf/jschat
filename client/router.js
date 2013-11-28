@@ -29,7 +29,7 @@ var router = backbone.Router.extend({
   room: function (id){
     Me.fetch({success: gotProfile, error: gotProfile});
     function gotProfile(){
-      if(Me.get('_id')){
+      if(Me.get('id')){
         React.unmountComponentAtNode(document.body.children[0]);
         var ChatRoom = require('./reacts/ChatRoom');
         var Room = require('./models/Room');

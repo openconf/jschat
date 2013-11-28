@@ -6,15 +6,15 @@ var notification = require('../services/notification');
 
 // item rendering im Messages list
 var MessagesList = require('./MessagesList')(function(item, i, items){
-  if(!item.get('_id')) return;
+  if(!item.get('id')) return;
   var user = function(message, previous){
     if(previous && previous.__user && message.__user && previous.__user 
        && message.__user === previous.__user) {
       return;
        }
     if(!message.__user) return;
-    var data = message.__user.get('github');
-    var avatar = data && data._json.avatar_url;
+    var data = message.__user;
+    var avatar = data && data.gh_avatar;
     return <div className="msg user">
       <div className="avatar">
         <img src={avatar}/>
@@ -33,7 +33,6 @@ var MessagesList = require('./MessagesList')(function(item, i, items){
       <div className="text">
         {item.get('text')} 
       </div>
-
     </div>
   </div>
   });

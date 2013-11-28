@@ -3,7 +3,7 @@ var RoomsModel = require('../models/Rooms');
 var room = require('../models/Room');
 var rooms = new RoomsModel();
 var aRoom = function(data){
-  return <div><a href={'#room/' + data._id} target="_self">{data.name}</a></div>
+  return <div><a href={'#room/' + data.id} target="_self">{data.name}</a></div>
   }
   var Nav = require('./Nav.js');
 
@@ -24,8 +24,8 @@ module.exports = React.createClass({
     this.props.rooms.create({
       name: this.newRoomName
     }, {
-      success: function(model, roomData){
-        var newRoom = new room(roomData);
+      success: function(model, roomId){
+        var newRoom = new room({id:roomId});
         newRoom.join();
         this.fetchRooms();
       }.bind(this)

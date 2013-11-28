@@ -25,7 +25,10 @@ module.exports = function(app){
           //WE can handle login errors here
           return done(err);
         }
-        return done(null, user)
+        User.of(user).getRooms(function(err, rooms){
+          user.rooms = rooms;
+          return done(null, user)
+        });
       }
     }
   ))
@@ -35,7 +38,13 @@ module.exports = function(app){
   });
 
   passport.deserializeUser(function(id, done) {
-    User.getById(id, done);
+    //TODO: it might need refactoring to lower redis calls
+    User.getById(id, function(err, user){
+      User.of(user).getRooms(function(err, rooms){
+        user.rooms = rooms;
+        return done(null, user)
+      });
+    });
   });
 
   //compress all output
