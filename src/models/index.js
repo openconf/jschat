@@ -14,8 +14,10 @@ if(options.password){
   })
 }
 
+if(!process.env.REDISTOGO_URL){
 client.select(options.database || nconf.get('redis:db'), function(){
 });
+}
 
 
 
