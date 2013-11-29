@@ -13,7 +13,6 @@ var MessagesList = require('./MessagesList')(function(item, i, items){
       return;
        }
        if(!message.__user) return;
-       console.log(message)
     var data = message.__user;
     var avatar = data.get('gh_avatar');
     return <div className="msg user">
@@ -93,6 +92,7 @@ module.exports = React.createClass({
     })
   },
   meJoinedTheRoom: function(){
+    console.log(this.props.me, this.props.room);
     return !!_(this.props.me.get('rooms')).find(function(id){
       return this.props.room.get('id') === id;
     }.bind(this));
@@ -118,7 +118,7 @@ module.exports = React.createClass({
         <div className="chat col-md-9 com-sm-7">
           <ParticipantsList room={this.props.room}/>
           <MessagesList 
-            messages={this.props.messages} 
+            messages={this.props.messages}
             ref="messagesList" />
           <div className="form">
             <textarea onChange={this.handleTyping} 

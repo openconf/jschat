@@ -36,14 +36,14 @@ function leaveRoom(socket, data, next){
   //TODO: implement
   // remove from DB
   //remove from socket
-  var user = UserModel.user(socket.user);
+  var user = UserModel.of(socket.user);
   user.leaveRoom(socket.params['id'], userUpdated);
 
   function userUpdated(err, result){
     if(err){
       return next(err);
     }
-    Room.leave(socket.params['id'], socket.user._id, roomUpdated);
+    Room.users(socket.user).leave(socket.params['id'], roomUpdated);
   }
   
   function roomUpdated(err, result){
@@ -51,7 +51,7 @@ function leaveRoom(socket, data, next){
       return next(err);
     }
     socket.leave(socket.params['id']);
-    socket.json({result: result});
+    socket.json(result);
   };
 }
 

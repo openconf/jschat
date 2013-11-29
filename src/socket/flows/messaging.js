@@ -13,7 +13,12 @@ function createMessage(socket, data, next){
   // user should not be banned from Message
   //TODO: save message in DB and pass it over to next for broadcasting
   data.uid = socket.user.id;
-  Message.room({id:socket.params.id}).create(data, next);
+  Message.room({id:socket.params.id}).create(data, messageCreated);
+  function messageCreated(err, id){
+    if(err) return next(err);
+    data.id = id;
+    next();
+  }
 }
 function readMessages(socket, data, next){
   //TODO: read messages from DB 

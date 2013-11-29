@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 28-11-2013
+* 29-11-2013
 */
 
 
@@ -10156,7 +10156,6 @@ var MessagesList = require('./MessagesList')(function(item, i, items){
       return;
        }
        if(!message.__user) return;
-       console.log(message)
     var data = message.__user;
     var avatar = data.get('gh_avatar');
     return React.DOM.div( {className:"msg user"}, 
@@ -10236,6 +10235,7 @@ module.exports = React.createClass({
     })
   },
   meJoinedTheRoom: function(){
+    console.log(this.props.me, this.props.room);
     return !!_(this.props.me.get('rooms')).find(function(id){
       return this.props.room.get('id') === id;
     }.bind(this));
@@ -10261,7 +10261,7 @@ module.exports = React.createClass({
         React.DOM.div( {className:"chat col-md-9 com-sm-7"}, 
           ParticipantsList( {room:this.props.room}),
           MessagesList( 
-            {messages:this.props.messages, 
+            {messages:this.props.messages,
             ref:"messagesList"} ),
           React.DOM.div( {className:"form"}, 
             React.DOM.textarea( {onChange:this.handleTyping, 

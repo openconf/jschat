@@ -121,10 +121,10 @@ module.exports = function(c){
         },
         joinRoom: function(rid, cb){
           //need to check if room exists
-          c.sadd('c:u:' + usr.id + ':rooms', rid, joinUserObjectRoom(user, rid, cb));
+          c.sadd('c:u:' + usr.id + ':rooms', rid, joinUserObjectRoom(usr, rid, cb));
         },
         leaveRoom: function(rid, cb){
-          c.srem('c:u:' + usr.id + ':rooms', rid, leaveUserObjectRoom(user, rid, cb));
+          c.srem('c:u:' + usr.id + ':rooms', rid, leaveUserObjectRoom(usr, rid, cb));
         }
       }
     }
@@ -137,6 +137,16 @@ function joinUserObjectRoom(user, roomId, cb){
     if(!user.rooms) user.rooms = [];
     user.rooms.push(roomId);
     user.rooms = _(user.rooms).uniq();
+    cb(err, dbuser);
+  }
+}
+function leaveUserObjectRoom(user, roomId, cb){
+  return function(err, dbuser){
+    if(!user.rooms) user.rooms = [];
+    var index = user.rooms.indexOf(roomId);
+    if(!!~index){
+      user.rooms.splice(index, 1);
+    }
     cb(err, dbuser);
   }
 }
