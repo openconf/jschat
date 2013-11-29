@@ -45,13 +45,18 @@ var router = backbone.Router.extend({
         component.refresh();
 
         processMessage = function(data){
-          if(data._rid == id && messages && component){
+          if(data.rid == id && messages && component){
             var model = messages.push(data);
-            if(model.__user && model.__user.get('github')){
-              var data = model.__user.get('github');
+            if(model.__user){
+              var data = model.__user;
               // throw notification
+              console.log(data);
               if(notification.shouldNotify()){
-                var note = notification.show(data._json.avatar_url, data.displayName || data.username, model.get('text'));
+                var note = notification.show(data.get('gh_avatar'), data.get('displayName') || data.get('gh_username'), model.get('text'));
+                // focus on window if notification is clicked
+                note.onclick = function(){
+                  window.focus();
+                }
                 if(note){
                   setTimeout(function(){
                     note.cancel();

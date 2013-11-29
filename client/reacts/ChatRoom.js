@@ -23,12 +23,18 @@ var MessagesList = require('./MessagesList')(function(item, i, items){
         {message.__user.name}:
       </div>
     </div>
-  }
+    }
+    var date = {
+      hh:item.date.getHours(),
+      mm:item.date.getMinutes()
+    }
+    if(date.hh < 10) date.hh = '0' + date.hh;
+    if(date.mm < 10) date.mm = '0' + date.mm;
   return <div>
     {user(item, items[i-1])}
     <div className='msg'>
       <div className="time">
-        {item.date && ([item.date.getHours(), item.date.getMinutes()].join(":"))}
+        {item.date && ([date.hh, date.mm].join(":"))}
       </div>
       <div className="text">
         {item.get('text')} 

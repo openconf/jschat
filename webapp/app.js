@@ -10166,12 +10166,18 @@ var MessagesList = require('./MessagesList')(function(item, i, items){
         message.__user.name,": "
       )
     )
-  }
+    }
+    var date = {
+      hh:item.date.getHours(),
+      mm:item.date.getMinutes()
+    }
+    if(date.hh < 10) date.hh = '0' + date.hh;
+    if(date.mm < 10) date.mm = '0' + date.mm;
   return React.DOM.div(null, 
     user(item, items[i-1]),
     React.DOM.div( {className:"msg"}, 
       React.DOM.div( {className:"time"}, 
-        item.date && ([item.date.getHours(), item.date.getMinutes()].join(":"))
+        item.date && ([date.hh, date.mm].join(":"))
       ),
       React.DOM.div( {className:"text"}, 
         item.get('text') 
@@ -10490,7 +10496,7 @@ module.exports = React.createClass({
     var user = function(meModel){
       if(meModel.get('id')){
         return React.DOM.li(null, 
-          React.DOM.a( {href:"#", target:"_self"}, meModel.get('displayName'))
+          React.DOM.a( {href:"#", target:"_self"}, meModel.get('displayName') || meModel.get('gh_username'))
         );
       } else {
         return React.DOM.li(null, 
@@ -10577,13 +10583,18 @@ var router = backbone.Router.extend({
         component.refresh();
 
         processMessage = function(data){
-          if(data._rid == id && messages && component){
+          if(data.rid == id && messages && component){
             var model = messages.push(data);
-            if(model.__user && model.__user.get('github')){
-              var data = model.__user.get('github');
+            if(model.__user){
+              var data = model.__user;
               // throw notification
+              console.log(data);
               if(notification.shouldNotify()){
-                var note = notification.show(data._json.avatar_url, data.displayName || data.username, model.get('text'));
+                var note = notification.show(data.get('gh_avatar'), data.get('displayName') || data.get('gh_username'), model.get('text'));
+                // focus on window if notification is clicked
+                note.onclick = function(){
+                  window.focus();
+                }
                 if(note){
                   setTimeout(function(){
                     note.cancel();

@@ -4,7 +4,7 @@ module.exports = React.createClass({
     var user = function(meModel){
       if(meModel.get('id')){
         return <li>
-          <a href="#" target="_self">{meModel.get('displayName')}</a>
+          <a href="#" target="_self">{meModel.get('displayName') || meModel.get('gh_username')}</a>
         </li>;
       } else {
         return <li>

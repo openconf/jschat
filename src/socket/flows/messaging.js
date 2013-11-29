@@ -17,6 +17,7 @@ function createMessage(socket, data, next){
   function messageCreated(err, id){
     if(err) return next(err);
     data.id = id;
+    data.rid = socket.params.id;
     next();
   }
 }
