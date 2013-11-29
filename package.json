@@ -29,7 +29,8 @@
     "socker": "~0.1.6",
     "engine.io-session": "0.0.3",
     "connect": "~2.11.0",
-    "redis": "~0.9.0"
+    "redis": "~0.9.0",
+    "parse-redis-url": "0.0.1"
   },
   "devDependencies": {
     "compy": "~0.1.22",

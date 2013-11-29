@@ -1,12 +1,23 @@
 var redis = require('redis');
-client = redis.createClient();
+
+var redisUrl = require('parse-redis-url')(redis);
+var options = redisUrl.parse(process.env.REDISTOGO_URL);
+
+var client = redis.createClient(options.port, options.host);
 
 client.on('error', function(err){
   console.log("global redis error" + err);
 });
+if(options.password){
+  client.auth(options.password, function(err){
+    console.log(err);
+  })
+}
 
-client.select(nconf.get('redis:db'), function(){
+client.select(options.database || nconf.get('redis:db'), function(){
 });
+
+
 
 module.exports = {
   user : require('./user.js')(client),
