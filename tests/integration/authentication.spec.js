@@ -22,11 +22,11 @@ describe("github authenticattion", function(){
       done();
     }
   })
-  
+
   it("works!", function(done){
     done()
   });
-  
+
   //todo write test for socket authentication
   describe("GET /api/me endoint returns user profile", function(){
     var profile, socket;
