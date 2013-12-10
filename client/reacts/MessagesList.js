@@ -86,6 +86,7 @@ module.exports = function(itemClass){
         <div onScroll ={this.notify}>
           <div id="scroller" >
             {this.props.messages && this.props.messages.models.map(itemClass)}
+            <div className="writingBar">{this.props.writingStatus}</div>
           </div>
         </div>
       </div>;

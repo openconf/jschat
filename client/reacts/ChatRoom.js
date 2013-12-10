@@ -53,6 +53,14 @@ module.exports = React.createClass({
   handleTyping: function(evt){
     this.__textBoxValue = evt.target.value;
   },
+  sendWriting: function(){
+    if(this.__writing) return;
+    this.__writing = true;
+    this.props.messages.writing();
+    setTimeout(function(){
+      this.__writing = false;
+    }.bind(this), 2000);
+  },
   sendMessage: function(){
     this.props.messages.create(new MessageModel({
       text: this.__textBoxValue
@@ -98,7 +106,6 @@ module.exports = React.createClass({
     })
   },
   meJoinedTheRoom: function(){
-    console.log(this.props.me, this.props.room);
     return !!_(this.props.me.get('rooms')).find(function(id){
       return this.props.room.get('id') === id;
     }.bind(this));
@@ -112,10 +119,12 @@ module.exports = React.createClass({
   },
   onKeyDown: function(e){
     if(e.keyCode === 13 && !e.shiftKey){
-      this.sendMessage()
+      this.sendMessage();
     }
+    this.sendWriting();
   },
   render: function(){
+    console.log(this.props.room, ">>", "rendering");
     return <div><Nav me={this.props.me}/>
     <div className="container">
       <h3>{this.props.room.get('name')} {this.leaveJoinButton()}</h3>
@@ -125,7 +134,8 @@ module.exports = React.createClass({
           <ParticipantsList room={this.props.room}/>
           <MessagesList 
             messages={this.props.messages}
-            ref="messagesList" />
+            ref="messagesList" 
+            writingStatus = {writingStatus(this.props.room.get('writing_users'))}/>
           <div className="form">
             <textarea onChange={this.handleTyping} 
               disabled={!this.meJoinedTheRoom()} 
@@ -138,4 +148,13 @@ module.exports = React.createClass({
   }
 })
 
+function writingStatus(usersWrite){
+  return <span>
+    {usersWrite && usersWrite.map(renderUserWrite)}
+    {usersWrite && !_(usersWrite).isEmpty() && " typing ..."}
+  </span>
+}
 
+function renderUserWrite(user, i){
+  return <span>{i !== 0 && ','}{user.name}</span>
+}

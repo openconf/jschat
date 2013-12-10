@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 29-11-2013
+* 10-12-2013
 */
 
 
@@ -215,7 +215,6 @@ var cbStack = {};
 //socker-client
 var sockerClient = function(socket){
   socket.addEventListener('message', function(data){
-    console.log(data);
     try{
       data = JSON.parse(data);
     }catch(e){
@@ -228,11 +227,10 @@ var sockerClient = function(socket){
       if(data.type === "ERROR"){
         callback.call(this, data.__raw);
       } else {
-        delete data.type;
-        delete data.__cbid;
-        callback.call(this, null, data.__raw);
+        callback.call(this, null, data.__raw, data.type);
       }
     }
+
   });
   socket.serve = function(path, data, callback){
     if(typeOfArgument(data) === "[object Function]"){
@@ -10054,6 +10052,9 @@ var MessageCollection = Exo.Collection.extend({
     this.roomId = options.roomId;
 
   },
+  writing: function(){
+    this.sync('writing', this);
+  },
   model: MessageModel
 })
 
@@ -10088,10 +10089,13 @@ module.exports = {
 require.register("JSChat/models/Room.js", function(exports, require, module){
 var Exo = require('exoskeleton');
 var _ = require('underscore');
-
+var ContactFactory = require('./ContactFactory.js');
 var Room = Exo.Model.extend({
   urlRoot: "/api/rooms",
   initialize: function(){
+    this.on('change', function(){
+      console.log('changed!!');
+    });
     console.log("Initialize Room");
   },
   join: function(opts){
@@ -10101,6 +10105,31 @@ var Room = Exo.Model.extend({
   leave: function(opts){
     opts = _({url: this.urlRoot + '/' + this.get('id')}).extend(opts);
     this.sync('leave', this, opts);
+  },
+  writingHash:{},
+  writing: function(userId){
+    //WORK stopped here
+    if(!userId) return;
+    var user = ContactFactory.getContactModel(userId);
+    var users = this.get('writing_users');
+    if(!users) users = [];
+    var userFound = _(users).find(function(usr){
+      return usr.get('id') == user.get('id');
+    });
+    if(!userFound){
+      users = users.concat(user);
+      this.set('writing_users', users);
+    } else {
+      clearTimeout(this.writingHash[userId]);
+    }
+    
+    this.writingHash[userId] = setTimeout(function ejectUser(){
+      var ejected = _(this.get('writing_users')).reject(function(usr){
+        return usr.get('id') == user.get('id');
+      });
+      this.set('writing_users', ejected);
+    }.bind(this), 3000)
+    
   }
 })
 
@@ -10196,6 +10225,14 @@ module.exports = React.createClass({
   handleTyping: function(evt){
     this.__textBoxValue = evt.target.value;
   },
+  sendWriting: function(){
+    if(this.__writing) return;
+    this.__writing = true;
+    this.props.messages.writing();
+    setTimeout(function(){
+      this.__writing = false;
+    }.bind(this), 2000);
+  },
   sendMessage: function(){
     this.props.messages.create(new MessageModel({
       text: this.__textBoxValue
@@ -10241,7 +10278,6 @@ module.exports = React.createClass({
     })
   },
   meJoinedTheRoom: function(){
-    console.log(this.props.me, this.props.room);
     return !!_(this.props.me.get('rooms')).find(function(id){
       return this.props.room.get('id') === id;
     }.bind(this));
@@ -10255,10 +10291,12 @@ module.exports = React.createClass({
   },
   onKeyDown: function(e){
     if(e.keyCode === 13 && !e.shiftKey){
-      this.sendMessage()
+      this.sendMessage();
     }
+    this.sendWriting();
   },
   render: function(){
+    console.log(this.props.room, ">>", "rendering");
     return React.DOM.div(null, Nav( {me:this.props.me}),
     React.DOM.div( {className:"container"}, 
       React.DOM.h3(null, this.props.room.get('name'), this.leaveJoinButton()),
@@ -10268,7 +10306,8 @@ module.exports = React.createClass({
           ParticipantsList( {room:this.props.room}),
           MessagesList( 
             {messages:this.props.messages,
-            ref:"messagesList"} ),
+            ref:"messagesList", 
+            writingStatus:  writingStatus(this.props.room.get('writing_users'))}),
           React.DOM.div( {className:"form"}, 
             React.DOM.textarea( {onChange:this.handleTyping, 
               disabled:!this.meJoinedTheRoom(), 
@@ -10281,7 +10320,16 @@ module.exports = React.createClass({
   }
 })
 
+function writingStatus(usersWrite){
+  return React.DOM.span(null, 
+    usersWrite && usersWrite.map(renderUserWrite),
+    usersWrite && !_(usersWrite).isEmpty() && " typing ..."
+  )
+}
 
+function renderUserWrite(user, i){
+  return React.DOM.span(null, i !== 0 && ',',user.name)
+}
 
 });
 require.register("JSChat/reacts/Contact.js", function(exports, require, module){
@@ -10480,7 +10528,8 @@ module.exports = function(itemClass){
       return React.DOM.div( {className:"messagesList"}, 
         React.DOM.div( {onScroll: this.notify}, 
           React.DOM.div( {id:"scroller"} , 
-            this.props.messages && this.props.messages.models.map(itemClass)
+            this.props.messages && this.props.messages.models.map(itemClass),
+            React.DOM.div( {className:"writingBar"}, this.props.writingStatus)
           )
         )
       );
@@ -10543,14 +10592,14 @@ var Me = require('./models/Me');
 var Rooms = require('./models/Rooms');
 var notification = require('./services/notification');
 var processMessage;
-backbone.socket.addEventListener("message", function(data){
+backbone.socket.addEventListener("message", function(data, type){
   try{
     data = JSON.parse(data);
   }catch(e){
     console.log('cant parse data', data);
   }
   if(processMessage){
-    processMessage.call(this, data);
+    processMessage.call(this, data, type);
   }
 });
 var router = backbone.Router.extend({
@@ -10574,15 +10623,20 @@ var router = backbone.Router.extend({
         
         var Messages = require('./models/Messages');
         var messages = new Messages(null, {roomId: id});
-
+        var room = new Room({id : id});
         var component = React.renderComponent(ChatRoom( {me:Me, 
-          room:  new Room({id : id}),
+          room:  room,
           messages:  messages,
           rooms:  new Rooms()} ),
         document.body.children[0]);
         component.refresh();
 
-        processMessage = function(data){
+        processMessage = function(data, type){
+          if(data.type == "WRITING"){
+            console.log(data);
+            room.writing(data.uid);
+            return;
+          }
           if(data.rid == id && messages && component){
             var model = messages.push(data);
             if(model.__user){
@@ -10639,6 +10693,28 @@ module.exports = {
 
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/socker.client.js");
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/index.js");
 require.alias("edjafarov-socker/socker.client.js", "socker-client/index.js");
@@ -10714,28 +10790,6 @@ require.alias("davy/davy.js", "JSChat/deps/davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("JSChat/Main.js", "JSChat/index.js");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 var scripts = document.getElementsByTagName('script');
 for(var i=0; i < scripts.length; i++){
   var dataMain = scripts[i].getAttribute('data-main');

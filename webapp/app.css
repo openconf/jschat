@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 28-11-2013
+* 10-12-2013
 */
 
 fieldset {
@@ -2822,4 +2822,7 @@ td.visible-print {
   background-color: #aeb9d0;
   margin: 0 -15px;
   padding: 0 15px;
+}
+.writingBar {
+  height: 1.5em;
 }

@@ -9,6 +9,9 @@ var MessageCollection = Exo.Collection.extend({
     this.roomId = options.roomId;
 
   },
+  writing: function(){
+    this.sync('writing', this);
+  },
   model: MessageModel
 })
 

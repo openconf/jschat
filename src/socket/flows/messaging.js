@@ -6,6 +6,13 @@ module.exports = function(server){
   server.sock.when('READ /api/rooms/:id/messages/:mid', readMessage);
   server.sock.when('UPDATE /api/rooms/:id/messages/:mid', updateMessage, roomBroadcast);
   server.sock.when('DELETE /api/rooms/:id/messages/:mid', deleteMessage, roomBroadcast);
+  server.sock.when('WRITING /api/rooms/:id/messages', writingMessage, roomBroadcast);
+}
+
+function writingMessage(socket, data, next){
+  data.uid = socket.user.id;
+  data.type = "WRITING";
+  next();
 }
 
 function createMessage(socket, data, next){

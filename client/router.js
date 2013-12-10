@@ -5,14 +5,14 @@ var Me = require('./models/Me');
 var Rooms = require('./models/Rooms');
 var notification = require('./services/notification');
 var processMessage;
-backbone.socket.addEventListener("message", function(data){
+backbone.socket.addEventListener("message", function(data, type){
   try{
     data = JSON.parse(data);
   }catch(e){
     console.log('cant parse data', data);
   }
   if(processMessage){
-    processMessage.call(this, data);
+    processMessage.call(this, data, type);
   }
 });
 var router = backbone.Router.extend({
@@ -36,15 +36,20 @@ var router = backbone.Router.extend({
         
         var Messages = require('./models/Messages');
         var messages = new Messages(null, {roomId: id});
-
+        var room = new Room({id : id});
         var component = React.renderComponent(<ChatRoom me={Me} 
-          room = {new Room({id : id})}
+          room = {room}
           messages = {messages}
           rooms = {new Rooms()} />,
         document.body.children[0]);
         component.refresh();
 
-        processMessage = function(data){
+        processMessage = function(data, type){
+          if(data.type == "WRITING"){
+            console.log(data);
+            room.writing(data.uid);
+            return;
+          }
           if(data.rid == id && messages && component){
             var model = messages.push(data);
             if(model.__user){
