@@ -25,7 +25,8 @@
       "bscomp/navbar": "*",
       "bscomp/navs": "*",
       "bscomp/labels": "*",
-      "bscomp/buttons": "*"
+      "bscomp/buttons": "*",
+      "chjj/marked": "*"
     },
     "local": [
       "IScroll",

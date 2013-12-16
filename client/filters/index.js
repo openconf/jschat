@@ -1,6 +1,6 @@
 module.exports = [
-  require('./nextLineFilter.js'),
   require('./youtubeFilter.js'),
   require('./vimeoFilter.js'),
+  require('./markdownFilter.js'),
   require('./urlFilter.js'),
 ]
