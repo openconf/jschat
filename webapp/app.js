@@ -9914,12 +9914,79 @@ backbone.socket.onopen = function(){
 module.exports = app;
 
 });
-require.register("JSChat/models/ChatRoomModel.js", function(exports, require, module){
-module.exports = function(){
-  //data structure:
-  // - me/contacts
-  // - room/info
-  // - room/messages
+require.register("JSChat/filters/index.js", function(exports, require, module){
+module.exports = [
+  require('./nextLineFilter.js'),
+  require('./youtubeFilter.js'),
+  require('./vimeoFilter.js'),
+  require('./urlFilter.js'),
+]
+
+});
+require.register("JSChat/filters/nextLineFilter.js", function(exports, require, module){
+var nl = /\n/g;
+module.exports = function(text){
+  return text.replace(nl, "<br/>");
+}
+
+});
+require.register("JSChat/filters/urlFilter.js", function(exports, require, module){
+module.exports = function(text){
+  return  urlify(text);
+}
+
+function urlify(text) {
+  var urlRegex = /([^'">]|^)(https?:\/\/[^\s<]+)/g;
+  var result = text.replace(urlRegex, function(url) {
+    return '<a href="' + url + '">' + url + '</a>';
+  });
+  return result;
+}
+
+});
+require.register("JSChat/filters/vimeoFilter.js", function(exports, require, module){
+module.exports = function(text){
+  var result = vimeo_parser(text);
+  if(result) text += embed(result);
+  return text;
+}
+
+
+function embed(id){
+  return '<iframe src="//player.vimeo.com/video/'+id+'" width="640" height="390"  frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>'
+}
+function vimeo_parser(url){
+  var regExp = /http:\/\/(www\.)?vimeo.com\/(\d+)($|\/)/;
+
+  var match = url.match(regExp);
+
+  if (match&&match[2]){
+    return match[2];
+  }else{
+    return false;
+  }
+}
+
+});
+require.register("JSChat/filters/youtubeFilter.js", function(exports, require, module){
+module.exports = function(text){
+  var result = youtube_parser(text);
+  if(result) text += embed(result);
+  return text;
+}
+
+
+function embed(id){
+  return '<iframe id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/' + id + '?autoplay=0" frameborder="0"></iframe>'
+}
+function youtube_parser(url){
+  var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+  var match = url.match(regExp);
+  if (match&&match[7].length==11){
+    return match[7];
+  }else{
+    return false;
+  }
 }
 
 });
@@ -10026,6 +10093,8 @@ module.exports = new Profile();
 require.register("JSChat/models/Message.js", function(exports, require, module){
 var Exo = require('exoskeleton');
 var ContactFactory = require('./ContactFactory');
+var _ = require('underscore');
+var filters = require('../filters');
 
 var Message = Exo.Model.extend({
   initialize: function(){
@@ -10035,8 +10104,13 @@ var Message = Exo.Model.extend({
   transformData: function(){
     if(this.get('tms')) this.date = new Date(+this.get('tms'));
     if(this.get('uid') && !this.__user) this.__user = ContactFactory.getContactModel(this.get('uid'));
+    if(this.get('text')) this.text = _.reduce(filters, iterator, this.get('text'), this);
   }
 })
+
+function iterator(memo, filter){
+  return filter(memo);
+}
 
 module.exports = Message;
 
@@ -10178,43 +10252,8 @@ var ContactFactory = require('../models/ContactFactory');
 var notification = require('../services/notification');
 
 // item rendering im Messages list
-var MessagesList = require('./MessagesList')(function(item, i, items){
-  if(!item.get('id')) return;
-  var user = function(message, previous){
-    if(previous && previous.__user && message.__user && previous.__user 
-       && message.__user === previous.__user) {
-      return;
-       }
-       if(!message.__user) return;
-    var data = message.__user;
-    var avatar = data.get('gh_avatar');
-    return React.DOM.div( {className:"msg user"}, 
-      React.DOM.div( {className:"avatar"}, 
-        React.DOM.img( {src:avatar})
-      ),
-      React.DOM.div( {className:"nick text"}, 
-        message.__user.name,": "
-      )
-    )
-    }
-    var date = {
-      hh:item.date.getHours(),
-      mm:item.date.getMinutes()
-    }
-    if(date.hh < 10) date.hh = '0' + date.hh;
-    if(date.mm < 10) date.mm = '0' + date.mm;
-  return React.DOM.div(null, 
-    user(item, items[i-1]),
-    React.DOM.div( {className:"msg"}, 
-      React.DOM.div( {className:"time"}, 
-        item.date && ([date.hh, date.mm].join(":"))
-      ),
-      React.DOM.div( {className:"text"}, 
-        item.get('text') 
-      )
-    )
-  )
-  });
+var MessagesList = require('./MessagesList')(require('./Message.js'));
+
 var MessageModel = require('../models/Message');
 var backbone = require('exoskeleton');
 var Nav = require('./Nav.js');
@@ -10457,6 +10496,48 @@ module.exports = React.createClass({
     )
   }
 });
+
+});
+require.register("JSChat/reacts/Message.js", function(exports, require, module){
+/** @jsx React.DOM */
+module.exports = function(item, i, items){
+  if(!item.get('id')) return;
+  var user = function(message, previous){
+    // if message is from same user as previous message
+    if(previous && previous.__user && message.__user && previous.__user 
+       && message.__user === previous.__user) {
+        return;
+       }
+    if(!message.__user) return;
+    
+    var data = message.__user;
+    var avatar = data.get('gh_avatar');
+    return React.DOM.div( {className:"msg user"}, 
+      React.DOM.div( {className:"avatar"}, 
+        React.DOM.img( {src:avatar})
+      ),
+      React.DOM.div( {className:"nick text"}, 
+        message.__user.name,": "
+      )
+    )
+  }
+  var date = {
+    hh:item.date.getHours(),
+    mm:item.date.getMinutes()
+  }
+  if(date.hh < 10) date.hh = '0' + date.hh;
+  if(date.mm < 10) date.mm = '0' + date.mm;
+  return React.DOM.div(null, 
+    user(item, items[i-1]),
+    React.DOM.div( {className:"msg"}, 
+      React.DOM.div( {className:"time"}, 
+        item.date && ([date.hh, date.mm].join(":"))
+      ),
+      React.DOM.div( {className:"text", dangerouslySetInnerHTML:{__html:item.text}}
+      )
+    )
+  )
+}
 
 });
 require.register("JSChat/reacts/MessagesList.js", function(exports, require, module){
