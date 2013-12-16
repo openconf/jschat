@@ -24,7 +24,8 @@
       "bscomp/variables": "*",
       "bscomp/navbar": "*",
       "bscomp/navs": "*",
-      "bscomp/labels": "*"
+      "bscomp/labels": "*",
+      "bscomp/buttons": "*"
     },
     "local": [
       "IScroll",

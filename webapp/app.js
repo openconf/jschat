@@ -7841,6 +7841,7 @@ _.extend(History.prototype, Events, {
 
 
 
+
 require.register("IScroll/iscroll.js", function(exports, require, module){
 /*! iScroll v5.0.6 ~ (c) 2008-2013 Matteo Spinelli ~ http://cubiq.org/license */
 module.exports = (function (window, document, Math) {
@@ -10379,7 +10380,12 @@ var RoomsModel = require('../models/Rooms');
 var room = require('../models/Room');
 var rooms = new RoomsModel();
 var aRoom = function(data){
-  return React.DOM.div(null, React.DOM.a( {href:'#room/' + data.id, target:"_self"}, data.name))
+  return React.DOM.div( {className:  "col-xs-3"}, 
+    React.DOM.div( {className:"chat-badge"}, 
+      React.DOM.h4(null, React.DOM.a( {href:'#room/' + data.id, target:"_self"}, data.name)),
+      React.DOM.small(null, data.description)
+    )
+  )
   }
   var Nav = require('./Nav.js');
 
@@ -10396,9 +10402,13 @@ module.exports = React.createClass({
   newRoomNameHandle: function(evt){
     this.newRoomName = evt.target.value;
   },
+  newRoomDescHandle: function(evt){
+    this.newRoomDesc = evt.target.value;
+  },
   createRoom: function(evt){
     this.props.rooms.create({
-      name: this.newRoomName
+      name: this.newRoomName,
+      description: this.newRoomDesc
     }, {
       success: function(model, roomId){
         var newRoom = new room({id:roomId});
@@ -10418,12 +10428,21 @@ module.exports = React.createClass({
     this.fetchRooms();
   },
   render: function(){
-    return React.DOM.div(null, Nav( {me:this.props.me}),
-    React.DOM.div( {className:"container"}, 
-      this.state.rooms.map(aRoom),
-      React.DOM.input( {type:"text", onChange:  this.newRoomNameHandle}),
-      React.DOM.button( {onClick:this.createRoom}, "Create")
-    )
+    return React.DOM.div(null, 
+      Nav( {me:this.props.me}),
+      React.DOM.div( {className:"container"}, 
+        React.DOM.div( {className:  "row"}, 
+          this.state.rooms.map(aRoom)
+        ),
+        React.DOM.div( {className: "form-group col-xs-6"}, 
+          React.DOM.h4(null, "create new room"),
+          React.DOM.input( {type:"text", className:"form-control", onChange:  this.newRoomNameHandle, placeholder:"name"}),
+          React.DOM.br(null),
+          React.DOM.textarea( {className:  "form-control", placeholder:"description", onChange:  this.newRoomDescHandle}),
+          React.DOM.br(null),
+          React.DOM.button( {onClick:this.createRoom, className:"btn btn-success"}, "Create")
+        )
+      )
   )
   }
 });
@@ -10693,28 +10712,6 @@ module.exports = {
 
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/socker.client.js");
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/index.js");
 require.alias("edjafarov-socker/socker.client.js", "socker-client/index.js");
@@ -10780,6 +10777,7 @@ require.alias("paulmillr-exoskeleton/exoskeleton.js", "paulmillr-exoskeleton/ind
 
 
 
+
 require.alias("IScroll/iscroll.js", "JSChat/deps/IScroll/iscroll.js");
 require.alias("IScroll/iscroll.js", "JSChat/deps/IScroll/index.js");
 require.alias("IScroll/iscroll.js", "IScroll/index.js");
@@ -10790,6 +10788,29 @@ require.alias("davy/davy.js", "JSChat/deps/davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("JSChat/Main.js", "JSChat/index.js");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 var scripts = document.getElementsByTagName('script');
 for(var i=0; i < scripts.length; i++){
   var dataMain = scripts[i].getAttribute('data-main');

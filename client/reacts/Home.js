@@ -3,7 +3,12 @@ var RoomsModel = require('../models/Rooms');
 var room = require('../models/Room');
 var rooms = new RoomsModel();
 var aRoom = function(data){
-  return <div><a href={'#room/' + data.id} target="_self">{data.name}</a></div>
+  return <div className = "col-xs-3">
+    <div className="chat-badge">
+      <h4><a href={'#room/' + data.id} target="_self">{data.name}</a></h4>
+      <small>{data.description}</small>
+    </div>
+  </div>
   }
   var Nav = require('./Nav.js');
 
@@ -20,9 +25,13 @@ module.exports = React.createClass({
   newRoomNameHandle: function(evt){
     this.newRoomName = evt.target.value;
   },
+  newRoomDescHandle: function(evt){
+    this.newRoomDesc = evt.target.value;
+  },
   createRoom: function(evt){
     this.props.rooms.create({
-      name: this.newRoomName
+      name: this.newRoomName,
+      description: this.newRoomDesc
     }, {
       success: function(model, roomId){
         var newRoom = new room({id:roomId});
@@ -42,12 +51,21 @@ module.exports = React.createClass({
     this.fetchRooms();
   },
   render: function(){
-    return <div><Nav me={this.props.me}/>
-    <div className="container">
-      {this.state.rooms.map(aRoom)}
-      <input type="text" onChange = {this.newRoomNameHandle}/>
-      <button onClick={this.createRoom}>Create</button>
-    </div>
+    return <div>
+      <Nav me={this.props.me}/>
+      <div className="container">
+        <div className = "row">
+          {this.state.rooms.map(aRoom)}
+        </div>
+        <div className= "form-group col-xs-6">
+          <h4>create new room</h4>
+          <input type="text" className="form-control" onChange = {this.newRoomNameHandle} placeholder="name"/>
+          <br/>
+          <textarea className = "form-control" placeholder="description" onChange = {this.newRoomDescHandle}/>
+          <br/>
+          <button onClick={this.createRoom} className="btn btn-success">Create</button>
+        </div>
+      </div>
   </div>
   }
 });
