@@ -13,6 +13,7 @@ The JavaScript community chat.
 
 ## Installation
 Prerequisites:
+  - `redis-server` ([Installation instructions](http://redis.io/topics/quickstart))
   - `node` ~ `0.10.17`
   - `npm` ~ `1.3.8`
 

@@ -77,8 +77,8 @@ module.exports = function(){
     request.get('http://127.0.0.1:8080/auth/github/callback?code=450bab02b3f9bf0dfd44', {jar: u}, cb);
     return u;
   }
-  
-  
+
+
   function setUpAuthMock(user){
     nock('https://github.com:443')
       .post('/login/oauth/access_token', "grant_type=authorization_code&redirect_uri=http%3A%2F%2F127.0.0.1%3A8080%2Fauth%2Fgithub%2Fcallback&client_id=0bb5305f1db7d2816fa3&client_secret=32d469aa1334e0a29caac7a20054fa57c0c26088&type=web_server&code=450bab02b3f9bf0dfd44")
@@ -88,7 +88,7 @@ module.exports = function(){
         'cache-control': 'private, max-age=0, must-revalidate',
         'strict-transport-security': 'max-age=2592000',
         'x-frame-options': 'deny',
-        'set-cookie': 
+        'set-cookie':
         [ 'logged_in=no; domain=.github.com; path=/; expires=Tue, 06-Sep-2033 19:03:42 GMT; secure; HttpOnly',
           'dotcom_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT',
           '_gh_sess=BAh7BjoPc2Vzc2lvbl9pZCIlOTdhYjgyNDU4ZDVkOWM4NzM5NGMxYWMwOTlmMTE2NzM%3D--8fe8511ecbfa197eacb96940fb9a66261d10c57a; path=/; expires=Sun, 01-Jan-2023 00:00:00 GMT; secure; HttpOnly' ],
