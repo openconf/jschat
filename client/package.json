@@ -26,7 +26,8 @@
       "bscomp/navs": "*",
       "bscomp/labels": "*",
       "bscomp/buttons": "*",
-      "chjj/marked": "*"
+      "chjj/marked": "*",
+      "bscomp/jumbotron": "*"
     },
     "local": [
       "IScroll",

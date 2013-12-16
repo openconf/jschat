@@ -2,7 +2,7 @@
 module.exports = React.createClass({
   render: function(){
     var user = function(meModel){
-      if(meModel.get('id')){
+      if(meModel && meModel.get('id')){
         return <li>
           <a href="#" target="_self">{meModel.get('displayName') || meModel.get('gh_username')}</a>
         </li>;

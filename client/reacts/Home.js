@@ -51,6 +51,7 @@ module.exports = React.createClass({
     this.fetchRooms();
   },
   render: function(){
+    console.log(this.props.me);
     return <div>
       <Nav me={this.props.me}/>
       <div className="container">
@@ -63,7 +64,7 @@ module.exports = React.createClass({
           <br/>
           <textarea className = "form-control" placeholder="description" onChange = {this.newRoomDescHandle}/>
           <br/>
-          <button onClick={this.createRoom} className="btn btn-success">Create</button>
+          <button onClick={this.createRoom} className="btn btn-success" disabled={!this.props.me.get('id')}>Create</button>
         </div>
       </div>
   </div>

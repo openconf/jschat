@@ -9029,6 +9029,7 @@ if (typeof exports === 'object') {
 }());
 
 });
+
 require.register("IScroll/iscroll.js", function(exports, require, module){
 /*! iScroll v5.0.6 ~ (c) 2008-2013 Matteo Spinelli ~ http://cubiq.org/license */
 module.exports = (function (window, document, Math) {
@@ -11660,6 +11661,7 @@ module.exports = React.createClass({
     this.fetchRooms();
   },
   render: function(){
+    console.log(this.props.me);
     return React.DOM.div(null, 
       Nav( {me:this.props.me}),
       React.DOM.div( {className:"container"}, 
@@ -11672,7 +11674,7 @@ module.exports = React.createClass({
           React.DOM.br(null),
           React.DOM.textarea( {className:  "form-control", placeholder:"description", onChange:  this.newRoomDescHandle}),
           React.DOM.br(null),
-          React.DOM.button( {onClick:this.createRoom, className:"btn btn-success"}, "Create")
+          React.DOM.button( {onClick:this.createRoom, className:"btn btn-success", disabled:!this.props.me.get('id')}, "Create")
         )
       )
   )
@@ -11682,10 +11684,17 @@ module.exports = React.createClass({
 });
 require.register("JSChat/reacts/Login.js", function(exports, require, module){
 /** @jsx React.DOM */
+var Nav = require('./Nav.js');
 module.exports = React.createClass({
   render: function(){
     return React.DOM.div(null, 
-      React.DOM.a( {href:"/auth/github", target:"_self"}, "Login")
+      Nav(null ),
+      React.DOM.div( {className:"container"}, 
+        React.DOM.div( {className:"jumbotron"}, 
+          React.DOM.h2(null, "Login/signup chat"),
+          React.DOM.a( {className:"btn btn-success", href:"/auth/github", target:"_self"}, "Login with GitHub")
+        )
+      )
     )
   }
 });
@@ -11836,7 +11845,7 @@ require.register("JSChat/reacts/Nav.js", function(exports, require, module){
 module.exports = React.createClass({
   render: function(){
     var user = function(meModel){
-      if(meModel.get('id')){
+      if(meModel && meModel.get('id')){
         return React.DOM.li(null, 
           React.DOM.a( {href:"#", target:"_self"}, meModel.get('displayName') || meModel.get('gh_username'))
         );
@@ -12056,6 +12065,7 @@ require.alias("chjj-marked/lib/marked.js", "JSChat/deps/marked/lib/marked.js");
 require.alias("chjj-marked/lib/marked.js", "JSChat/deps/marked/index.js");
 require.alias("chjj-marked/lib/marked.js", "marked/index.js");
 require.alias("chjj-marked/lib/marked.js", "chjj-marked/index.js");
+
 require.alias("IScroll/iscroll.js", "JSChat/deps/IScroll/iscroll.js");
 require.alias("IScroll/iscroll.js", "JSChat/deps/IScroll/index.js");
 require.alias("IScroll/iscroll.js", "IScroll/index.js");
@@ -12066,6 +12076,7 @@ require.alias("davy/davy.js", "JSChat/deps/davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("JSChat/Main.js", "JSChat/index.js");
+
 
 
 
