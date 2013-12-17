@@ -11486,7 +11486,7 @@ module.exports = React.createClass({
       text: this.__textBoxValue
       }),{
       success: function(){
-        this.refs.textbox.getDOMNode().value = '';
+        this.cleanTextBox();
         this.refs.messagesList.scrollToBottom(200);
         this.refs.messagesList.forceUpdate();
       }.bind(this)
@@ -11537,8 +11537,15 @@ module.exports = React.createClass({
       return React.DOM.button( {onClick:this.joinRoom}, "join");
     }
   },
+  cleanTextBox: function(){
+    this.refs.textbox.getDOMNode().value = '';
+    this.__textBoxValue = '';
+  },
   onKeyDown: function(e){
     if(e.keyCode === 13 && !e.shiftKey){
+      if(!this.__textBoxValue || this.__textBoxValue == "\n") {
+        return this.cleanTextBox();
+      };
       this.sendMessage();
     }
     this.sendWriting();
@@ -11724,7 +11731,6 @@ module.exports = function(item, i, items){
         return;
        }
     if(!message.__user) return;
-    
     var data = message.__user;
     var avatar = data.get('gh_avatar');
     return React.DOM.div( {className:"msg user"}, 
@@ -11736,9 +11742,12 @@ module.exports = function(item, i, items){
       )
     )
   }
-  if(item.type == "JOIN" || item.type == "LEAVE"){
-    
-    return;
+  if(item.get('action') == "JOIN" || item.get('action') == "LEAVE"){
+    return React.DOM.div(null, 
+       React.DOM.div( {className:"nick text"}, 
+        item.__user.name + ' ', React.DOM.span( {dangerouslySetInnerHTML:{__html:item.get('text')}})
+       )
+    );
   }
   if(!item.get('id')) return;
   var date = {

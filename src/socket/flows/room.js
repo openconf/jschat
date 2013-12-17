@@ -34,13 +34,13 @@ function joinRoom(socket, data, next){
 }
 
 function broadcastJoin(socket, data, next){
-  socket.to(socket.params['id']).send({
+  socket.to(socket.params['id']).send(JSON.stringify({
     type: "ROOM_STATUS",
     rid: socket.params['id'],
     uid: socket.user.id,
     text: "joined...",
     action: "JOIN"
-  });
+  }));
 }
 
 function leaveRoom(socket, data, next){
@@ -67,13 +67,13 @@ function leaveRoom(socket, data, next){
   };
 }
 function broadcastLeave(socket, data, next){
-  socket.to(socket.params['id']).send({
+  socket.to(socket.params['id']).send(JSON.stringify({
     type: "ROOM_STATUS",
     rid: socket.params['id'],
     uid: socket.user.id,
     text: "left...",
     action: "LEAVE"
-  });
+  }));
 }
 
 

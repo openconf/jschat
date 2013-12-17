@@ -7,7 +7,6 @@ module.exports = function(item, i, items){
         return;
        }
     if(!message.__user) return;
-    
     var data = message.__user;
     var avatar = data.get('gh_avatar');
     return <div className="msg user">
@@ -19,9 +18,12 @@ module.exports = function(item, i, items){
       </div>
     </div>
   }
-  if(item.type == "JOIN" || item.type == "LEAVE"){
-    
-    return;
+  if(item.get('action') == "JOIN" || item.get('action') == "LEAVE"){
+    return <div>
+       <div className="nick text">
+        {item.__user.name + ' '} <span dangerouslySetInnerHTML={{__html:item.get('text')}}></span>
+       </div>
+    </div>;
   }
   if(!item.get('id')) return;
   var date = {

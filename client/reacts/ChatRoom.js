@@ -31,7 +31,7 @@ module.exports = React.createClass({
       text: this.__textBoxValue
       }),{
       success: function(){
-        this.refs.textbox.getDOMNode().value = '';
+        this.cleanTextBox();
         this.refs.messagesList.scrollToBottom(200);
         this.refs.messagesList.forceUpdate();
       }.bind(this)
@@ -82,8 +82,15 @@ module.exports = React.createClass({
       return <button onClick={this.joinRoom}>join</button>;
     }
   },
+  cleanTextBox: function(){
+    this.refs.textbox.getDOMNode().value = '';
+    this.__textBoxValue = '';
+  },
   onKeyDown: function(e){
     if(e.keyCode === 13 && !e.shiftKey){
+      if(!this.__textBoxValue || this.__textBoxValue == "\n") {
+        return this.cleanTextBox();
+      };
       this.sendMessage();
     }
     this.sendWriting();

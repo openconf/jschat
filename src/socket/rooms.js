@@ -22,7 +22,7 @@ function joinRoom(socket){
 function leaveRoom(socket){
   return function(name, cb){
     socket._rooms.splice(socket._rooms.indexOf(name), 1);
-    _(rooms[name]).find(function(s){
+    rooms[name] = _(rooms[name]).reject(function(s){
       return s.id == socket.id;
     });
   }
