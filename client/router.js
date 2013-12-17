@@ -49,6 +49,9 @@ var router = backbone.Router.extend({
             room.writing(data.uid);
             return;
           }
+          if(data.action == "JOIN" || data.action == "LEAVE"){
+            room.fetch();
+          }
           if(data.rid == id && messages && component){
             var model = messages.push(data);
             if(model.__user){
