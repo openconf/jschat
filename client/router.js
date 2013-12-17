@@ -45,8 +45,7 @@ var router = backbone.Router.extend({
         component.refresh();
 
         processMessage = function(data, type){
-          if(data.type == "WRITING"){
-            console.log(data);
+          if(data.type == "WRITING" && id == data.rid){
             room.writing(data.uid);
             return;
           }
@@ -55,7 +54,6 @@ var router = backbone.Router.extend({
             if(model.__user){
               var data = model.__user;
               // throw notification
-              console.log(data);
               if(notification.shouldNotify()){
                 var note = notification.show(data.get('gh_avatar'), data.get('displayName') || data.get('gh_username'), model.get('text'));
                 // focus on window if notification is clicked

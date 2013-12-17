@@ -10,8 +10,8 @@ module.exports = function(server){
   server.sock.when('READ /api/rooms/:id', readRoom);
   server.sock.when('UPDATE /api/rooms/:id', server.sock.can('updateRoom'), updateRoom);
   server.sock.when('DELETE /api/rooms/:id', server.sock.can('deleteRoom'), deleteRoom);
-  server.sock.when('JOIN /api/rooms/:id', joinRoom);
-  server.sock.when('LEAVE /api/rooms/:id', leaveRoom);
+  server.sock.when('JOIN /api/rooms/:id', joinRoom, broadcastJoin);
+  server.sock.when('LEAVE /api/rooms/:id', leaveRoom, broadcastLeave);
 }
 
 function joinRoom(socket, data, next){
@@ -29,7 +29,18 @@ function joinRoom(socket, data, next){
     }
     socket.join(socket.params['id']);
     socket.json(result);
+    next();
   };
+}
+
+function broadcastJoin(socket, data, next){
+  socket.to(socket.params['id']).send({
+    type: "ROOM_STATUS",
+    rid: socket.params['id'],
+    uid: socket.user.id,
+    text: "joined...",
+    action: "JOIN"
+  });
 }
 
 function leaveRoom(socket, data, next){
@@ -52,8 +63,19 @@ function leaveRoom(socket, data, next){
     }
     socket.leave(socket.params['id']);
     socket.json(result);
+    next();
   };
 }
+function broadcastLeave(socket, data, next){
+  socket.to(socket.params['id']).send({
+    type: "ROOM_STATUS",
+    rid: socket.params['id'],
+    uid: socket.user.id,
+    text: "left...",
+    action: "LEAVE"
+  });
+}
+
 
 function createRoom(socket, data, next){
   var newRoom = _(data).pick("description", "name");

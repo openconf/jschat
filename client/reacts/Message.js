@@ -1,6 +1,5 @@
 /** @jsx React.DOM */
 module.exports = function(item, i, items){
-  if(!item.get('id')) return;
   var user = function(message, previous){
     // if message is from same user as previous message
     if(previous && previous.__user && message.__user && previous.__user 
@@ -20,6 +19,11 @@ module.exports = function(item, i, items){
       </div>
     </div>
   }
+  if(item.type == "JOIN" || item.type == "LEAVE"){
+    
+    return;
+  }
+  if(!item.get('id')) return;
   var date = {
     hh:item.date.getHours(),
     mm:item.date.getMinutes()

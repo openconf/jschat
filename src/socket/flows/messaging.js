@@ -12,6 +12,7 @@ module.exports = function(server){
 function writingMessage(socket, data, next){
   data.uid = socket.user.id;
   data.type = "WRITING";
+  data.rid = socket.params.id;
   next();
 }
 

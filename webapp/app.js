@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 16-12-2013
+* 17-12-2013
 */
 
 
@@ -11102,8 +11102,22 @@ backbone.socket.onopen = function(){
 module.exports = app;
 
 });
+require.register("JSChat/filters/escapeFilter.js", function(exports, require, module){
+module.exports = function(text){
+  return escapeHTML(text);
+}
+
+function escapeHTML(string){
+  var pre = document.createElement('pre');
+  var text = document.createTextNode(string);
+  pre.appendChild(text);
+  return pre.innerHTML;
+}
+
+});
 require.register("JSChat/filters/index.js", function(exports, require, module){
 module.exports = [
+  require('./escapeFilter.js'),
   require('./youtubeFilter.js'),
   require('./vimeoFilter.js'),
   require('./markdownFilter.js'),
@@ -11530,13 +11544,13 @@ module.exports = React.createClass({
     this.sendWriting();
   },
   render: function(){
-    console.log(this.props.room, ">>", "rendering");
-    return React.DOM.div(null, Nav( {me:this.props.me}),
+    return React.DOM.div(null, 
+    Nav( {me:this.props.me}),
     React.DOM.div( {className:"container"}, 
-      React.DOM.h3(null, this.props.room.get('name'), this.leaveJoinButton()),
       React.DOM.div( {className:"row"}, 
         ContactList( {rooms:this.props.rooms, room:this.props.room}),
         React.DOM.div( {className:"chat col-md-9 com-sm-7"}, 
+          React.DOM.div(null, this.props.room.get('name'), this.leaveJoinButton()),
           ParticipantsList( {room:this.props.room}),
           MessagesList( 
             {messages:this.props.messages,
@@ -11703,7 +11717,6 @@ module.exports = React.createClass({
 require.register("JSChat/reacts/Message.js", function(exports, require, module){
 /** @jsx React.DOM */
 module.exports = function(item, i, items){
-  if(!item.get('id')) return;
   var user = function(message, previous){
     // if message is from same user as previous message
     if(previous && previous.__user && message.__user && previous.__user 
@@ -11723,6 +11736,11 @@ module.exports = function(item, i, items){
       )
     )
   }
+  if(item.type == "JOIN" || item.type == "LEAVE"){
+    
+    return;
+  }
+  if(!item.get('id')) return;
   var date = {
     hh:item.date.getHours(),
     mm:item.date.getMinutes()
@@ -11934,8 +11952,7 @@ var router = backbone.Router.extend({
         component.refresh();
 
         processMessage = function(data, type){
-          if(data.type == "WRITING"){
-            console.log(data);
+          if(data.type == "WRITING" && id == data.rid){
             room.writing(data.uid);
             return;
           }
@@ -11944,7 +11961,6 @@ var router = backbone.Router.extend({
             if(model.__user){
               var data = model.__user;
               // throw notification
-              console.log(data);
               if(notification.shouldNotify()){
                 var note = notification.show(data.get('gh_avatar'), data.get('displayName') || data.get('gh_username'), model.get('text'));
                 // focus on window if notification is clicked

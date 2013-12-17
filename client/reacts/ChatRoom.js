@@ -89,13 +89,13 @@ module.exports = React.createClass({
     this.sendWriting();
   },
   render: function(){
-    console.log(this.props.room, ">>", "rendering");
-    return <div><Nav me={this.props.me}/>
+    return <div>
+    <Nav me={this.props.me}/>
     <div className="container">
-      <h3>{this.props.room.get('name')} {this.leaveJoinButton()}</h3>
       <div className="row">
         <ContactList rooms={this.props.rooms} room={this.props.room}/>
         <div className="chat col-md-9 com-sm-7">
+          <div>{this.props.room.get('name')} {this.leaveJoinButton()}</div>
           <ParticipantsList room={this.props.room}/>
           <MessagesList 
             messages={this.props.messages}
