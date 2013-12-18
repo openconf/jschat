@@ -17,6 +17,7 @@ module.exports = {
       var updater = this.forceUpdate.bind(this, null);
       model.__updater = updater;
       model.on('add change remove', updater, this);
+      this.__syncedModels.push(model);
     }
   }
 };
