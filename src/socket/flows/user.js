@@ -7,8 +7,8 @@ module.exports = function(server){
   server.sock.when('UPDATE /api/me', updateProfile);
   server.sock.when('DELETE /api/me', deleteProfile);
 
-  server.sock.when('READ /api/users', readUsers);
-  server.sock.when('READ /api/users/:id', readUser);
+  server.sock.when('READ /api/users',server.sock.free, readUsers);
+  server.sock.when('READ /api/users/:id',server.sock.free, readUser);
   
   // server.sock.can - implement first
   server.sock.when('UPDATE /api/users/:id', server.sock.can('updateUser'), updateUser);

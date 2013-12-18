@@ -6,7 +6,6 @@ var ContactFactory = require('../models/ContactFactory');
 
 var renderUsers = function(uid){
   var user = ContactFactory.getContactModel(uid);
-  console.log('injecting');
   this.injectModel(user);
   return <img src = {user.get('gh_avatar')} title={user.name}/>
 }
@@ -21,7 +20,6 @@ var aRoom = function(data){
     </div>
   </div>
 }
-//<div>{users.map(renderUsers, this)}</div>
 var Nav = require('./Nav.js');
 
 module.exports = React.createClass({
