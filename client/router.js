@@ -50,6 +50,7 @@ var router = backbone.Router.extend({
             return;
           }
           if(data.action == "JOIN" || data.action == "LEAVE"){
+            // todo: optimize
             room.fetch();
           }
           if(data.rid == id && messages && component){

@@ -1,21 +1,20 @@
 /** @jsx React.DOM */
 var _ = require('underscore');
-//var Contact = require('./Contact');
-var roomContact = function(data){
-  return <div className={data.current && "current"}>
-    <a href={'#room/' + data.id} target="_self">{data.name}</a>
+var RoomFactory = require('../models/RoomFactory');
+
+var roomContact = function(roomId){
+  var room = RoomFactory.getRoomModel(roomId);
+  return <div className={room.get('id') == this.props.room.get('id') && "current"}>
+    <a href={'#room/' + room.get('id')} target="_self">{room.get('name')}</a>
   </div>
 }
 
 module.exports = React.createClass({
   render: function(){
-    var rooms = this.props.rooms.toJSON();
-    var roomId = this.props.room.get('id');
-    var currentRoom = _.findWhere(rooms, {id: roomId});
-    currentRoom && (currentRoom.current = true);
+    var rooms = this.props.me.get('rooms');
     return <div className="col-sm-4 col-md-2 contactList">
       <h3>Rooms</h3>
-      {rooms.map(roomContact)}
+      {rooms.map(roomContact, this)}
     </div>
   }
 })

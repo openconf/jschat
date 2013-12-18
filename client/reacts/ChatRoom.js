@@ -100,7 +100,7 @@ module.exports = React.createClass({
     <Nav me={this.props.me}/>
     <div className="container">
       <div className="row">
-        <ContactList rooms={this.props.rooms} room={this.props.room}/>
+        <ContactList rooms={this.props.rooms} room={this.props.room} me={this.props.me} />
         <div className="chat col-md-9 com-sm-7">
           <div>{this.props.room.get('name')} {this.leaveJoinButton()}</div>
           <ParticipantsList room={this.props.room}/>

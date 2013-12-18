@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 17-12-2013
+* 18-12-2013
 */
 
 
@@ -11419,6 +11419,64 @@ var Room = Exo.Model.extend({
 module.exports = Room;
 
 });
+require.register("JSChat/models/RoomFactory.js", function(exports, require, module){
+var roomModelsCache = {};
+var RoomModel = require('./Room');
+var RoomsCollection = require('./Rooms');
+var _ = require('underscore');
+/**
+ * this Factory should minimize calls to server for contacts information:
+ * - any new cache model with ID defined will be fetched
+ * - any model that doesn't have ID will be watched untill it get's the ID
+ * - any collection will be watched untill it get's models with ID's and those will be saved 
+ *   in cache
+ */
+module.exports = {
+  getRoomModel: function(id){
+    if(id && roomModelsCache[id]){
+      return roomModelsCache[id];
+    }
+    var room = new RoomModel({id: id});
+    if(room.get('id')){
+      room.fetch();
+      return putInCache.call(room);
+    }
+    room.on('change', putInCache, room);
+    return room;
+  },
+  getRoomsCollection: function(ids){
+    var roomsArray = _(ids).map(function(id){
+      return {id: id};
+    });
+    var collection = new RoomsCollection(roomsArray);
+    collection.on('change', processCollection, collection);
+    return collection;
+  }
+}
+
+/**
+ * on change of collection, get all elements and put them in chache if required
+ */
+function processCollection(){
+  _(this.models).each(function(room){
+    var modelId = room.get('id');
+    if(!modelId) return;
+    if(roomModelsCache[modelId]){
+      return roomModelsCache[modelId].set(room.toJSON());
+    }
+    putInCache.call(room);
+  });
+}
+
+function putInCache(){
+  if(this.get('id')){
+    roomModelsCache[this.get('id')] = this;
+    this.off('change', putInCache);
+  }
+  return this;
+}
+
+});
 require.register("JSChat/models/Rooms.js", function(exports, require, module){
 var Exo = require('exoskeleton');
 var RoomModel = require('./Room');
@@ -11555,7 +11613,7 @@ module.exports = React.createClass({
     Nav( {me:this.props.me}),
     React.DOM.div( {className:"container"}, 
       React.DOM.div( {className:"row"}, 
-        ContactList( {rooms:this.props.rooms, room:this.props.room}),
+        ContactList( {rooms:this.props.rooms, room:this.props.room, me:this.props.me} ),
         React.DOM.div( {className:"chat col-md-9 com-sm-7"}, 
           React.DOM.div(null, this.props.room.get('name'), this.leaveJoinButton()),
           ParticipantsList( {room:this.props.room}),
@@ -11607,22 +11665,21 @@ module.exports = React.createClass({
 require.register("JSChat/reacts/ContactList.js", function(exports, require, module){
 /** @jsx React.DOM */
 var _ = require('underscore');
-//var Contact = require('./Contact');
-var roomContact = function(data){
-  return React.DOM.div( {className:data.current && "current"}, 
-    React.DOM.a( {href:'#room/' + data.id, target:"_self"}, data.name)
+var RoomFactory = require('../models/RoomFactory');
+
+var roomContact = function(roomId){
+  var room = RoomFactory.getRoomModel(roomId);
+  return React.DOM.div( {className:room.get('id') == this.props.room.get('id') && "current"}, 
+    React.DOM.a( {href:'#room/' + room.get('id'), target:"_self"}, room.get('name'))
   )
 }
 
 module.exports = React.createClass({
   render: function(){
-    var rooms = this.props.rooms.toJSON();
-    var roomId = this.props.room.get('id');
-    var currentRoom = _.findWhere(rooms, {id: roomId});
-    currentRoom && (currentRoom.current = true);
+    var rooms = this.props.me.get('rooms');
     return React.DOM.div( {className:"col-sm-4 col-md-2 contactList"}, 
       React.DOM.h3(null, "Rooms"),
-      rooms.map(roomContact)
+      rooms.map(roomContact, this)
     )
   }
 })
@@ -11966,6 +12023,7 @@ var router = backbone.Router.extend({
             return;
           }
           if(data.action == "JOIN" || data.action == "LEAVE"){
+            // todo: optimize
             room.fetch();
           }
           if(data.rid == id && messages && component){
