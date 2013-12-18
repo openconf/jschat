@@ -11695,7 +11695,7 @@ var ContactFactory = require('../models/ContactFactory');
 var renderUsers = function(uid){
   var user = ContactFactory.getContactModel(uid);
   this.injectModel(user);
-  return React.DOM.img( {src:  user.get('gh_avatar')})
+  return React.DOM.img( {src:  user.get('gh_avatar'), title:user.name})
 }
 
 var aRoom = function(data){
