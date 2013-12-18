@@ -11703,12 +11703,12 @@ var aRoom = function(data){
   return React.DOM.div( {className:  "col-xs-3"}, 
     React.DOM.div( {className:"chat-badge"}, 
       React.DOM.h4(null, React.DOM.a( {href:'#room/' + data.id, target:"_self"}, data.name)),
-      React.DOM.small(null, data.description),
-      React.DOM.div(null, users.map(renderUsers, this))
+      React.DOM.small(null, data.description)
+       
     )
   )
 }
-
+//<div>{users.map(renderUsers, this)}</div>
 var Nav = require('./Nav.js');
 
 module.exports = React.createClass({

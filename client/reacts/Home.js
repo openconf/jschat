@@ -16,11 +16,11 @@ var aRoom = function(data){
     <div className="chat-badge">
       <h4><a href={'#room/' + data.id} target="_self">{data.name}</a></h4>
       <small>{data.description}</small>
-      <div>{users.map(renderUsers, this)}</div>
+       
     </div>
   </div>
 }
-
+//<div>{users.map(renderUsers, this)}</div>
 var Nav = require('./Nav.js');
 
 module.exports = React.createClass({
