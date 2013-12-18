@@ -11694,6 +11694,7 @@ var ContactFactory = require('../models/ContactFactory');
 
 var renderUsers = function(uid){
   var user = ContactFactory.getContactModel(uid);
+  console.log('injecting');
   this.injectModel(user);
   return React.DOM.img( {src:  user.get('gh_avatar'), title:user.name})
 }
@@ -11703,8 +11704,8 @@ var aRoom = function(data){
   return React.DOM.div( {className:  "col-xs-3"}, 
     React.DOM.div( {className:"chat-badge"}, 
       React.DOM.h4(null, React.DOM.a( {href:'#room/' + data.id, target:"_self"}, data.name)),
-      React.DOM.small(null, data.description)
-       
+      React.DOM.small(null, data.description),
+       React.DOM.div(null, users.map(renderUsers, this))
     )
   )
 }
@@ -11751,6 +11752,7 @@ module.exports = React.createClass({
     this.fetchRooms();
   },
   render: function(){
+    console.log("RENDER HOME");
     return React.DOM.div(null, 
       Nav( {me:this.props.me}),
       React.DOM.div( {className:"container"}, 

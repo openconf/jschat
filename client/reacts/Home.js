@@ -6,6 +6,7 @@ var ContactFactory = require('../models/ContactFactory');
 
 var renderUsers = function(uid){
   var user = ContactFactory.getContactModel(uid);
+  console.log('injecting');
   this.injectModel(user);
   return <img src = {user.get('gh_avatar')} title={user.name}/>
 }
@@ -16,7 +17,7 @@ var aRoom = function(data){
     <div className="chat-badge">
       <h4><a href={'#room/' + data.id} target="_self">{data.name}</a></h4>
       <small>{data.description}</small>
-       
+       <div>{users.map(renderUsers, this)}</div>
     </div>
   </div>
 }
@@ -63,6 +64,7 @@ module.exports = React.createClass({
     this.fetchRooms();
   },
   render: function(){
+    console.log("RENDER HOME");
     return <div>
       <Nav me={this.props.me}/>
       <div className="container">
