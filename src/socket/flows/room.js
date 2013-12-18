@@ -5,8 +5,9 @@ var mongojs = require('mongojs');
 
 module.exports = function(server){
   server.sock.when('CREATE /api/rooms', createRoom);
+  //is returning last 6 active chats
   server.sock.when('READ /api/rooms', server.sock.free, readRooms);
-  server.sock.when('READ /api/roomsbyowner/', readRoomsByOwner);
+  //  server.sock.when('READ /api/roomsbyowner/', readRoomsByOwner);
   server.sock.when('READ /api/rooms/:id', readRoom);
   server.sock.when('UPDATE /api/rooms/:id', server.sock.can('updateRoom'), updateRoom);
   server.sock.when('DELETE /api/rooms/:id', server.sock.can('deleteRoom'), deleteRoom);
@@ -89,12 +90,16 @@ function createRoom(socket, data, next){
 }
 
 function readRooms(socket, data, next){
-  Room.get(data, function(err, rooms) {
-    if(err){
-      return next(err);
-    }
-    socket.json(rooms);
-  });
+  Room.getLastActive(gotLastActive);
+  
+  function gotLastActive(err, results){
+    Room.get({ids: results}, function(err, rooms) {
+      if(err){
+        return next(err);
+      }
+      socket.json(rooms);
+    });
+  }
 }
 
 function readRoomsByOwner(socket, data,next) {

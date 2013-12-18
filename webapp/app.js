@@ -11690,18 +11690,29 @@ require.register("JSChat/reacts/Home.js", function(exports, require, module){
 var RoomsModel = require('../models/Rooms');
 var room = require('../models/Room');
 var rooms = new RoomsModel();
+var ContactFactory = require('../models/ContactFactory');
+
+var renderUsers = function(uid){
+  var user = ContactFactory.getContactModel(uid);
+  this.injectModel(user);
+  return React.DOM.img( {src:  user.get('gh_avatar')})
+}
+
 var aRoom = function(data){
+  var users = data.participants.slice(-10);
   return React.DOM.div( {className:  "col-xs-3"}, 
     React.DOM.div( {className:"chat-badge"}, 
       React.DOM.h4(null, React.DOM.a( {href:'#room/' + data.id, target:"_self"}, data.name)),
-      React.DOM.small(null, data.description)
+      React.DOM.small(null, data.description),
+      React.DOM.div(null, users.map(renderUsers, this))
     )
   )
-  }
-  var Nav = require('./Nav.js');
+}
+
+var Nav = require('./Nav.js');
 
 module.exports = React.createClass({
-  mixins: [require('./BackboneMixin')],
+  mixins: [require('../models/ModelMixin')],
   getBackboneModels: function(){
     return [this.props.rooms, this.props.me]
   },
@@ -11725,6 +11736,7 @@ module.exports = React.createClass({
         var newRoom = new room({id:roomId});
         newRoom.join();
         this.fetchRooms();
+        document.location = "#room/" + roomId;
       }.bind(this)
     });
   },
@@ -11739,12 +11751,11 @@ module.exports = React.createClass({
     this.fetchRooms();
   },
   render: function(){
-    console.log(this.props.me);
     return React.DOM.div(null, 
       Nav( {me:this.props.me}),
       React.DOM.div( {className:"container"}, 
         React.DOM.div( {className:  "row"}, 
-          this.state.rooms.map(aRoom)
+          this.state.rooms.map(aRoom, this)
         ),
         React.DOM.div( {className: "form-group col-xs-6"}, 
           React.DOM.h4(null, "create new room"),

@@ -15,13 +15,17 @@ module.exports = function(c){
         var multi = c.multi();
         options.ids.forEach(function(id){
           multi.hgetall('c:r:' + id);
+          multi.smembers('c:r:' + id + ':p');
         })
         multi.exec(function(err, results){
+          var resultArray = [];
           if (err) return cb(err);
-          results.forEach(function(val, i){
-            results[i].id = options.ids[i];
+          options.ids.forEach(function(val, i){
+            resultArray[i] = results[i*2];
+            resultArray[i].id = options.ids[i];
+            resultArray[i].participants = results[i*2 + 1];
           });
-          cb(null, results);
+          cb(null, resultArray);
         })
         return;
       }
@@ -69,6 +73,26 @@ module.exports = function(c){
         return function(err){
           cb(err, id);
         }
+      }
+    },
+    setLastActive: function(id, tms, cb){
+      //get c:r:last <sorted set>
+      // score - timestamp
+      // ZADD c:r:last <timestamp> <id>
+      // ZREMRANGEBYRANK c:r:last 0 -6
+      // ZRANGE myzset 0 -1
+      var multi = c.multi();
+      multi.zadd('c:r:last', tms, id);
+      multi.zremrangebyrank('c:r:last', 0, -6);
+      multi.exec(function(err, results){
+        if (err) return cb(err);
+        cb(null, results);
+      });
+    },
+    getLastActive: function(cb){
+      c.zrange('c:r:last', 0, -1, gotLastActive);
+      function gotLastActive(err, results){
+        cb(err,results.reverse());
       }
     },
     update: function(id, data, cb){

@@ -5,7 +5,7 @@ module.exports = function(c){
       return {
         getById: function(id, cb){
           return c.hgetall('c:r:' + room.id + ':' + id, gotMessage);
-          function gotRoom(err, result){
+          function gotMessage(err, result){
             if(err) return cb(err);
             if(!result) return cb();
             result.id = id;
@@ -70,8 +70,8 @@ module.exports = function(c){
             c.hmset.apply(c, ['c:r:' + room.id + ':m:' + id].concat(r2o(data), [returnId(id)]));
           }
           function returnId(id){
-            return function(err){
-              cb(err, id);
+            return function returnResult(err){
+              return cb(err, id);
             }
           }
         },

@@ -1,4 +1,5 @@
 var Message = require('../../models').message;
+var Room = require('../../models').room;
 
 module.exports = function(server){
   server.sock.when('CREATE /api/rooms/:id/messages', createMessage, roomBroadcast);
@@ -26,7 +27,7 @@ function createMessage(socket, data, next){
     if(err) return next(err);
     data.id = id;
     data.rid = socket.params.id;
-    next();
+    Room.setLastActive(socket.params.id, data.tms, next);
   }
 }
 function readMessages(socket, data, next){

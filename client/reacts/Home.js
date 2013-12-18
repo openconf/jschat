@@ -2,18 +2,29 @@
 var RoomsModel = require('../models/Rooms');
 var room = require('../models/Room');
 var rooms = new RoomsModel();
+var ContactFactory = require('../models/ContactFactory');
+
+var renderUsers = function(uid){
+  var user = ContactFactory.getContactModel(uid);
+  this.injectModel(user);
+  return <img src = {user.get('gh_avatar')}/>
+}
+
 var aRoom = function(data){
+  var users = data.participants.slice(-10);
   return <div className = "col-xs-3">
     <div className="chat-badge">
       <h4><a href={'#room/' + data.id} target="_self">{data.name}</a></h4>
       <small>{data.description}</small>
+      <div>{users.map(renderUsers, this)}</div>
     </div>
   </div>
-  }
-  var Nav = require('./Nav.js');
+}
+
+var Nav = require('./Nav.js');
 
 module.exports = React.createClass({
-  mixins: [require('./BackboneMixin')],
+  mixins: [require('../models/ModelMixin')],
   getBackboneModels: function(){
     return [this.props.rooms, this.props.me]
   },
@@ -37,6 +48,7 @@ module.exports = React.createClass({
         var newRoom = new room({id:roomId});
         newRoom.join();
         this.fetchRooms();
+        document.location = "#room/" + roomId;
       }.bind(this)
     });
   },
@@ -51,12 +63,11 @@ module.exports = React.createClass({
     this.fetchRooms();
   },
   render: function(){
-    console.log(this.props.me);
     return <div>
       <Nav me={this.props.me}/>
       <div className="container">
         <div className = "row">
-          {this.state.rooms.map(aRoom)}
+          {this.state.rooms.map(aRoom, this)}
         </div>
         <div className= "form-group col-xs-6">
           <h4>create new room</h4>
