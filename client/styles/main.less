@@ -47,10 +47,24 @@ a {
         width: 30px;
         height: 30px;
       }
+
     }
     .nick {
       font-weight: bold;
       color: rgb(135, 141, 159);
+      .status{
+        display: inline-block;
+        width: .6em;
+        height: .6em;
+        border-radius: .3em;
+        margin-right: 5px;
+        background-color: grey;
+      }
+      &.online {
+        .status{
+          background-color: green;
+        }
+      }
     }
     .time{
       width: 60px;

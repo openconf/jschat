@@ -57,9 +57,14 @@ module.exports = function(server){
   server.on('session', function(socket, session){
     socket.user = session.user;
     socker.attach(socket);
+    
     // TODO: change status of a user to online
+    if(socket.user && socket.user.id) UserModel.of(socket.user).goOnline();
     // TODO: socket on close
     // socket that was closed should find corresponding user and change it's status to offline.
+    socket.on('close',function(){ 
+      if(socket.user && socket.user.id) UserModel.of(socket.user).goOffline();
+    });
   });
 }
 

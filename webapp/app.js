@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 18-12-2013
+* 19-12-2013
 */
 
 
@@ -11802,11 +11802,14 @@ module.exports = function(item, i, items){
     if(!message.__user) return;
     var data = message.__user;
     var avatar = data.get('gh_avatar');
+    var cn = "nick text " + (parseInt(data.get('online'))?"online":"");
     return React.DOM.div( {className:"msg user"}, 
       React.DOM.div( {className:"avatar"}, 
-        React.DOM.img( {src:avatar})
+        React.DOM.img( {src:avatar} ) 
+        
       ),
-      React.DOM.div( {className:"nick text"}, 
+      React.DOM.div( {className:cn}, 
+        React.DOM.span( {className:"status"}),
         message.__user.name,": "
       )
     )
@@ -12093,6 +12096,31 @@ module.exports = {
 
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/socker.client.js");
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/index.js");
 require.alias("edjafarov-socker/socker.client.js", "socker-client/index.js");
@@ -12174,31 +12202,6 @@ require.alias("davy/davy.js", "JSChat/deps/davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("JSChat/Main.js", "JSChat/index.js");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 var scripts = document.getElementsByTagName('script');
 for(var i=0; i < scripts.length; i++){
   var dataMain = scripts[i].getAttribute('data-main');

@@ -9,11 +9,14 @@ module.exports = function(item, i, items){
     if(!message.__user) return;
     var data = message.__user;
     var avatar = data.get('gh_avatar');
+    var cn = "nick text " + (parseInt(data.get('online'))?"online":"");
     return <div className="msg user">
       <div className="avatar">
-        <img src={avatar}/>
+        <img src={avatar} /> 
+        
       </div>
-      <div className="nick text">
+      <div className={cn}>
+        <span className="status"></span>
         {message.__user.name}:
       </div>
     </div>

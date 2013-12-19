@@ -116,6 +116,20 @@ module.exports = function(c){
     },
     of: function(usr){
       return {
+        goOnline: function(cb){
+          c.hset('c:u:' + usr.id, 'online', 1);
+        },
+        goOffline: function(cb){
+          c.hset('c:u:' + usr.id, 'online', 0);
+        },
+        setStatus: function(status, cb){
+          // 0 - online
+          // 1 - dnd
+          // 2 - away
+          // 3 - hidden
+          c.hset('c:u:' + usr.id, 'status', status, cb);
+          return cb();
+        },
         getRooms: function(cb){
           c.smembers('c:u:' + usr.id + ':rooms', cb);
         },
