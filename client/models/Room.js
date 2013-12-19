@@ -17,6 +17,10 @@ var Room = Exo.Model.extend({
     opts = _({url: this.urlRoot + '/' + this.get('id')}).extend(opts);
     this.sync('leave', this, opts);
   },
+  switchto: function(opts){
+    opts = _({url: this.urlRoot + '/' + this.get('id')}).extend(opts);
+    this.sync('switchto', this, opts);
+  },
   writingHash:{},
   writing: function(userId){
     //WORK stopped here

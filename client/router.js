@@ -4,6 +4,8 @@ var Me = require('./models/Me');
 //var RoomModel = require('./models/Room');
 var Rooms = require('./models/Rooms');
 var notification = require('./services/notification');
+var ContactFactory = require('./models/ContactFactory');
+
 var processMessage;
 backbone.socket.addEventListener("message", function(data, type){
   try{
@@ -43,10 +45,15 @@ var router = backbone.Router.extend({
           rooms = {new Rooms()} />,
         document.body.children[0]);
         component.refresh();
-
+        room.switchto();
         processMessage = function(data, type){
           if(data.type == "WRITING" && id == data.rid){
             room.writing(data.uid);
+            return;
+          }
+          if(data.type == "STATUS" && data.uid){
+            var user = ContactFactory.getContactModel(data.uid);
+            user.fetch();
             return;
           }
           if(data.action == "JOIN" || data.action == "LEAVE"){

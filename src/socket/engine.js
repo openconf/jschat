@@ -57,13 +57,22 @@ module.exports = function(server){
   server.on('session', function(socket, session){
     socket.user = session.user;
     socker.attach(socket);
-    
+
     // TODO: change status of a user to online
     if(socket.user && socket.user.id) UserModel.of(socket.user).goOnline();
+
+    roomsAutojoin(socket, null, function(){
+      socket._rooms.forEach(function(roomId){
+        socket.to(roomId).sendToActive(JSON.stringify({type: "STATUS", action:"ONLINE", uid: socket.user.id}));
+      });
+    });
     // TODO: socket on close
     // socket that was closed should find corresponding user and change it's status to offline.
     socket.on('close',function(){ 
       if(socket.user && socket.user.id) UserModel.of(socket.user).goOffline();
+      socket._rooms.forEach(function(roomId){
+        socket.to(roomId).sendToActive(JSON.stringify({type: "STATUS", action:"OFFLINE", uid: socket.user.id}));
+      });
     });
   });
 }

@@ -11390,6 +11390,10 @@ var Room = Exo.Model.extend({
     opts = _({url: this.urlRoot + '/' + this.get('id')}).extend(opts);
     this.sync('leave', this, opts);
   },
+  switchto: function(opts){
+    opts = _({url: this.urlRoot + '/' + this.get('id')}).extend(opts);
+    this.sync('switchto', this, opts);
+  },
   writingHash:{},
   writing: function(userId){
     //WORK stopped here
@@ -11992,6 +11996,8 @@ var Me = require('./models/Me');
 //var RoomModel = require('./models/Room');
 var Rooms = require('./models/Rooms');
 var notification = require('./services/notification');
+var ContactFactory = require('./models/ContactFactory');
+
 var processMessage;
 backbone.socket.addEventListener("message", function(data, type){
   try{
@@ -12031,10 +12037,15 @@ var router = backbone.Router.extend({
           rooms:  new Rooms()} ),
         document.body.children[0]);
         component.refresh();
-
+        room.switchto();
         processMessage = function(data, type){
           if(data.type == "WRITING" && id == data.rid){
             room.writing(data.uid);
+            return;
+          }
+          if(data.type == "STATUS" && data.uid){
+            var user = ContactFactory.getContactModel(data.uid);
+            user.fetch();
             return;
           }
           if(data.action == "JOIN" || data.action == "LEAVE"){
@@ -12096,31 +12107,6 @@ module.exports = {
 
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/socker.client.js");
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/index.js");
 require.alias("edjafarov-socker/socker.client.js", "socker-client/index.js");
@@ -12202,6 +12188,31 @@ require.alias("davy/davy.js", "JSChat/deps/davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("JSChat/Main.js", "JSChat/index.js");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 var scripts = document.getElementsByTagName('script');
 for(var i=0; i < scripts.length; i++){
   var dataMain = scripts[i].getAttribute('data-main');

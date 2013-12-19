@@ -7,12 +7,18 @@ module.exports = function(server){
   server.sock.when('CREATE /api/rooms', createRoom);
   //is returning last 6 active chats
   server.sock.when('READ /api/rooms', server.sock.free, readRooms);
+  server.sock.when('SWITCHTO /api/rooms/:id', switchToRoom);
   //  server.sock.when('READ /api/roomsbyowner/', readRoomsByOwner);
   server.sock.when('READ /api/rooms/:id', readRoom);
   server.sock.when('UPDATE /api/rooms/:id', server.sock.can('updateRoom'), updateRoom);
   server.sock.when('DELETE /api/rooms/:id', server.sock.can('deleteRoom'), deleteRoom);
   server.sock.when('JOIN /api/rooms/:id', joinRoom, broadcastJoin);
   server.sock.when('LEAVE /api/rooms/:id', leaveRoom, broadcastLeave);
+}
+
+function switchToRoom(socket, data, next){
+  socket.__proto__.__activeRoom = socket.params['id'];
+  socket.json({});
 }
 
 function joinRoom(socket, data, next){

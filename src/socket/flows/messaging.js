@@ -70,6 +70,10 @@ function deleteMessage(socket, data, next){
 
 function roomBroadcast(socket, data, next){
   //TODO: broadcast cmd to Message with id from socket.params['id']
-  socket.to(socket.params['id']).send(JSON.stringify(data));
+  if(data.type !== "WRITING") {
+    socket.to(socket.params['id']).send(JSON.stringify(data));
+  } else {
+    socket.to(socket.params['id']).sendToActive(JSON.stringify(data));
+  }
   socket.json(data);
 }
