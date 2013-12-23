@@ -29,7 +29,9 @@ module.exports = function(c){
             return;
           }
           // oherwise a range
-          var opts = options || {count: -100}
+          var opts = options || {};
+          opts.count = opts.count || -50;
+          if(opts.count < -100) opts.count = -50;
           var indexes = [];
           //options
           //- from

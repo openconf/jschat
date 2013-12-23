@@ -42,7 +42,6 @@ function sendToRoom(socket, name, forActiveOnly){
     var  arg = arguments;
     rooms[name].forEach(function(s){
       if(socket.id == s.id) return;
-      console.log(forActiveOnly, s.__activeRoom, name, s.__activeRoom !== name, msg, s.user.displayName)
       if(forActiveOnly && s.__activeRoom !== name) return;
       s.send.apply(s, arg);
     })

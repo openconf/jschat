@@ -6,6 +6,7 @@ var notification = require('../services/notification');
 
 // item rendering im Messages list
 var MessagesList = require('./MessagesList')(require('./Message.js'));
+var ScrollingList = require('./ScrollingList')(require('./Message.js'));
 
 var MessageModel = require('../models/Message');
 var backbone = require('exoskeleton');
@@ -104,8 +105,8 @@ module.exports = React.createClass({
         <div className="chat col-md-9 com-sm-7">
           <div>{this.props.room.get('name')} {this.leaveJoinButton()}</div>
           <ParticipantsList room={this.props.room}/>
-          <MessagesList 
-            messages={this.props.messages}
+          <ScrollingList 
+            renderedItems={this.props.messages}
             ref="messagesList" 
             writingStatus = {writingStatus(this.props.room.get('writing_users'))}/>
           <div className="form">

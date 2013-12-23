@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 19-12-2013
+* 23-12-2013
 */
 
 
@@ -1577,7 +1577,7 @@ module.exports = function(bb){
     }
     
     if(options.attrs){
-      bb.socket.serve(data.type + " " + data.url, options.attrs, function(err, response){
+      return bb.socket.serve(data.type + " " + data.url, options.attrs, function(err, response){
         if(err){
           return data.error(err);
         }
@@ -11333,10 +11333,23 @@ var MessageCollection = Exo.Collection.extend({
   },
   initialize: function(models, options){
     this.roomId = options.roomId;
-
   },
   writing: function(){
     this.sync('writing', this);
+  },
+  addToTop: function(){
+    if(this._isFetching) return;
+    this._isFetching = true;
+    console.log(this._isFetching);
+    var oldest = this.models[0].get('id');
+    this.sync('read', this, {attrs:{
+      from: oldest-1,
+      count: -50
+    }, success: gotResult.bind(this)});
+    function gotResult(array){
+      this.unshift(array);
+      this._isFetching = false;
+    }
   },
   model: MessageModel
 })
@@ -11524,6 +11537,7 @@ var notification = require('../services/notification');
 
 // item rendering im Messages list
 var MessagesList = require('./MessagesList')(require('./Message.js'));
+var ScrollingList = require('./ScrollingList')(require('./Message.js'));
 
 var MessageModel = require('../models/Message');
 var backbone = require('exoskeleton');
@@ -11622,8 +11636,8 @@ module.exports = React.createClass({
         React.DOM.div( {className:"chat col-md-9 com-sm-7"}, 
           React.DOM.div(null, this.props.room.get('name'), this.leaveJoinButton()),
           ParticipantsList( {room:this.props.room}),
-          MessagesList( 
-            {messages:this.props.messages,
+          ScrollingList( 
+            {renderedItems:this.props.messages,
             ref:"messagesList", 
             writingStatus:  writingStatus(this.props.room.get('writing_users'))}),
           React.DOM.div( {className:"form"}, 
@@ -11987,6 +12001,83 @@ module.exports = React.createClass({
     return React.DOM.div( {className:"participants"}, participants.users.map(ContactItem))
   }
 });
+
+});
+require.register("JSChat/reacts/ScrollingList.js", function(exports, require, module){
+/** @jsx React.DOM */
+var ContactFactory = require('../models/ContactFactory');
+
+
+module.exports = function(itemClass){
+  return React.createClass({
+    mixins: [require('../models/ModelMixin')],
+    _edge: 100,
+    componentDidMount: function(){
+      this.controlEdges();
+      // populate User model inside object
+      this.props.renderedItems.models.forEach(function(model){
+        populateUser(model,this)
+      }.bind(this));
+      this.props.renderedItems.on('change add remove', function(){
+        this.props.renderedItems.models.forEach(function(model){
+          if(model.__user && !model.__user.injected) populateUser(model, this);
+        }.bind(this));
+      }.bind(this));
+
+      function populateUser(message, component){
+        message.__user.injected = true;
+        component.injectModel(message.__user);
+      };
+    },
+    scrollToBottom: function(){
+      var node = this.getDOMNode();
+      node.scrollTop = node.scrollHeight;
+    },
+    onScroll: function(){
+      this.controlEdges(true);
+    },
+    getBackboneModels: function(){
+      return [this.props.renderedItems]
+    },
+    componentWillUpdate: function() {
+      var node = this.getDOMNode();
+      this._scrollHeight = node.scrollHeight;
+      this._scrollTop = node.scrollTop;
+      this.shouldStayTop = this._scrollTop <= this._edge;
+      this.shouldScrollBottom = (this._scrollTop + node.offsetHeight) >= node.scrollHeight - this._edge;
+      console.log(this.shouldStayTop, this.shouldScrollBottom);
+    },
+    //  hold items on adding top and bottom
+    componentDidUpdate: function() {
+      var node = this.getDOMNode();
+      if(this.shouldScrollBottom){
+        node.scrollTop = node.scrollHeight;
+      }
+      if(this.shouldStayTop){
+        node.scrollTop = this._scrollTop + (node.scrollHeight - this._scrollHeight);
+      }
+    },
+    controlEdges: function(update){
+      var scrolledFromTop = this.getDOMNode().scrollTop;
+      if(scrolledFromTop < this._edge) {
+        this.getDOMNode().scrollTop = this._edge;
+        update && this.props.renderedItems.addToTop();
+      }
+      var bottom = this.refs.inner.getDOMNode().offsetHeight - this.getDOMNode().offsetHeight;
+      if(scrolledFromTop > bottom - this._edge) {
+        this.getDOMNode().scrollTop = bottom - this._edge;
+      }
+    },
+    render : function(){
+      return React.DOM.div( {className:"messagesList", onScroll:this.onScroll} , 
+        React.DOM.div( {style:{'padding-top': this._edge,'padding-bottom':this._edge }, ref:"inner"} , 
+          this.props.renderedItems && this.props.renderedItems.models.map(itemClass),
+          React.DOM.div( {className:"writingBar"}, this.props.writingStatus)
+        )
+    );
+    }
+  });
+}
 
 });
 require.register("JSChat/router.js", function(exports, require, module){
