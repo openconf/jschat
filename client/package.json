@@ -27,7 +27,8 @@
       "bscomp/labels": "*",
       "bscomp/buttons": "*",
       "chjj/marked": "*",
-      "bscomp/jumbotron": "*"
+      "bscomp/jumbotron": "*",
+      "cayasso/engine.io-reconnect": "*"
     },
     "local": [
       "IScroll",

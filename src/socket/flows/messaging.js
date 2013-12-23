@@ -33,7 +33,6 @@ function createMessage(socket, data, next){
 function readMessages(socket, data, next){
   //TODO: read messages from DB 
   //limit em somehow
-  console.log(data);
   Message.room({id:socket.params.id}).get(data, function(err, messages){
     socket.json(messages);
   });
