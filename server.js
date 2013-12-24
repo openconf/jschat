@@ -1,8 +1,13 @@
 var fs = require('fs');
 var http = require('http');
 var https = require('https');
+var redis = require('redis');
 var errors = require('./src/errors.js');
 var APP_ENV = process.env.APP_ENV || 'development';
+
+var redisUrl = require('parse-redis-url')(redis);
+var options = redisUrl.parse(process.env.REDISTOGO_URL);
+
 
 nconf = require('nconf');
 nconf.argv()
@@ -15,8 +20,9 @@ nconf.set("server:hostname", nconf.get("server:port")?nconf.get("server:host") +
 // Setup app
 var express = require('express');
 var app = express();
-var MemoryStore = new express.session.MemoryStore();
-app.ms = MemoryStore;
+var Store = require('connect-redis')(express);
+var RedisStore = new Store(options);
+app.ms = RedisStore;
 require('./src/middleware/authMiddleware.js')(app);
 
 require('./src/middlewareSetup.js')(app);
@@ -41,6 +47,6 @@ app.use(require('./src/middleware/errorHandling.js'));
 var server = http.createServer(app);
 server.listen(nconf.get('server:port') );
 console.log('Angular App Server - listening on port: ' + nconf.get('server:port'));
-server.ms = MemoryStore;
+server.ms = RedisStore;
 require('./src/socket/engine.js')(server);
 
