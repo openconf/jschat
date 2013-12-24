@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 23-12-2013
+* 24-12-2013
 */
 
 
@@ -11420,7 +11420,7 @@ require.register("JSChat/Main.js", function(exports, require, module){
 var backbone = require('exoskeleton');
 var socket = require('engine.io')(location.origin.replace(/^http/, 'ws'));
 var reconnect = require('engine.io-reconnect');
-socket = reconnect(socket);
+socket = reconnect(socket, {timeout:86400000});
 require('socker-client')(socket);
 backbone.socket = socket;
 require('bbsocker.sync')(backbone);
@@ -11429,8 +11429,9 @@ var _ = require('underscore');
 var app = function(){
 }
 var started = false;
+_.extend(app, backbone.Events);
 _.extend(app,{
-  router: require('./router.js'),
+  router: require('./router.js')(app),
   run: function () {
     backbone.history.start({
       pushState: false,
@@ -11439,24 +11440,29 @@ _.extend(app,{
     started = true;
   }
 });
+
+
+
 backbone.socket.onopen = function(){
   if(!started) app.run();
 }
 
 backbone.socket.on('reconnect', function(attempts) {
-    console.log('Reconnected after %d attempts', attempts);
+  console.log('Reconnected after %d attempts', attempts);
+  app.trigger('reconnected');
 });
 
 backbone.socket.on('reconnecting', function(attempts) {
-    console.log('Trying to reconnect after %d attempts', attempts);
+  console.log('Trying to reconnect after %d attempts', attempts);
+  app.trigger('reconnecting');
 });
 
 backbone.socket.on('reconnect_error', function(error) {
-    console.log('Error trying to reconnect', error);
+  console.log('Error trying to reconnect', error);
 });
 
 backbone.socket.on('reconnect_timeout', function(timeout) {
-    console.log('Timeout after %dms', timeout);
+  console.log('Timeout after %dms', timeout);
 });
 
 
@@ -11701,7 +11707,6 @@ var MessageCollection = Exo.Collection.extend({
   addToTop: function(){
     if(this._isFetching) return;
     this._isFetching = true;
-    console.log(this._isFetching);
     var oldest = this.models[0].get('id');
     this.sync('read', this, {attrs:{
       from: oldest-1,
@@ -11709,6 +11714,18 @@ var MessageCollection = Exo.Collection.extend({
     }, success: gotResult.bind(this)});
     function gotResult(array){
       this.unshift(array);
+      this._isFetching = false;
+    }
+  },
+  refresh: function(){
+    if(this._isFetching) return;
+    this._isFetching = true;
+    var last = this.models[this.models.length-1].get('id');
+    this.sync('read', this, {attrs:{
+      to: last
+    }, success: gotResult.bind(this)});
+    function gotResult(array){
+      this.add(array);
       this._isFetching = false;
     }
   },
@@ -12451,89 +12468,99 @@ var notification = require('./services/notification');
 var ContactFactory = require('./models/ContactFactory');
 
 var processMessage;
-backbone.socket.addEventListener("message", function(data, type){
-  try{
-    data = JSON.parse(data);
-  }catch(e){
-    console.log('cant parse data', data);
-  }
-  if(processMessage){
-    processMessage.call(this, data, type);
-  }
-});
-var router = backbone.Router.extend({
-  routes: {
-    '': 'main',
-    'room/:id': 'room'
-  },
-  main: function () {
-    var Home = require('./reacts/Home');
-    Me.fetch();
-    React.unmountComponentAtNode(document.body.children[0]);
-    React.renderComponent(Home( {me:Me, rooms:new Rooms()}), document.body.children[0]);
-  },
-  room: function (id){
-    Me.fetch({success: gotProfile, error: gotProfile});
-    function gotProfile(){
-      if(Me.get('id')){
-        React.unmountComponentAtNode(document.body.children[0]);
-        var ChatRoom = require('./reacts/ChatRoom');
-        var Room = require('./models/Room');
-        
-        var Messages = require('./models/Messages');
-        var messages = new Messages(null, {roomId: id});
-        var room = new Room({id : id});
-        var component = React.renderComponent(ChatRoom( {me:Me, 
-          room:  room,
-          messages:  messages,
-          rooms:  new Rooms()} ),
-        document.body.children[0]);
-        component.refresh();
-        room.switchto();
-        processMessage = function(data, type){
-          if(data.type == "WRITING" && id == data.rid){
-            room.writing(data.uid);
-            return;
-          }
-          if(data.type == "STATUS" && data.uid){
-            var user = ContactFactory.getContactModel(data.uid);
-            user.fetch();
-            return;
-          }
-          if(data.action == "JOIN" || data.action == "LEAVE"){
-            // todo: optimize
-            room.fetch();
-          }
-          if(data.rid == id && messages && component){
-            var model = messages.push(data);
-            if(model.__user){
-              var data = model.__user;
-              // throw notification
-              if(notification.shouldNotify()){
-                var note = notification.show(data.get('gh_avatar'), data.get('displayName') || data.get('gh_username'), model.get('text'));
-                // focus on window if notification is clicked
-                note.onclick = function(){
-                  window.focus();
-                }
-                if(note){
-                  setTimeout(function(){
-                    note.cancel();
-                  }, 2000);
+module.exports = function(app){
+
+  backbone.socket.addEventListener("message", function(data, type){
+    try{
+      data = JSON.parse(data);
+    }catch(e){
+      console.log('cant parse data', data);
+    }
+    if(processMessage){
+      processMessage.call(this, data, type);
+    }
+  });
+  var router = backbone.Router.extend({
+    routes: {
+      '': 'main',
+      'room/:id': 'room'
+    },
+    main: function () {
+      var Home = require('./reacts/Home');
+      Me.fetch();
+      React.unmountComponentAtNode(document.body.children[0]);
+      React.renderComponent(Home( {me:Me, rooms:new Rooms()}), document.body.children[0]);
+    },
+    room: function (id){
+      Me.fetch({success: gotProfile, error: gotProfile});
+      function gotProfile(){
+        if(Me.get('id')){
+          React.unmountComponentAtNode(document.body.children[0]);
+          var ChatRoom = require('./reacts/ChatRoom');
+          var Room = require('./models/Room');
+          
+          var Messages = require('./models/Messages');
+          var messages = new Messages(null, {roomId: id});
+          
+          app.bind('reconnected', function(){
+            setTimeout(function(){messages.refresh();}, 500);
+          });
+
+          var room = new Room({id : id});
+          var component = React.renderComponent(ChatRoom( {me:Me, 
+            room:  room,
+            messages:  messages,
+            rooms:  new Rooms()} ),
+          document.body.children[0]);
+          component.refresh();
+          room.switchto();
+          //TODO: refactor
+          processMessage = function(data, type){
+            if(data.type == "WRITING" && id == data.rid){
+              room.writing(data.uid);
+              return;
+            }
+            if(data.type == "STATUS" && data.uid){
+              var user = ContactFactory.getContactModel(data.uid);
+              user.fetch();
+              return;
+            }
+            if(data.action == "JOIN" || data.action == "LEAVE"){
+              // todo: optimize
+              room.fetch();
+            }
+            if(data.rid == id && messages && component){
+              var model = messages.push(data);
+              if(model.__user){
+                var data = model.__user;
+                // throw notification
+                if(notification.shouldNotify()){
+                  var note = notification.show(data.get('gh_avatar'), data.get('displayName') || data.get('gh_username'), model.get('text'));
+                  // focus on window if notification is clicked
+                  note.onclick = function(){
+                    window.focus();
+                  }
+                  if(note){
+                    setTimeout(function(){
+                      note.cancel();
+                    }, 2000);
+                  }
                 }
               }
+              component.refs.messagesList.scrollToBottom();
             }
-            component.refs.messagesList.scrollToBottom();
           }
-        }
 
-      } else {
-        var Login = require('./reacts/Login');
-        React.renderComponent(Login(null), document.body.children[0]);
+        } else {
+          var Login = require('./reacts/Login');
+          React.renderComponent(Login(null), document.body.children[0]);
+        }
       }
     }
-  }
-});
-module.exports = new router();
+  });
+
+  return new router();
+}
 
 });
 require.register("JSChat/services/notification.js", function(exports, require, module){

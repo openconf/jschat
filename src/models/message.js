@@ -42,6 +42,7 @@ module.exports = function(c){
           gotStartIndex(null, opts.from);
           // TODO: write unit tests
           function gotStartIndex(err, index){
+            if(opts.to) opts.count = opts.to - index - 1;
             var count = opts.count;
             var multi = c.multi();
             if(count > 0){
