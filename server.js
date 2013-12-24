@@ -22,6 +22,7 @@ var express = require('express');
 var app = express();
 var Store = require('connect-redis')(express);
 var RedisStore = new Store(options);
+console.log(options, <<);
 app.ms = RedisStore;
 require('./src/middleware/authMiddleware.js')(app);
 
