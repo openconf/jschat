@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 24-12-2013
+* 25-12-2013
 */
 
 
@@ -1577,7 +1577,7 @@ module.exports = function(bb){
     }
     
     if(options.attrs){
-      return bb.socket.serve(data.type + " " + data.url, options.attrs, function(err, response){
+      bb.socket.serve(data.type + " " + data.url, options.attrs, function(err, response){
         if(err){
           return data.error(err);
         }
@@ -1844,7 +1844,7 @@ require.register("jashkenas-underscore/underscore.js", function(exports, require
 
   // Convenience version of a common use case of `map`: fetching a property.
   _.pluck = function(obj, key) {
-    return _.map(obj, function(value){ return value[key]; });
+    return _.map(obj, _.property(key));
   };
 
   // Convenience version of a common use case of `filter`: selecting only objects
@@ -1922,12 +1922,14 @@ require.register("jashkenas-underscore/underscore.js", function(exports, require
 
   // An internal function to generate lookup iterators.
   var lookupIterator = function(value) {
-    return _.isFunction(value) ? value : function(obj){ return obj[value]; };
+    if (value == null) return _.identity;
+    if (_.isFunction(value)) return value;
+    return _.property(value);
   };
 
   // Sort the object's values by a criterion produced by an iterator.
-  _.sortBy = function(obj, value, context) {
-    var iterator = value == null ? _.identity : lookupIterator(value);
+  _.sortBy = function(obj, iterator, context) {
+    iterator = lookupIterator(iterator);
     return _.pluck(_.map(obj, function(value, index, list) {
       return {
         value: value,
@@ -1947,9 +1949,9 @@ require.register("jashkenas-underscore/underscore.js", function(exports, require
 
   // An internal function used for aggregate "group by" operations.
   var group = function(behavior) {
-    return function(obj, value, context) {
+    return function(obj, iterator, context) {
       var result = {};
-      var iterator = value == null ? _.identity : lookupIterator(value);
+      iterator = lookupIterator(iterator);
       each(obj, function(value, index) {
         var key = iterator.call(context, value, index, obj);
         behavior(result, key, value);
@@ -1980,7 +1982,7 @@ require.register("jashkenas-underscore/underscore.js", function(exports, require
   // Use a comparator function to figure out the smallest index at which
   // an object should be inserted so as to maintain order. Uses binary search.
   _.sortedIndex = function(array, obj, iterator, context) {
-    iterator = iterator == null ? _.identity : lookupIterator(iterator);
+    iterator = lookupIterator(iterator);
     var value = iterator.call(context, obj);
     var low = 0, high = array.length;
     while (low < high) {
@@ -2012,7 +2014,9 @@ require.register("jashkenas-underscore/underscore.js", function(exports, require
   // allows it to work with `_.map`.
   _.first = _.head = _.take = function(array, n, guard) {
     if (array == null) return void 0;
-    return (n == null) || guard ? array[0] : slice.call(array, 0, n);
+    if ((n == null) || guard) return array[0];
+    if (n < 0) return [];
+    return slice.call(array, 0, n);
   };
 
   // Returns everything but the last entry of the array. Especially useful on
@@ -2027,11 +2031,8 @@ require.register("jashkenas-underscore/underscore.js", function(exports, require
   // values in the array. The **guard** check allows it to work with `_.map`.
   _.last = function(array, n, guard) {
     if (array == null) return void 0;
-    if ((n == null) || guard) {
-      return array[array.length - 1];
-    } else {
-      return slice.call(array, Math.max(array.length - n, 0));
-    }
+    if ((n == null) || guard) return array[array.length - 1];
+    return slice.call(array, Math.max(array.length - n, 0));
   };
 
   // Returns everything but the first entry of the array. Aliased as `tail` and `drop`.
@@ -2234,8 +2235,9 @@ require.register("jashkenas-underscore/underscore.js", function(exports, require
     };
   };
 
-  // Bind all of an object's methods to that object. Useful for ensuring that
-  // all callbacks defined on an object belong to it.
+  // Bind a number of an object's methods to that object. Remaining arguments
+  // are the method names to be bound. Useful for ensuring that all callbacks
+  // defined on an object belong to it.
   _.bindAll = function(obj) {
     var funcs = slice.call(arguments, 1);
     if (funcs.length === 0) throw new Error("bindAll must be passed function names");
@@ -2678,6 +2680,18 @@ require.register("jashkenas-underscore/underscore.js", function(exports, require
   // Keep the identity function around for default iterators.
   _.identity = function(value) {
     return value;
+  };
+
+  _.constant = function(value) {
+    return function () {
+      return value;
+    };
+  };
+
+  _.property = function(key) {
+    return function(obj) {
+      return obj[key];
+    };
   };
 
   // Run a function **n** times.
@@ -5889,7 +5903,7 @@ function load (arr, fn) {
 });
 require.register("paulmillr-exoskeleton/exoskeleton.js", function(exports, require, module){
 /*!
- * Exoskeleton.js 0.5.1
+ * Exoskeleton.js 0.6.3
  * (c) 2013 Paul Miller <http://paulmillr.com>
  * Based on Backbone.js
  * (c) 2010-2013 Jeremy Ashkenas, DocumentCloud
@@ -5897,45 +5911,31 @@ require.register("paulmillr-exoskeleton/exoskeleton.js", function(exports, requi
  * For all details and documentation: <http://exosjs.com>
  */
 
-(function(factory) {
+(function(root, factory) {
+  // Set up Backbone appropriately for the environment.
   if (typeof define === 'function' && define.amd) {
-    define(['underscore', 'jquery'], factory);
-  } else if (typeof exports === 'object') {
-    var _, jquery;
-    try {
-      _ = require('underscore');
-    } catch(e) { }
-    try {
-      jquery = require('jquery');
-    } catch(e) { }
-
-    factory(_, jquery);
+    define(['underscore', 'jquery', 'exports'], function(_, $, exports) {
+      root.Backbone = root.Exoskeleton = factory(root, exports, _, $);
+    });
+  } else if (typeof exports !== 'undefined') {
+    var _, $;
+    try { _ = require('underscore'); } catch(e) { }
+    try { $ = require('jquery'); } catch(e) { }
+    factory(root, exports, _, $);
   } else {
-    factory(this._, this.jQuery || this.Zepto || this.ender || this.$);
+    root.Backbone = root.Exoskeleton = factory(root, {}, root._, (root.jQuery || root.Zepto || root.ender || root.$));
   }
-})(function(_, $) {
+
+})(this, function(root, Backbone, _, $) {
   'use strict';
 
   // Initial Setup
   // -------------
 
-  // Check whether we are in common.js (e.g. node.js) environment.
-  var isCommonJs = (typeof exports === 'object');
-
-  // Save a reference to the global object (`window` in the browser, `exports`
-  // on the server).
-  var root = isCommonJs ? exports : window;
-
   // Save the previous value of the `Backbone` variable, so that it can be
   // restored later on, if `noConflict` is used.
   var previousBackbone = root.Backbone;
   var previousExoskeleton = root.Exoskeleton;
-
-  // The top-level namespace. All public Backbone classes and modules will
-  // be attached to this. Exported for both the browser and the server.
-  var Backbone = isCommonJs ?
-    exports :
-    (root.Exoskeleton = root.Backbone = {});
 
   // Underscore replacement.
   var utils = Backbone.utils = _ = (_ || {});
@@ -6208,6 +6208,66 @@ utils.matchesSelector = (function() {
   };
 })();
 
+utils.delegate = function(view, eventName, selector, callback) {
+  if (typeof selector === 'function') {
+    callback = selector;
+    selector = null;
+  }
+
+  if (typeof callback !== 'function') {
+    throw new TypeError('View#delegate expects callback function');
+  }
+
+  var root = view.el;
+  var bound = callback.bind(view);
+  var handler = selector ? function(event) {
+    for (var el = event.target; el && el !== root; el = el.parentNode) {
+      if (utils.matchesSelector(el, selector)) {
+        // event.currentTarget or event.target are read-only.
+        event.delegateTarget = el;
+        return bound(event);
+      }
+    }
+  } : bound;
+
+  root.addEventListener(eventName, handler, false);
+  view._handlers.push({
+    eventName: eventName, selector: selector,
+    callback: callback, handler: handler
+  });
+  return handler;
+};
+
+utils.undelegate = function(view, eventName, selector, callback) {
+  if (typeof selector === 'function') {
+    callback = selector;
+    selector = null;
+  }
+
+  var handlers = view._handlers;
+  var removeListener = function(item) {
+    view.el.removeEventListener(item.eventName, item.handler, false);
+  };
+
+  // Remove all handlers.
+  if (!eventName && !selector && !callback) {
+    handlers.forEach(removeListener);
+    view._handlers = [];
+  } else {
+    // Remove some handlers.
+    handlers
+      .filter(function(item) {
+        return item.eventName === eventName &&
+          (callback ? item.callback === callback : true) &&
+          (selector ? item.selector === selector : true);
+      })
+      .forEach(function(item) {
+        removeListener(item);
+        handlers.splice(handlers.indexOf(item), 1);
+      });
+  }
+};
+
 // Make AJAX request to the server.
 // Usage:
 //   var callback = function(error, data) {console.log('Done.', error, data);};
@@ -6263,6 +6323,25 @@ utils.ajax = (function() {
       if (options.headers == null) options.headers = {};
       options.headers['Content-Type'] = options.contentType;
     }
+
+    // Stringify GET query params.
+    if (options.type === 'GET' && typeof options.data === 'object') {
+      var query = '';
+      var stringifyKeyValuePair = function(key, value) {
+        return value == null ? '' :
+          '&' + encodeURIComponent(key) +
+          '=' + encodeURIComponent(value);
+      };
+      for (var key in options.data) {
+        query += stringifyKeyValuePair(key, options.data[key]);
+      }
+
+      if (query) {
+        var sep = (options.url.indexOf('?') === -1) ? '?' : '&';
+        options.url += sep + query.substring(1);
+      }
+    }
+
     if (options.credentials) options.withCredentials = true;
     xhr.addEventListener('readystatechange', end(xhr, options, deferred));
     xhr.open(options.type, options.url, true);
@@ -7125,7 +7204,7 @@ _.extend(Collection.prototype, Events, {
   _reset: function() {
     this.length = 0;
     this.models = [];
-    this._byId  = {};
+    this._byId  = Object.create(null);
   },
 
   // Prepare a hash of attributes (or other model) to be added to this
@@ -7200,11 +7279,22 @@ if (utilExists('each')) {
 } else {
   ['forEach', 'map', 'filter', 'some', 'every', 'reduce', 'reduceRight',
     'indexOf', 'lastIndexOf'].forEach(function(method) {
-    var fn = Array.prototype[method];
     Collection.prototype[method] = function(arg, context) {
-      return fn.call(this.models, arg, context);
+      return this.models[method](arg, context);
     };
   });
+
+  // Exoskeleton-specific:
+  Collection.prototype.find = function(iterator, context) {
+    var result;
+    this.some(function(value, index, list) {
+      if (iterator.call(context, value, index, list)) {
+        result = value;
+        return true;
+      }
+    });
+    return result;
+  };
 
   // Underscore methods that take a property name as an argument.
   ['sortBy'].forEach(function(method) {
@@ -7252,6 +7342,9 @@ var View = Backbone.View = function(options) {
 
 // Set up all inheritable **Backbone.View** properties and methods.
 _.extend(View.prototype, Events, {
+  // In case you want to include jQuery with your app
+  // for *some* views and use native methods for other views.
+  useNative: false,
 
   // The default `tagName` of a View's element is `"div"`.
   tagName: 'div',
@@ -7259,7 +7352,7 @@ _.extend(View.prototype, Events, {
   // jQuery delegate for element lookup, scoped to DOM elements within the
   // current view. This should be preferred to global lookups where possible.
   $: function(selector) {
-    return Backbone.$ ? this.$el.find(selector) : this.findAll(selector);
+    return Backbone.$ && !this.useNative ? this.$el.find(selector) : this.findAll(selector);
   },
 
   // Exoskeleton-related DOM methods.
@@ -7285,10 +7378,11 @@ _.extend(View.prototype, Events, {
   // Remove this view by taking the element out of the DOM, and removing any
   // applicable Backbone.Events listeners.
   remove: function() {
-    if (Backbone.$) {
+    var parent;
+    if (Backbone.$ && !this.useNative) {
       this.$el.remove();
-    } else if (this.el.parentNode) {
-      this.el.parentNode.removeChild(this.el);
+    } else if (parent = this.el.parentNode) {
+      parent.removeChild(this.el);
     }
     this.stopListening();
     return this;
@@ -7297,79 +7391,17 @@ _.extend(View.prototype, Events, {
   // Change the view's element (`this.el` property), including event
   // re-delegation.
   setElement: function(element, delegate) {
-    if (Backbone.$) {
+    if (Backbone.$ && !this.useNative) {
       if (this.$el) this.undelegateEvents();
       this.$el = element instanceof Backbone.$ ? element : Backbone.$(element);
       this.el = this.$el[0];
     } else {
       if (this.el) this.undelegateEvents();
-      var el = (typeof element === 'string') ?
+      this.el = (typeof element === 'string') ?
         document.querySelector(element) : element;
-      this.el = el;
     }
     if (delegate !== false) this.delegateEvents();
     return this;
-  },
-
-  delegate: function(eventName, selector, callback) {
-    if (typeof selector === 'function') {
-      callback = selector;
-      selector = null;
-    }
-
-    if (typeof callback !== 'function') {
-      throw new TypeError('View#delegate expects callback function');
-    }
-
-    var root = this.el;
-    var bound = callback.bind(this);
-    var handler = selector ? function(event) {
-      for (var el = event.target; el && el !== root; el = el.parentNode) {
-        if (utils.matchesSelector(el, selector)) {
-          // event.currentTarget or event.target are read-only.
-          event.delegateTarget = el;
-          return bound(event);
-        }
-      }
-    } : bound;
-
-    root.addEventListener(eventName, handler, false);
-    this._handlers.push({
-      eventName: eventName, selector: selector,
-      callback: callback, handler: handler
-    });
-    return handler;
-  },
-
-  undelegate: function(eventName, selector, callback) {
-    if (typeof selector === 'function') {
-      callback = selector;
-      selector = null;
-    }
-
-    var root = this.el;
-    var handlers = this._handlers;
-    var removeListener = function(item) {
-      root.removeEventListener(item.eventName, item.handler, false);
-    };
-
-    // Remove all handlers.
-    if (!eventName && !selector && !callback) {
-      handlers.forEach(removeListener);
-      this._handlers = [];
-    } else {
-      // Remove some handlers.
-      handlers
-        .filter(function(item) {
-          return item.eventName === eventName &&
-            (callback ? item.callback === callback : true) &&
-            (selector ? item.selector === selector : true);
-        })
-        .forEach(function(item) {
-          removeListener(item);
-          handlers.splice(handlers.indexOf(item), 1);
-        });
-    }
   },
 
   // Set callbacks, where `this.events` is a hash of
@@ -7398,12 +7430,12 @@ _.extend(View.prototype, Events, {
       var match = key.match(delegateEventSplitter);
       var eventName = match[1], selector = match[2];
 
-      if (Backbone.$) {
+      if (Backbone.$ && !this.useNative) {
         eventName += '.delegateEvents' + this.cid;
         method = method.bind(this);
         this.$el.on(eventName, (selector ? selector : null), method);
       } else {
-        this.delegate(eventName, selector, method);
+        utils.delegate(this, eventName, selector, method);
       }
     }
     return this;
@@ -7413,10 +7445,10 @@ _.extend(View.prototype, Events, {
   // You usually don't need to use this, but may wish to if you have multiple
   // Backbone views attached to the same DOM element.
   undelegateEvents: function() {
-    if (Backbone.$) {
+    if (Backbone.$ && !this.useNative) {
       this.$el.off('.delegateEvents' + this.cid);
     } else {
-      this.undelegate();
+      utils.undelegate(this);
     }
     return this;
   },
@@ -8529,11 +8561,9 @@ InlineLexer.prototype.outputLink = function(cap, link) {
   var href = escape(link.href)
     , title = link.title ? escape(link.title) : null;
 
-  if (cap[0].charAt(0) !== '!') {
-    return this.renderer.link(href, title, this.output(cap[1]));
-  } else {
-    return this.renderer.image(href, title, escape(cap[1]));
-  }
+  return cap[0].charAt(0) !== '!'
+    ? this.renderer.link(href, title, this.output(cap[1]))
+    : this.renderer.image(href, title, escape(cap[1]));
 };
 
 /**
@@ -8584,18 +8614,28 @@ InlineLexer.prototype.mangle = function(text) {
 
 function Renderer() {}
 
-Renderer.prototype.code = function(code, lang) {
+Renderer.prototype.code = function(code, lang, escaped, options) {
+  options = options || {};
+
+  if (options.highlight) {
+    var out = options.highlight(code, lang);
+    if (out != null && out !== code) {
+      escaped = true;
+      code = out;
+    }
+  }
+
   if (!lang) {
     return '<pre><code>'
-      + escape(code, true)
+      + (escaped ? code : escape(code, true))
       + '\n</code></pre>';
   }
 
   return '<pre><code class="'
-    + 'lang-'
+    + options.langPrefix
     + lang
     + '">'
-    + escape(code)
+    + (escaped ? code : escape(code))
     + '\n</code></pre>\n';
 };
 
@@ -8610,7 +8650,10 @@ Renderer.prototype.html = function(html) {
 Renderer.prototype.heading = function(text, level, raw, options) {
   return '<h'
     + level
-    + '>'
+    + ' id="'
+    + options.headerPrefix
+    + raw.toLowerCase().replace(/[^\w]+/g, '-')
+    + '">'
     + text
     + '</h'
     + level
@@ -8778,11 +8821,16 @@ Parser.prototype.tok = function() {
     case 'heading': {
       return this.renderer.heading(
         this.inline.output(this.token.text),
-        this.token.depth
+        this.token.depth,
+        this.token.text,
+        this.options
       );
     }
     case 'code': {
-      return this.renderer.code(this.token.text, this.token.lang);
+      return this.renderer.code(this.token.text,
+        this.token.lang,
+        this.token.escaped,
+        this.options);
     }
     case 'table': {
       var header = ''
@@ -8961,7 +9009,31 @@ function marked(src, opt, callback) {
         : callback(null, out);
     };
 
-    return done();
+    if (!highlight || highlight.length < 3) {
+      return done();
+    }
+
+    delete opt.highlight;
+
+    if (!pending) return done();
+
+    for (; i < tokens.length; i++) {
+      (function(token) {
+        if (token.type !== 'code') {
+          return --pending || done();
+        }
+        return highlight(token.text, token.lang, function(err, code) {
+          if (code == null || code === token.text) {
+            return --pending || done();
+          }
+          token.text = code;
+          token.escaped = true;
+          --pending || done();
+        });
+      })(tokens[i]);
+    }
+
+    return;
   }
   try {
     if (opt) opt = merge({}, marked.defaults, opt);
@@ -8995,7 +9067,10 @@ marked.defaults = {
   sanitize: false,
   smartLists: false,
   silent: false,
+  highlight: null,
+  langPrefix: 'lang-',
   smartypants: false,
+  headerPrefix: '',
   renderer: new Renderer
 };
 
@@ -12011,7 +12086,7 @@ module.exports = React.createClass({
     React.DOM.div( {className:"container"}, 
       React.DOM.div( {className:"row"}, 
         ContactList( {rooms:this.props.rooms, room:this.props.room, me:this.props.me} ),
-        React.DOM.div( {className:"chat col-md-9 com-sm-7"}, 
+        React.DOM.div( {className:"chat col-md-9 col-sm-7"}, 
           React.DOM.div(null, this.props.room.get('name'), this.leaveJoinButton()),
           ParticipantsList( {room:this.props.room}),
           ScrollingList( 
