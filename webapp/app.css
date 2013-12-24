@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 23-12-2013
+* 24-12-2013
 */
 
 fieldset {
@@ -3138,6 +3138,9 @@ a:hover {
   background-color: #ebebeb;
   padding: 15px;
   border: 1px solid #b4b4b4;
+}
+.participants .label {
+  display: inline-block;
 }
 .messagesList {
   width: 100%;
