@@ -7,7 +7,7 @@ var APP_ENV = process.env.APP_ENV || 'development';
 
 var redisUrl = require('parse-redis-url')(redis);
 var options = redisUrl.parse(process.env.REDISTOGO_URL);
-var options.pass = options.password;
+options.pass = options.password;
 
 nconf = require('nconf');
 nconf.argv()
