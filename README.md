@@ -26,6 +26,13 @@ Five steps to start developing:
 
 If you have any troubles, try to do the same with administrator permissions.
 
+## Dependencies management
+For server-side dependencies, [npm](https://github.com/isaacs/npm) is used.
+For client-side dependencies, [compy](https://github.com/edjafarov/compy) is used. In case you need to update all dependencies, be sure to
+1. `cd client/`
+2. `compy install -f` to update every package or just do install of single component with -f flag.
+i.e: `compy install -f paulmillr/exoskeleton@master` (be sure to check, whether package.json changed to accidentally not modify it)
+
 ## Scripts
   - `npm start` - just starts server
   - `npm test` - runs server tests
