@@ -27,7 +27,7 @@
     "grunt-mocha-test": "~0.6.3",
     "nock": "~0.22.1",
     "socker": "~0.1.6",
-    "engine.io-session": "0.0.3",
+    "engine.io-session": "0.0.4",
     "connect": "~2.11.0",
     "redis": "~0.9.0",
     "parse-redis-url": "0.0.1",

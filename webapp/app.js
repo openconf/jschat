@@ -12011,7 +12011,7 @@ module.exports = React.createClass({
     React.DOM.div( {className:"container"}, 
       React.DOM.div( {className:"row"}, 
         ContactList( {rooms:this.props.rooms, room:this.props.room, me:this.props.me} ),
-        React.DOM.div( {className:"chat col-md-9 com-sm-7"}, 
+        React.DOM.div( {className:"chat col-md-9 col-sm-7"}, 
           React.DOM.div(null, this.props.room.get('name'), this.leaveJoinButton()),
           ParticipantsList( {room:this.props.room}),
           ScrollingList( 
