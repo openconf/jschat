@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 module.exports = React.createClass({
   render: function(){
+    var that = this;
     var user = function(meModel){
       if(meModel && meModel.get('id')){
         return <li>
@@ -8,7 +9,7 @@ module.exports = React.createClass({
         </li>;
       } else {
         return <li>
-          <a href="/auth/github" target="_self">Login with GitHub</a>
+          <a href={window.host + "/auth/github?backUrl=" + encodeURIComponent(location.href)}  target="_self">Login with GitHub</a>
         </li> 
       }
     }

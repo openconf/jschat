@@ -7,7 +7,7 @@ module.exports = React.createClass({
       <div className="container">
         <div className="jumbotron">
           <h2>Login/signup chat</h2>
-          <a className="btn btn-success" href='/auth/github' target="_self">Login with GitHub</a>
+          <a className="btn btn-success" href={window.host + '/auth/github?backUrl=' + encodeURIComponent(location.href)} target="_self">Login with GitHub</a>
         </div>
       </div>
     </div>

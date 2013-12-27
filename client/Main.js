@@ -1,5 +1,5 @@
 var backbone = require('exoskeleton');
-var socket = require('engine.io')(location.origin.replace(/^http/, 'ws'));
+var socket = require('engine.io')(window.host.replace(/^http/, 'ws'));
 var reconnect = require('engine.io-reconnect');
 socket = reconnect(socket, {timeout:86400000});
 require('socker-client')(socket);

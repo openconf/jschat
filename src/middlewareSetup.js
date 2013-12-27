@@ -84,16 +84,34 @@ module.exports = function(app){
   } else {
     app.use(express.static(__dirname + "/../webapp/"));
   }
-  app.get('/auth/github', app.access.free,
+  
+  
+  app.get('/auth/github', app.access.free, rememberBackUrl,
     passport.authenticate('github'),
     function(req,res){});
   app.get('/auth/github/callback', app.access.free,
     passport.authenticate('github', {failureRedirect:"/auth/github/failure"}),
     function(req, res, next){
+      if(req.session.backUrl && !!~req.session.backUrl.indexOf('app://')) { //app:/
+        console.log("inside APP");
+        res.end('<script>window.history.back()</script>');
+        delete req.session.backUrl;
+        return;
+      }
+      if(req.session.backUrl) {
+        console.log("just back");
+        res.redirect(decodeURIComponent(req.session.backUrl));
+        delete req.session.backUrl;
+        return;
+      }
       res.redirect('/');
     }
   );
 
+  function rememberBackUrl(req, res, next){
+    req.session.backUrl = req.query.backUrl;
+    next();
+  }
   app.get('/', function(req, res) {
     res.send(200);
   })

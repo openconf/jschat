@@ -8,6 +8,7 @@
     "component-lesser": "latest",
     "component-jsx": "latest"
   },
+  "main":"app://jschat/index.html",
   "compy": {
     "main": "Main.js",
     "dependencies": {

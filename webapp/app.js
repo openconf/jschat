@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 24-12-2013
+* 27-12-2013
 */
 
 
@@ -11418,7 +11418,7 @@ require.register("davy/subsequent.js", function(exports, require, module){
 });
 require.register("JSChat/Main.js", function(exports, require, module){
 var backbone = require('exoskeleton');
-var socket = require('engine.io')(location.origin.replace(/^http/, 'ws'));
+var socket = require('engine.io')(window.host.replace(/^http/, 'ws'));
 var reconnect = require('engine.io-reconnect');
 socket = reconnect(socket, {timeout:86400000});
 require('socker-client')(socket);
@@ -12178,7 +12178,7 @@ module.exports = React.createClass({
       React.DOM.div( {className:"container"}, 
         React.DOM.div( {className:"jumbotron"}, 
           React.DOM.h2(null, "Login/signup chat"),
-          React.DOM.a( {className:"btn btn-success", href:"/auth/github", target:"_self"}, "Login with GitHub")
+          React.DOM.a( {className:"btn btn-success", href:window.host + '/auth/github?backUrl=' + encodeURIComponent(location.href), target:"_self"}, "Login with GitHub")
         )
       )
     )
@@ -12339,6 +12339,7 @@ require.register("JSChat/reacts/Nav.js", function(exports, require, module){
 /** @jsx React.DOM */
 module.exports = React.createClass({
   render: function(){
+    var that = this;
     var user = function(meModel){
       if(meModel && meModel.get('id')){
         return React.DOM.li(null, 
@@ -12346,7 +12347,7 @@ module.exports = React.createClass({
         );
       } else {
         return React.DOM.li(null, 
-          React.DOM.a( {href:"/auth/github", target:"_self"}, "Login with GitHub")
+          React.DOM.a( {href:window.host + "/auth/github?backUrl=" + encodeURIComponent(location.href),  target:"_self"}, "Login with GitHub")
         ) 
       }
     }
@@ -12586,32 +12587,6 @@ module.exports = {
 
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/socker.client.js");
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/index.js");
 require.alias("edjafarov-socker/socker.client.js", "socker-client/index.js");
@@ -12703,6 +12678,32 @@ require.alias("davy/davy.js", "JSChat/deps/davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("JSChat/Main.js", "JSChat/index.js");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 var scripts = document.getElementsByTagName('script');
 for(var i=0; i < scripts.length; i++){
   var dataMain = scripts[i].getAttribute('data-main');

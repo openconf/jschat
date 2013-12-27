@@ -31,7 +31,9 @@
     "connect": "~2.11.0",
     "redis": "~0.9.0",
     "parse-redis-url": "0.0.1",
-    "connect-redis": "~1.4.6"
+    "connect-redis": "~1.4.6",
+    "grunt-node-webkit-builder": "~0.1.14",
+    "grunt-contrib-copy": "~0.5.0"
   },
   "devDependencies": {
     "compy": "~0.1.22",
