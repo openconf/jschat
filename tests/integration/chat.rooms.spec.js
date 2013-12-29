@@ -138,15 +138,14 @@ describe("Socket based authenticate users", function(){
       before(function(done){
         async.each(rooms, function(item, cb){
           var mock = _(roomMock).extend({name : item});
-          sock1.serve('CREATE /api/rooms', mock, function(err, data){
-            roomIds.push(data);
+          sock1.serve('CREATE /api/rooms', mock, function(err, id){
+            roomIds.push(id);
             cb();
           });
         }, done);
       });
-      // for some reason this fails on travis
-      // TODO: fix
-      xdescribe("Should be able to get all the rooms of mine", function(){
+
+      describe("Should be able to get all the rooms of mine", function(){
         var gotRooms;
         before(function(done){
           sock1.serve('READ /api/rooms', {ids: roomIds}, function(err, data){

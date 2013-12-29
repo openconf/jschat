@@ -96,16 +96,12 @@ function createRoom(socket, data, next){
 }
 
 function readRooms(socket, data, next){
-  Room.getLastActive(gotLastActive);
-  
-  function gotLastActive(err, results){
-    Room.get({ids: results}, function(err, rooms) {
-      if(err){
-        return next(err);
-      }
-      socket.json(rooms);
-    });
-  }
+  Room.get({ids: data.ids}, function(err, rooms) {
+    if(err){
+      return next(err);
+    }
+    socket.json(rooms);
+  });
 }
 
 function readRoomsByOwner(socket, data,next) {
