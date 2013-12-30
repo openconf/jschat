@@ -174,13 +174,13 @@ describe("authenticate user with permissions", function(){
     });
 
 
-    describe("READ /api/user/:id user should be able to get user info by Id", function(){
+    describe("READ /api/users/:id user should be able to get user info by Id", function(){
 
       var gotUser, socket;
 
       before(function(done){
         socket = sockets[0];
-        socket.serve('READ /api/users/' + userProfiles[3].id, null, function(err, data){
+        socket.serve('READ /api/users/' + userProfiles[3].id, function(err, data){
           expect(err).to.be.not.ok;
           gotUser = data;
           done();
@@ -194,7 +194,7 @@ describe("authenticate user with permissions", function(){
 
     });
 
-    xdescribe("PUT /api/users/:id should edit user", function(){
+    describe("PUT /api/users/:id should edit user", function(){
 
       var newName = 'A Very New Name',
           gotUser, socket, user;
@@ -202,10 +202,10 @@ describe("authenticate user with permissions", function(){
       before(function(done){
         socket = sockets[0];
         user = userProfiles[3];
-        _.extend(user.github, {displayName: newName});
-        socket.serve('UPDATE /api/user/' + user._id, user, function(err){
+        _.extend(user, {displayName: newName});
+        socket.serve('UPDATE /api/users/' + user.id, user, function(err){
           expect(err).to.be.not.ok;
-          socket.serve('READ /api/user/' + user._id, function(err, data){
+          socket.serve('READ /api/users/' + user.id, function(err, data){
             expect(err).to.be.not.ok;
             gotUser = data;
             done();
@@ -214,7 +214,7 @@ describe("authenticate user with permissions", function(){
       });
 
       it('returned gotUser should have new name', function(){
-        expect(gotUser.github).to.have.property('displayName', newName);
+        expect(gotUser).to.have.property('displayName', newName);
       });
 
     });
