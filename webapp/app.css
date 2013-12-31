@@ -3202,6 +3202,7 @@ a:hover {
 @media screen and (max-width: 479px) {
   .chat {
     left: 0;
+    bottom: 3em;
   }
 }
 @media screen and (min-width: 768px) {
@@ -3217,9 +3218,20 @@ a:hover {
   bottom: 0;
   height: 100px;
 }
+.form textarea {
+  width: 90%;
+  height: 60%;
+  margin: 20px;
+  border-radius: 5px;
+}
 @media screen and (max-width: 479px) {
   .form {
+    height: 3em;
     left: 0;
+  }
+  .form textarea {
+    height: 1.2em;
+    margin: .8em;
   }
 }
 @media screen and (min-width: 768px) {
@@ -3227,26 +3239,11 @@ a:hover {
     left: 230px;
   }
 }
-.form textarea {
-  width: 90%;
-  height: 60%;
-  margin: 20px;
-  border-radius: 5px;
-}
 .contactList {
+  overflow-y: scroll;
   width: 30%;
   bottom: 0;
   background-color: #ededed;
-}
-@media screen and (max-width: 479px) {
-  .contactList {
-    display: none;
-  }
-}
-@media screen and (min-width: 768px) {
-  .contactList {
-    width: 230px;
-  }
 }
 .contactList div {
   line-height: 3em;
@@ -3260,6 +3257,16 @@ a:hover {
 .contactList div.current a {
   color: #000;
   font-weight: bold;
+}
+@media screen and (max-width: 479px) {
+  .contactList {
+    display: none;
+  }
+}
+@media screen and (min-width: 768px) {
+  .contactList {
+    width: 230px;
+  }
 }
 .handler {
   display: none;
@@ -3347,6 +3354,11 @@ a:hover {
   width: 30px;
   height: 30px;
 }
+@media screen and (max-width: 479px) {
+  .messagesList .msg .avatar {
+    display: none;
+  }
+}
 .messagesList .msg .nick {
   font-weight: bold;
   color: #878d9f;
@@ -3370,6 +3382,11 @@ a:hover {
 .messagesList .msg .text {
   width: 85%;
   padding-left: 40px;
+}
+@media screen and (max-width: 479px) {
+  .messagesList .msg .text {
+    padding-left: 0;
+  }
 }
 .messagesList .msg + .msg {
   margin-top: 5px;

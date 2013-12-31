@@ -83,11 +83,13 @@ a {
 
 .chat {
   right: 0;
-  @media @phone{
-    left: 0;
-  }
+
   left: 30%;
   bottom: 100px;
+  @media @phone{
+    left: 0;
+    bottom: 3em;
+  }
   @media @desktopAll {
     left: 230px;
   }
@@ -100,12 +102,6 @@ a {
   position: absolute;
   right: 0;
   left: 30%;
-  @media @phone {
-    left: 0;
-  }
-  @media @desktopAll {
-    left: 230px;
-  }
   background-color: rgb(244, 244, 244);
   bottom: 0;
   height: 100px;
@@ -115,16 +111,22 @@ a {
     margin: 20px;
     border-radius: 5px;
   }
+  @media @phone {
+    height: 3em;
+    left: 0;
+    textarea {
+      height: 1.2em;
+      margin: .8em;
+    }
+  }
+  @media @desktopAll {
+    left: 230px;
+  }
 }
 
 .contactList {
-  @media @phone {
-    display: none;
-  }
+  overflow-y: scroll;
   width: 30%;
-  @media @desktopAll {
-    width: 230px;
-  }
   bottom: 0;
   background-color: rgb(237, 237, 237);
   div {
@@ -139,6 +141,12 @@ a {
         font-weight: bold;
       }
     }
+  }
+  @media @phone {
+    display: none;
+  }
+  @media @desktopAll {
+    width: 230px;
   }
 }
 .handler {
@@ -236,7 +244,9 @@ a {
         width: 30px;
         height: 30px;
       }
-
+      @media @phone{
+        display: none;
+      }
     }
     .nick {
       font-weight: bold;
@@ -263,6 +273,9 @@ a {
     .text{
       width: 85%;
       padding-left: 40px;
+      @media @phone {
+        padding-left: 0;
+      }
     }
     +.msg{
       margin-top: 5px;

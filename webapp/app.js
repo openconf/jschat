@@ -12595,6 +12595,32 @@ module.exports = {
 
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/socker.client.js");
 require.alias("edjafarov-socker/socker.client.js", "JSChat/deps/socker-client/index.js");
 require.alias("edjafarov-socker/socker.client.js", "socker-client/index.js");
@@ -12686,32 +12712,6 @@ require.alias("davy/davy.js", "JSChat/deps/davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("davy/davy.js", "davy/index.js");
 require.alias("JSChat/Main.js", "JSChat/index.js");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 var scripts = document.getElementsByTagName('script');
 for(var i=0; i < scripts.length; i++){
   var dataMain = scripts[i].getAttribute('data-main');
