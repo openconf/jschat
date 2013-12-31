@@ -12356,11 +12356,14 @@ module.exports = React.createClass({
         ) 
       }
     }
-    return React.DOM.nav( {className:"navbar", role:"navigation"}, 
-        React.DOM.a( {className:"navbar-brand", href:"#", target:"_self"}, "JSchat"),
-      React.DOM.ul( {className:"nav right"}, 
-        React.DOM.li(null, React.DOM.label( {htmlFor:"handler-right", id:"right", href:"#"}, "Open right →")),
-React.DOM.li(null, React.DOM.label( {htmlFor:"handler-left", id:"left", href:"#"}, "← Open left")),
+    return React.DOM.nav( {className:"navbar navbar-default", role:"navigation"}, 
+      React.DOM.div( {className:"appName"}, 
+        React.DOM.a( {className:"navbar-brand", href:"#", target:"_self"}, "JSchat")
+      ),
+      
+      React.DOM.label( {htmlFor:"handler-right", id:"right", href:"#", className:"btn btn-default nav navbar-nav"}, "⍣"),
+      React.DOM.label( {htmlFor:"handler-left", id:"left", href:"#", className:"btn btn-default nav navbar-nav"}, "☰"),
+      React.DOM.ul(null, 
         user(this.props.me)
       )
     )

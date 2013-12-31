@@ -3136,6 +3136,36 @@ body {
   margin-bottom: 0;
   position: absolute;
   width: 100%;
+  height: 50px;
+}
+.navbar label {
+  display: none;
+}
+.navbar #left {
+  float: left;
+}
+.navbar #right {
+  float: right;
+}
+@media screen and (max-width: 479px) {
+  .navbar ul {
+    display: none;
+  }
+  .navbar .appName {
+    width: 40%;
+    position: absolute;
+    left: 30%;
+    text-align: center;
+  }
+  .navbar .appName a {
+    display: inline-block;
+    float: none;
+  }
+  .navbar label {
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
 }
 .chat,
 .contactList {
@@ -3235,18 +3265,18 @@ a:hover {
   display: none;
 }
 @media screen and (max-width: 479px) {
-  .handler#handler-right:checked ~ .wrapper .chat {
+  .handler#handler-left:checked ~ .wrapper .chat {
     -webkit-transform: translate3D(70%, 0, 0);
     -moz-transform: translate3D(70%, 0, 0);
   }
-  .handler#handler-right:checked ~ .wrapper .contactList {
+  .handler#handler-left:checked ~ .wrapper .contactList {
     display: block;
     width: 70%;
   }
-  .handler#handler-left:checked ~ .wrapper .chat .info {
+  .handler#handler-right:checked ~ .wrapper .chat .info {
     display: block;
   }
-  .handler#handler-left:checked ~ .wrapper .chat .messagesList {
+  .handler#handler-right:checked ~ .wrapper .chat .messagesList {
     -webkit-transform: translate3D(-70%, 0, 0);
     -moz-transform: translate3D(-70%, 0, 0);
   }

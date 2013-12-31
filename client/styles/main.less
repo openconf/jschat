@@ -25,6 +25,36 @@ body {
   margin-bottom: 0;
   position: absolute;
   width: 100%;
+  height: 50px;
+  label {
+    display: none;
+  }
+  #left {
+    float: left;
+  }
+  #right {
+    float: right;
+  }
+  @media @phone{
+    ul {
+      display: none;
+    }
+    .appName{
+      width: 40%;
+      position: absolute;
+      left: 30%;
+      text-align: center;
+      a {
+        display: inline-block;
+        float: none;
+      }
+    }
+    label {
+      display: inline-block;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+  }
 }
 
 .chat, .contactList {
@@ -116,7 +146,7 @@ a {
 }
 @media @phone{
   .handler {
-    &#handler-right:checked{
+    &#handler-left:checked{
       & ~ .wrapper {
         .chat {
           -webkit-transform: translate3D(@chatOffset,0,0);
@@ -128,7 +158,7 @@ a {
         }
       }
     }
-    &#handler-left:checked{
+    &#handler-right:checked{
       & ~ .wrapper {
         .chat {
           .info{
