@@ -96,25 +96,30 @@ module.exports = React.createClass({
     }
     this.sendWriting();
   },
+  /**        <div>{this.props.room.get('name')} {this.leaveJoinButton()}</div>
+    <ParticipantsList room={this.props.room}/>**/
   render: function(){
     return <div>
+    <input type="checkbox" name="handler-right" className="handler" id="handler-right"  />
+    <input type="checkbox" name="handler-left" className="handler" id="handler-left" />
     <Nav me={this.props.me}/>
-    <div className="container">
-      <div className="row">
-        <ContactList rooms={this.props.rooms} room={this.props.room} me={this.props.me} />
-        <div className="chat col-md-9 col-sm-7">
+    <div className="wrapper">
+      <ContactList rooms={this.props.rooms} room={this.props.room} me={this.props.me} />
+      <div className="chat">
+        <div className="info">
           <div>{this.props.room.get('name')} {this.leaveJoinButton()}</div>
           <ParticipantsList room={this.props.room}/>
-          <ScrollingList 
-            renderedItems={this.props.messages}
-            ref="messagesList" 
-            writingStatus = {writingStatus(this.props.room.get('writing_users'))}/>
-          <div className="form">
-            <textarea onChange={this.handleTyping} 
-              disabled={!this.meJoinedTheRoom()} 
-              onKeyDown={this.onKeyDown} ref="textbox"></textarea>
-          </div>
         </div>
+        <ScrollingList 
+          renderedItems={this.props.messages}
+          ref="messagesList" 
+          writingStatus = {writingStatus(this.props.room.get('writing_users'))}/>
+
+      </div>
+      <div className="form">
+        <textarea onChange={this.handleTyping} 
+          disabled={!this.meJoinedTheRoom()} 
+          onKeyDown={this.onKeyDown} ref="textbox"></textarea>
       </div>
     </div>
   </div>

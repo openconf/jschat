@@ -13,11 +13,11 @@ module.exports = React.createClass({
         </li> 
       }
     }
-    return <nav className="navbar navbar-default" role="navigation">
-      <div className="navbar-header">
+    return <nav className="navbar" role="navigation">
         <a className="navbar-brand" href="#" target="_self">JSchat</a>
-      </div>
-      <ul className="nav navbar-nav navbar-right">
+      <ul className="nav right">
+        <li><label htmlFor="handler-right" id="right" href="#">Open right →</label></li>
+<li><label htmlFor="handler-left" id="left" href="#">← Open left</label></li>
         {user(this.props.me)}
       </ul>
     </nav>

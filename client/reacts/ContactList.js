@@ -12,7 +12,7 @@ var roomContact = function(roomId){
 module.exports = React.createClass({
   render: function(){
     var rooms = this.props.me.get('rooms');
-    return <div className="col-sm-4 col-md-2 contactList">
+    return <div className="contactList">
       <h3>Rooms</h3>
       {rooms.map(roomContact, this)}
     </div>

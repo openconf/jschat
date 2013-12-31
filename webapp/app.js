@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 27-12-2013
+* 31-12-2013
 */
 
 
@@ -12005,25 +12005,30 @@ module.exports = React.createClass({
     }
     this.sendWriting();
   },
+  /**        <div>{this.props.room.get('name')} {this.leaveJoinButton()}</div>
+    <ParticipantsList room={this.props.room}/>**/
   render: function(){
     return React.DOM.div(null, 
+    React.DOM.input( {type:"checkbox", name:"handler-right", className:"handler", id:"handler-right"}  ),
+    React.DOM.input( {type:"checkbox", name:"handler-left", className:"handler", id:"handler-left"} ),
     Nav( {me:this.props.me}),
-    React.DOM.div( {className:"container"}, 
-      React.DOM.div( {className:"row"}, 
-        ContactList( {rooms:this.props.rooms, room:this.props.room, me:this.props.me} ),
-        React.DOM.div( {className:"chat col-md-9 col-sm-7"}, 
+    React.DOM.div( {className:"wrapper"}, 
+      ContactList( {rooms:this.props.rooms, room:this.props.room, me:this.props.me} ),
+      React.DOM.div( {className:"chat"}, 
+        React.DOM.div( {className:"info"}, 
           React.DOM.div(null, this.props.room.get('name'), this.leaveJoinButton()),
-          ParticipantsList( {room:this.props.room}),
-          ScrollingList( 
-            {renderedItems:this.props.messages,
-            ref:"messagesList", 
-            writingStatus:  writingStatus(this.props.room.get('writing_users'))}),
-          React.DOM.div( {className:"form"}, 
-            React.DOM.textarea( {onChange:this.handleTyping, 
-              disabled:!this.meJoinedTheRoom(), 
-              onKeyDown:this.onKeyDown, ref:"textbox"})
-          )
-        )
+          ParticipantsList( {room:this.props.room})
+        ),
+        ScrollingList( 
+          {renderedItems:this.props.messages,
+          ref:"messagesList", 
+          writingStatus:  writingStatus(this.props.room.get('writing_users'))})
+
+      ),
+      React.DOM.div( {className:"form"}, 
+        React.DOM.textarea( {onChange:this.handleTyping, 
+          disabled:!this.meJoinedTheRoom(), 
+          onKeyDown:this.onKeyDown, ref:"textbox"})
       )
     )
   )
@@ -12074,7 +12079,7 @@ var roomContact = function(roomId){
 module.exports = React.createClass({
   render: function(){
     var rooms = this.props.me.get('rooms');
-    return React.DOM.div( {className:"col-sm-4 col-md-2 contactList"}, 
+    return React.DOM.div( {className:"contactList"}, 
       React.DOM.h3(null, "Rooms"),
       rooms.map(roomContact, this)
     )
@@ -12351,11 +12356,11 @@ module.exports = React.createClass({
         ) 
       }
     }
-    return React.DOM.nav( {className:"navbar navbar-default", role:"navigation"}, 
-      React.DOM.div( {className:"navbar-header"}, 
-        React.DOM.a( {className:"navbar-brand", href:"#", target:"_self"}, "JSchat")
-      ),
-      React.DOM.ul( {className:"nav navbar-nav navbar-right"}, 
+    return React.DOM.nav( {className:"navbar", role:"navigation"}, 
+        React.DOM.a( {className:"navbar-brand", href:"#", target:"_self"}, "JSchat"),
+      React.DOM.ul( {className:"nav right"}, 
+        React.DOM.li(null, React.DOM.label( {htmlFor:"handler-right", id:"right", href:"#"}, "Open right →")),
+React.DOM.li(null, React.DOM.label( {htmlFor:"handler-left", id:"left", href:"#"}, "← Open left")),
         user(this.props.me)
       )
     )

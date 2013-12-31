@@ -1,3 +1,48 @@
+@navHeight: 50px;
+@msgBoxHeight: 50px;
+@phone: ~"screen and (max-width: 479px)";
+@tablet: ~"screen and (min-width: 480px) and (max-width: 767px)";
+@desktop: ~"screen and (min-width: 768px) and (max-width: 1024px)";
+@desktopWide: ~"screen and (min-width: 1024px)";
+@desktopAll: ~"screen and (min-width: 768px)";
+@chatOffset: 70%;
+
+
+body {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  @media @desktop {
+    position: initial;
+  }
+}
+
+.navbar {
+  margin-bottom: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.chat, .contactList {
+  top: @navHeight;
+  bottom: @msgBoxHeight;
+  position: absolute;
+}
+.wrapper {
+  @media @desktopWide {
+    position: absolute;
+    left: calc(~"(100% - 1024px)/2");
+    width: 1024px;
+  }
+  width: 100%;
+  height: 100%;
+}
+
+
 a {
   color: #dd6205;
   text-decoration: none;
@@ -7,37 +52,148 @@ a {
 }
 
 .chat {
-  .form{
-    background-color: rgb(244, 244, 244);
-    textarea {
-      height: 70px;
-      width: 90%;
-      margin: 20px;
-      border-radius: 5px;
+  right: 0;
+  @media @phone{
+    left: 0;
+  }
+  left: 30%;
+  bottom: 100px;
+  @media @desktopAll {
+    left: 230px;
+  }
+  -webkit-transition: -webkit-transform .3s ease-in-out;
+  -webkit-transform: translate3D(0,0,0);
+  -moz-transform: translate3D(0,0,0);
+}
+
+.form{
+  position: absolute;
+  right: 0;
+  left: 30%;
+  @media @phone {
+    left: 0;
+  }
+  @media @desktopAll {
+    left: 230px;
+  }
+  background-color: rgb(244, 244, 244);
+  bottom: 0;
+  height: 100px;
+  textarea {
+    width: 90%;
+    height: 60%;
+    margin: 20px;
+    border-radius: 5px;
+  }
+}
+
+.contactList {
+  @media @phone {
+    display: none;
+  }
+  width: 30%;
+  @media @desktopAll {
+    width: 230px;
+  }
+  bottom: 0;
+  background-color: rgb(237, 237, 237);
+  div {
+    line-height: 3em;
+    height: 3em;
+    padding: 0 15px;
+    overflow: hidden;
+    &.current {
+      background-color: rgb(174, 185, 208);
+      a{
+        color: #000;
+        font-weight: bold;
+      }
     }
   }
 }
-.participants {
+.handler {
+  display: none;
+}
+@media @phone{
+  .handler {
+    &#handler-right:checked{
+      & ~ .wrapper {
+        .chat {
+          -webkit-transform: translate3D(@chatOffset,0,0);
+          -moz-transform: translate3D(@chatOffset,0,0);
+        }
+        .contactList {
+          display: block;
+          width: @chatOffset;
+        }
+      }
+    }
+    &#handler-left:checked{
+      & ~ .wrapper {
+        .chat {
+          .info{
+            display: block;
+          }
+          .messagesList{
+            -webkit-transform: translate3D(-@chatOffset,0,0);
+            -moz-transform: translate3D(-@chatOffset,0,0);
+          }
+        }
+      }
+    }
+  }
+}
+.info {
   background-color: rgb(235, 235, 235);
   padding: 15px;
+  height: 42px;
   border: 1px solid rgb(180, 180, 180);
+  z-index: 10;
+  right: 0;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
   .label {
     display: inline-block;
+  }
+  @media @phone{
+    display: none;
+    left: auto;
+    padding: 0;
+    bottom: 0;
+    top: 0;
+    height: auto;
+    width: @chatOffset;
+    > div {
+      margin: 0 15px;
+    }
   }
 }
 
 .messagesList {
+  position: absolute;
+  top: 74px;
+  bottom:0;
   width: 100%;
-  height: 400px;
   background-color: #fff;
   overflow-y: scroll;
   border: 1px solid rgb(180, 180, 180);
   border-top: none;
   box-sizing: border-box;
-  >div{
+  -webkit-transition: -webkit-transform .3s ease-in-out;
+  -webkit-transform: translate3D(0,0,0);
+  -moz-transform: translate3D(0,0,0);
+  @media @phone{
+    top: 0;
+  }
+  
+  > div{
     margin: 0 10px;
   }
+
+
   .msg{
+    word-wrap:break-word;
     &.user{
       margin-bottom: .1em;
     }
@@ -84,18 +240,7 @@ a {
   }
 }
 
-.contactList {
-  background-color: rgb(237, 237, 237);
-  div {
-    line-height: 3em;
-    height: 3em;
-    &.current {
-      background-color: rgb(174, 185, 208);
-      margin: 0 -15px;
-      padding: 0 15px;
-    }
-  }
-}
+
 
 .writingBar{
   height: 1.5em;

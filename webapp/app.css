@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 27-12-2013
+* 31-12-2013
 */
 
 fieldset {
@@ -3118,6 +3118,42 @@ input[type="button"].btn-block {
     font-size: 63px;
   }
 }
+body {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  body {
+    position: initial;
+  }
+}
+.navbar {
+  margin-bottom: 0;
+  position: absolute;
+  width: 100%;
+}
+.chat,
+.contactList {
+  top: 50px;
+  bottom: 50px;
+  position: absolute;
+}
+.wrapper {
+  width: 100%;
+  height: 100%;
+}
+@media screen and (min-width: 1024px) {
+  .wrapper {
+    position: absolute;
+    left: calc((100% - 1024px)/2);
+    width: 1024px;
+  }
+}
 a {
   color: #dd6205;
   text-decoration: none;
@@ -3125,36 +3161,148 @@ a {
 a:hover {
   text-decoration: underline;
 }
-.chat .form {
-  background-color: #f4f4f4;
+.chat {
+  right: 0;
+  left: 30%;
+  bottom: 100px;
+  -webkit-transition: -webkit-transform 0.3s ease-in-out;
+  -webkit-transform: translate3D(0, 0, 0);
+  -moz-transform: translate3D(0, 0, 0);
 }
-.chat .form textarea {
-  height: 70px;
+@media screen and (max-width: 479px) {
+  .chat {
+    left: 0;
+  }
+}
+@media screen and (min-width: 768px) {
+  .chat {
+    left: 230px;
+  }
+}
+.form {
+  position: absolute;
+  right: 0;
+  left: 30%;
+  background-color: #f4f4f4;
+  bottom: 0;
+  height: 100px;
+}
+@media screen and (max-width: 479px) {
+  .form {
+    left: 0;
+  }
+}
+@media screen and (min-width: 768px) {
+  .form {
+    left: 230px;
+  }
+}
+.form textarea {
   width: 90%;
+  height: 60%;
   margin: 20px;
   border-radius: 5px;
 }
-.participants {
+.contactList {
+  width: 30%;
+  bottom: 0;
+  background-color: #ededed;
+}
+@media screen and (max-width: 479px) {
+  .contactList {
+    display: none;
+  }
+}
+@media screen and (min-width: 768px) {
+  .contactList {
+    width: 230px;
+  }
+}
+.contactList div {
+  line-height: 3em;
+  height: 3em;
+  padding: 0 15px;
+  overflow: hidden;
+}
+.contactList div.current {
+  background-color: #aeb9d0;
+}
+.contactList div.current a {
+  color: #000;
+  font-weight: bold;
+}
+.handler {
+  display: none;
+}
+@media screen and (max-width: 479px) {
+  .handler#handler-right:checked ~ .wrapper .chat {
+    -webkit-transform: translate3D(70%, 0, 0);
+    -moz-transform: translate3D(70%, 0, 0);
+  }
+  .handler#handler-right:checked ~ .wrapper .contactList {
+    display: block;
+    width: 70%;
+  }
+  .handler#handler-left:checked ~ .wrapper .chat .info {
+    display: block;
+  }
+  .handler#handler-left:checked ~ .wrapper .chat .messagesList {
+    -webkit-transform: translate3D(-70%, 0, 0);
+    -moz-transform: translate3D(-70%, 0, 0);
+  }
+}
+.info {
   background-color: #ebebeb;
   padding: 15px;
+  height: 42px;
   border: 1px solid #b4b4b4;
+  z-index: 10;
+  right: 0;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
 }
-.participants .label {
+.info .label {
   display: inline-block;
 }
+@media screen and (max-width: 479px) {
+  .info {
+    display: none;
+    left: auto;
+    padding: 0;
+    bottom: 0;
+    top: 0;
+    height: auto;
+    width: 70%;
+  }
+  .info > div {
+    margin: 0 15px;
+  }
+}
 .messagesList {
+  position: absolute;
+  top: 74px;
+  bottom: 0;
   width: 100%;
-  height: 400px;
   background-color: #fff;
   overflow-y: scroll;
   border: 1px solid #b4b4b4;
   border-top: none;
   box-sizing: border-box;
+  -webkit-transition: -webkit-transform 0.3s ease-in-out;
+  -webkit-transform: translate3D(0, 0, 0);
+  -moz-transform: translate3D(0, 0, 0);
+}
+@media screen and (max-width: 479px) {
+  .messagesList {
+    top: 0;
+  }
 }
 .messagesList > div {
   margin: 0 10px;
 }
 .messagesList .msg {
+  word-wrap: break-word;
   margin-bottom: 1em;
   font-size: 1.1em;
 }
@@ -3195,18 +3343,6 @@ a:hover {
 }
 .messagesList .msg + .msg {
   margin-top: 5px;
-}
-.contactList {
-  background-color: #ededed;
-}
-.contactList div {
-  line-height: 3em;
-  height: 3em;
-}
-.contactList div.current {
-  background-color: #aeb9d0;
-  margin: 0 -15px;
-  padding: 0 15px;
 }
 .writingBar {
   height: 1.5em;
