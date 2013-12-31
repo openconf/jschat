@@ -227,6 +227,11 @@ a {
   
   > div{
     margin: 0 10px;
+    @media @phone{
+      width: calc(~"100%-20px");
+      max-width: calc(~"100%-20px");
+      overflow: hidden;
+    }
   }
 
 
