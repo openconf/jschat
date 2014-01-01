@@ -59,7 +59,7 @@ function readUser(socket, data, next){
 }
 
 function updateUser(socket, data, next) {
-  UserModel.updateById(socket.params['id'], data, function(err, user){
+  UserModel.update(socket.params['id'], data, function(err, user){
     if(err) {
       return next(err);
     }

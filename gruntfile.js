@@ -23,6 +23,13 @@ module.exports = function(grunt){
           reporter:"spec"
         },
         src: ["tests/**/**.spec.js"]
+      },
+      tag:{
+        options:{
+          reporter:"spec",
+          grep: "<%= grunt.option('tag') %>"
+        },
+        src: ["tests/**/**.spec.js"]
       }
     }
   });
@@ -34,7 +41,15 @@ module.exports = function(grunt){
     require("./server.js");
   });
 
-  grunt.registerTask('test', ['run','mochaTest']);
+  grunt.registerTask('tagged', function(tag){
+    if (!tag) {
+      grunt.log.errorlns('Nothing to grep. Running regular integration.')
+      return grunt.task.run('test')
+    }
+    grunt.option('tag', tag)
+    return grunt.task.run(['run','mochaTest:tag'])
+  })
+  grunt.registerTask('test', ['run','mochaTest:integration']);
   
   grunt.registerTask('buildapp', ['copy:main','nodewebkit']);
 
