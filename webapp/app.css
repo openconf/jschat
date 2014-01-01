@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 31-12-2013
+* 01-01-2014
 */
 
 fieldset {
@@ -3311,6 +3311,7 @@ a:hover {
     top: 0;
     height: auto;
     width: 70%;
+    overflow-y: scroll;
   }
   .info > div {
     margin: 0 15px;
@@ -3361,9 +3362,20 @@ a:hover {
   width: 30px;
   height: 30px;
 }
+@media screen and (min-width: 1024px) {
+  .messagesList .msg .avatar img {
+    width: 60px;
+    height: 60px;
+  }
+}
 @media screen and (max-width: 479px) {
   .messagesList .msg .avatar {
     display: none;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .messagesList .msg .avatar {
+    width: 70px;
   }
 }
 .messagesList .msg .nick {
@@ -3395,6 +3407,11 @@ a:hover {
     padding-left: 0;
   }
 }
+@media screen and (min-width: 1024px) {
+  .messagesList .msg .text {
+    padding-left: 70px;
+  }
+}
 .messagesList .msg + .msg {
   margin-top: 5px;
 }
@@ -3415,4 +3432,40 @@ a:hover {
   width: 20px;
   height: 20px;
   margin-right: 5px;
+}
+.participants > div {
+  line-height: 3em;
+  height: 3em;
+  padding: 0 15px;
+  overflow: hidden;
+}
+@media screen and (min-width: 480px) {
+  .participants > div {
+    display: inline-block;
+    padding: 0 3px;
+    line-height: 1.5em;
+    height: 1.5em;
+  }
+}
+.participants > div .status {
+  display: inline-block;
+  width: .6em;
+  height: .6em;
+  border-radius: .3em;
+  margin-right: 5px;
+  background-color: grey;
+}
+.participants > div.online .status {
+  background-color: green;
+}
+.participants img {
+  width: 30px;
+  height: 30px;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+@media screen and (min-width: 480px) {
+  .participants img {
+    display: none;
+  }
 }

@@ -39,7 +39,6 @@ module.exports = function(itemClass){
       this._scrollTop = node.scrollTop;
       this.shouldStayTop = this._scrollTop <= this._edge;
       this.shouldScrollBottom = (this._scrollTop + node.offsetHeight) >= node.scrollHeight - this._edge;
-      console.log(this.shouldStayTop, this.shouldScrollBottom);
     },
     //  hold items on adding top and bottom
     componentDidUpdate: function() {
@@ -53,11 +52,13 @@ module.exports = function(itemClass){
     },
     controlEdges: function(update){
       var scrolledFromTop = this.getDOMNode().scrollTop;
-      if(scrolledFromTop < this._edge) {
-        this.getDOMNode().scrollTop = this._edge;
-        update && this.props.renderedItems.addToTop();
-      }
       var bottom = this.refs.inner.getDOMNode().offsetHeight - this.getDOMNode().offsetHeight;
+      if(scrolledFromTop < this._edge) {
+        //fix jumping of chat when getting to a full viewport
+        if(scrolledFromTop > bottom/2 - this._edge) return;
+        this.getDOMNode().scrollTop = this._edge;
+        return update && this.props.renderedItems.addToTop();
+      }
       if(scrolledFromTop > bottom - this._edge) {
         this.getDOMNode().scrollTop = bottom - this._edge;
       }

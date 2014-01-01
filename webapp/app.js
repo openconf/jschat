@@ -3,7 +3,7 @@
 * @Eldar Djafarov <djkojb@gmail.com>
 * The client part of JSChat project.
 * MIT
-* 31-12-2013
+* 01-01-2014
 */
 
 
@@ -11914,7 +11914,6 @@ var ContactFactory = require('../models/ContactFactory');
 var notification = require('../services/notification');
 
 // item rendering im Messages list
-var MessagesList = require('./MessagesList')(require('./Message.js'));
 var ScrollingList = require('./ScrollingList')(require('./Message.js'));
 
 var MessageModel = require('../models/Message');
@@ -12005,11 +12004,9 @@ module.exports = React.createClass({
     }
     this.sendWriting();
   },
-  /**        <div>{this.props.room.get('name')} {this.leaveJoinButton()}</div>
-    <ParticipantsList room={this.props.room}/>**/
   render: function(){
     return React.DOM.div(null, 
-    React.DOM.input( {type:"checkbox", name:"handler-right", className:"handler", id:"handler-right"}  ),
+    React.DOM.input( {type:"checkbox", name:"handler-right", className:"handler", id:"handler-right"} ),
     React.DOM.input( {type:"checkbox", name:"handler-left", className:"handler", id:"handler-left"} ),
     Nav( {me:this.props.me}),
     React.DOM.div( {className:"wrapper"}, 
@@ -12057,7 +12054,10 @@ module.exports = React.createClass({
     return [this.props.user]
   },
   render: function(){
-    return React.DOM.span( {className:  "label label-default"}, 
+    var cn = parseInt(this.props.user.get('online'))?'online':'';
+    return React.DOM.div( {className:  cn}, 
+      React.DOM.img( {src:this.props.user.get('gh_avatar')}),
+      React.DOM.span( {className:"status"}),
       this.props.user.name
     )
   }
@@ -12242,104 +12242,6 @@ module.exports = function(item, i, items){
 }
 
 });
-require.register("JSChat/reacts/MessagesList.js", function(exports, require, module){
-/** @jsx React.DOM */
-var ContactFactory = require('../models/ContactFactory');
-
-var IScroll = require('IScroll');
-var GETTING_TO_CONST = 5;
-module.exports = function(itemClass){
-  return React.createClass({
-    mixins: [require('../models/ModelMixin')],
-    getBackboneModels: function(){
-      return [this.props.messages]
-    },
-    lastScrollPosition: null,
-    iscroll: null,
-    scrollDirectionDown: true,
-    scroll: function(e){
-      if(this.autoscrolling) return;
-      this.scrollDirectionDown = e.y < this.lastScrollPosition
-
-      if(this.props.onTop && e.y == 0 ){
-        this.props.onTop(e);
-      };
-      if(this.props.onBottom && e.y == e.maxScrollY ){
-        this.props.onBottom(e);
-      };
-      if(this.props.onGetToBottom && this.scrollDirectionDown &&
-          e.y < e.maxScrollY - e.wrapperHeight * GETTING_TO_CONST){
-        this.props.onGetToBottom(e);
-      }
-
-      if(this.props.onGetToTop && !this.scrollDirectionDown && 
-          e.y > -e.wrapperHeight * GETTING_TO_CONST){
-        this.props.onGetToTop(e);
-      }
-    },
-    scrollToBottom: function(time){
-      this.autoscrolling = true;
-      this.iscroll.scrollTo(0, this.iscroll.maxScrollY, time);
-    },
-    componentDidMount: function(){
-      this.iscroll = new IScroll(this.getDOMNode(), {
-        mouseWheel: true,
-        scrollbars: true
-      });
-      // populate User model inside object
-      this.props.messages.models.forEach(function(model){
-        console.log(model);
-        populateUser(model,this)
-      }.bind(this));
-      this.props.messages.on('change add remove', function(){
-        this.props.messages.models.forEach(function(model){
-          if(model.__user && !model.__user.injected) populateUser(model, this);
-        }.bind(this));
-      }.bind(this));
-
-      function populateUser(message, component){
-        message.__user.injected = true;
-        component.injectModel(message.__user);
-      };
-      /*
-      this.lastScrollHeight = this.iscroll.scrollerHeight;
-      /*var checkPosition = setInterval(function(){
-        if(this.iscroll.y !== this.lastScrollPosition && !this.autoscrolling){
-          //this.scroll.call(this, this.iscroll);
-          this.lastScrollPosition = this.iscroll.y;
-        }
-      }.bind(this), 30);
-      this.iscroll.on('scrollEnd', function(){
-        if(!this.autoscrolling) return;
-        this.autoscrolling = false;
-        this.lastScrollPosition = this.iscroll.y;
-      }.bind(this));*/
-    },
-    lastScrollHeight: null,
-    componentDidUpdate:function(){
-      this.iscroll.refresh();
-      if(!this.scrollDirectionDown){
-        var diff = this.iscroll.scrollerHeight - this.lastScrollHeight;
-        setTimeout(function(){
-          this.iscroll.scrollTo(0, this.lastScrollPosition - diff, 0);
-        }.bind(this), 0)
-      }
-      this.lastScrollHeight = this.iscroll.scrollerHeight;
-    },
-    render: function() {
-      return React.DOM.div( {className:"messagesList"}, 
-        React.DOM.div( {onScroll: this.notify}, 
-          React.DOM.div( {id:"scroller"} , 
-            this.props.messages && this.props.messages.models.map(itemClass),
-            React.DOM.div( {className:"writingBar"}, this.props.writingStatus)
-          )
-        )
-      );
-    }
-  });
-}
-
-});
 require.register("JSChat/reacts/Nav.js", function(exports, require, module){
 /** @jsx React.DOM */
 module.exports = React.createClass({
@@ -12432,7 +12334,6 @@ module.exports = function(itemClass){
       this._scrollTop = node.scrollTop;
       this.shouldStayTop = this._scrollTop <= this._edge;
       this.shouldScrollBottom = (this._scrollTop + node.offsetHeight) >= node.scrollHeight - this._edge;
-      console.log(this.shouldStayTop, this.shouldScrollBottom);
     },
     //  hold items on adding top and bottom
     componentDidUpdate: function() {
@@ -12446,11 +12347,13 @@ module.exports = function(itemClass){
     },
     controlEdges: function(update){
       var scrolledFromTop = this.getDOMNode().scrollTop;
-      if(scrolledFromTop < this._edge) {
-        this.getDOMNode().scrollTop = this._edge;
-        update && this.props.renderedItems.addToTop();
-      }
       var bottom = this.refs.inner.getDOMNode().offsetHeight - this.getDOMNode().offsetHeight;
+      if(scrolledFromTop < this._edge) {
+        //fix jumping of chat when getting to a full viewport
+        if(scrolledFromTop > bottom/2 - this._edge) return;
+        this.getDOMNode().scrollTop = this._edge;
+        return update && this.props.renderedItems.addToTop();
+      }
       if(scrolledFromTop > bottom - this._edge) {
         this.getDOMNode().scrollTop = bottom - this._edge;
       }

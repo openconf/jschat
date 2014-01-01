@@ -7,8 +7,11 @@ module.exports = React.createClass({
     return [this.props.user]
   },
   render: function(){
-    return <span className = "label label-default">
+    var cn = parseInt(this.props.user.get('online'))?'online':'';
+    return <div className = {cn}>
+      <img src={this.props.user.get('gh_avatar')}/>
+      <span className="status"></span>
       {this.props.user.name}
-    </span>
+    </div>
   }
 });

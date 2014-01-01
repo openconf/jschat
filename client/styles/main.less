@@ -5,6 +5,7 @@
 @desktop: ~"screen and (min-width: 768px) and (max-width: 1024px)";
 @desktopWide: ~"screen and (min-width: 1024px)";
 @desktopAll: ~"screen and (min-width: 768px)";
+@tabletAll: ~"screen and (min-width: 480px)";
 @chatOffset: 70%;
 
 
@@ -202,6 +203,7 @@ a {
     top: 0;
     height: auto;
     width: @chatOffset;
+    overflow-y: scroll;
     > div {
       margin: 0 15px;
     }
@@ -248,9 +250,16 @@ a {
       img {
         width: 30px;
         height: 30px;
+        @media @desktopWide{
+          width: 60px;
+          height: 60px;
+        }
       }
       @media @phone{
         display: none;
+      }
+      @media @desktopWide{
+        width: 70px;
       }
     }
     .nick {
@@ -281,6 +290,9 @@ a {
       @media @phone {
         padding-left: 0;
       }
+      @media @desktopWide{
+        padding-left: 70px;
+      }
     }
     +.msg{
       margin-top: 5px;
@@ -307,5 +319,42 @@ a {
     width: 20px;
     height: 20px;
     margin-right: 5px;
+  }
+}
+
+.participants{
+  > div {
+    line-height: 3em;
+    height: 3em;
+    padding: 0 15px;
+    overflow: hidden;
+    @media @tabletAll{
+      display: inline-block;
+      padding: 0 3px;
+      line-height: 1.5em;
+      height: 1.5em;
+    }
+    .status{
+      display: inline-block;
+      width: .6em;
+      height: .6em;
+      border-radius: .3em;
+      margin-right: 5px;
+      background-color: grey;
+    }
+    &.online {
+      .status{
+        background-color: green;
+      }
+    }
+  }
+  img{
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+    margin-right: 10px;
+    @media @tabletAll{
+      display: none;
+    }
   }
 }

@@ -5,7 +5,6 @@ var ContactFactory = require('../models/ContactFactory');
 var notification = require('../services/notification');
 
 // item rendering im Messages list
-var MessagesList = require('./MessagesList')(require('./Message.js'));
 var ScrollingList = require('./ScrollingList')(require('./Message.js'));
 
 var MessageModel = require('../models/Message');
@@ -96,11 +95,9 @@ module.exports = React.createClass({
     }
     this.sendWriting();
   },
-  /**        <div>{this.props.room.get('name')} {this.leaveJoinButton()}</div>
-    <ParticipantsList room={this.props.room}/>**/
   render: function(){
     return <div>
-    <input type="checkbox" name="handler-right" className="handler" id="handler-right"  />
+    <input type="checkbox" name="handler-right" className="handler" id="handler-right" />
     <input type="checkbox" name="handler-left" className="handler" id="handler-left" />
     <Nav me={this.props.me}/>
     <div className="wrapper">
