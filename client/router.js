@@ -36,7 +36,7 @@ module.exports = function(app){
         if(Me.get('id')){
           React.unmountComponentAtNode(document.body.children[0]);
           var ChatRoom = require('./reacts/ChatRoom');
-          var Room = require('./models/Room');
+          var RoomFactory = require('./models/RoomFactory');
           
           var Messages = require('./models/Messages');
           var messages = new Messages(null, {roomId: id});
@@ -45,7 +45,7 @@ module.exports = function(app){
             setTimeout(function(){messages.refresh();}, 500);
           });
 
-          var room = new Room({id : id});
+          var room = new RoomFactory.getRoomModel(id);
           var component = React.renderComponent(<ChatRoom me={Me} 
             room = {room}
             messages = {messages}
