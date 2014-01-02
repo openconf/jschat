@@ -9,7 +9,7 @@ module.exports = React.createClass({
         </li>;
       } else {
         return <li>
-          <a href={window.host + "/auth/github?backUrl=" + encodeURIComponent(location.href)}  target="_self">Login with GitHub</a>
+          <a className='btn btn-default' href={window.host + "/auth/github?backUrl=" + encodeURIComponent(location.href)}  target="_self">Login with GitHub</a>
         </li> 
       }
     }
@@ -20,7 +20,7 @@ module.exports = React.createClass({
       
       <label htmlFor="handler-right" id="right" href="#" className="btn btn-default nav navbar-nav">⍣</label>
       <label htmlFor="handler-left" id="left" href="#" className="btn btn-default nav navbar-nav">☰</label>
-      <ul>
+      <ul className="nav navbar-nav">
         {user(this.props.me)}
       </ul>
     </nav>
