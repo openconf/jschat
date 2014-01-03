@@ -1,23 +1,23 @@
 /** @jsx React.DOM */
 module.exports = function(item, i, items){
   var user = function(message, previous){
-    // if message is from same user as previous message
-    if(previous && previous.__user && message.__user && previous.__user 
-       && message.__user === previous.__user) {
+    function shouldNotDisplayAuthor(previousMsg, currentMsg) {
+      return previousMsg && currentMsg && previousMsg.__user && currentMsg.__user &&
+        currentMsg.__user === previousMsg.___user && previousMsg.get('action') != "JOIN"
+    }
+    if(shouldNotDisplayAuthor(previous,message)) {
         return;
-       }
-    if(!message.__user) return;
-    var data = message.__user;
-    var avatar = data.get('gh_avatar');
-    var cn = "nick text " + (parseInt(data.get('online'))?"online":"");
+    }
+    var userData = message.__user;
+    var avatar = userData.get('gh_avatar');
+    var cn = "nick text " + (parseInt(userData.get('online'))?"online":"");
     return <div className="msg user">
       <div className="avatar">
-        <img src={avatar} /> 
-        
+        <img src={avatar} />
       </div>
       <div className={cn}>
         <span className="status"></span>
-        {message.__user.name}:
+        {userData.name}:
       </div>
     </div>
   }
