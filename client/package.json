@@ -6,9 +6,10 @@
   "license": "MIT",
   "dependencies": {
     "component-lesser": "latest",
-    "component-jsx": "latest"
+    "component-jsx": "latest",
+    "karma-mocha": "~0.1.1"
   },
-  "main":"app://jschat/index.html",
+  "main": "app://jschat/index.html",
   "compy": {
     "main": "Main.js",
     "dependencies": {
@@ -30,6 +31,12 @@
       "chjj/marked": "*",
       "bscomp/jumbotron": "*",
       "cayasso/engine.io-reconnect": "*"
+    },
+    "tests": {
+      "plugins": [
+        "karma-phantomjs-launcher",
+        "karma-mocha"
+      ]
     },
     "local": [
       "IScroll",
