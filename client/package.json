@@ -7,7 +7,8 @@
   "dependencies": {
     "component-lesser": "latest",
     "component-jsx": "latest",
-    "karma-mocha": "~0.1.1"
+    "karma-mocha": "~0.1.1",
+    "karma-chai": "latest"
   },
   "main": "app://jschat/index.html",
   "compy": {
@@ -33,9 +34,11 @@
       "cayasso/engine.io-reconnect": "*"
     },
     "tests": {
+      "frameworks":["mocha","chai"],
       "plugins": [
         "karma-phantomjs-launcher",
-        "karma-mocha"
+        "karma-mocha",
+        "karma-chai"
       ]
     },
     "local": [
