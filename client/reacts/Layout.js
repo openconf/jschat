@@ -4,7 +4,7 @@ module.exports = React.createClass({
   render: function(){
     return <div>
       {this.insert('nav-bar')}
-      <div className="container">
+      <div>
         {this.insert('content')}
       </div>
     </div>

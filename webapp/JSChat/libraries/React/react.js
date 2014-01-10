@@ -1,1 +1,1 @@
-/home/vagrant/geekchat/client/libraries/React/react.js
+/home/vagrant/app/client/libraries/React/react.js

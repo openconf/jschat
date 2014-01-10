@@ -13,8 +13,6 @@ module.exports = function(app){
   composer.compose('nav-bar', require('./reacts/Nav'), {me:Me});
   app.render();
 
- 
-  
   var router = backbone.Router.extend({
     routes: {
       '': 'main',
@@ -33,7 +31,6 @@ module.exports = function(app){
         if(Me.get('id')){
           var ChatRoom = require('./reacts/ChatRoom');
           var RoomFactory = require('./models/RoomFactory');
-          
           var Messages = require('./models/Messages');
           
           app.bind('reconnected', function(){
