@@ -17,11 +17,7 @@ module.exports = function(itemClass){
     injectModels: function(){
       if(this.props.renderedItems){
         this.injectModel(this.props.renderedItems);
-        this.props.renderedItems.fetch({
-          success: function(){
-            this.scrollToBottom()
-          }.bind(this)
-        })
+
         //prepare user model ontop of each message
         this.controlEdges();
         // populate User model inside object
@@ -33,6 +29,11 @@ module.exports = function(itemClass){
             if(model.__user && !model.__user.injected) populateUser(model, this);
           }.bind(this));
         }.bind(this));
+        this.props.renderedItems.fetch({
+          success: function(){
+            this.scrollToBottom()
+          }.bind(this)
+        })
       }
       function populateUser(message, component){
         message.__user.injected = true;

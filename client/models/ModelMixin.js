@@ -11,10 +11,10 @@ module.exports = {
   componentDidMount: function() {
     // Whenever there may be a change in the Backbone data, trigger a reconcile.
     if(this.injectModels){
-      console.log(this.__name);
-      return this.injectModels();
+      this.injectModels();
+    } else {
+      this.getBackboneModels().forEach(this.injectModel, this);
     }
-    this.getBackboneModels().forEach(this.injectModel, this);
   },
   componentDidUpdate: function(){
     if(!this.__reinjectModels) return;
