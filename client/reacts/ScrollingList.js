@@ -41,6 +41,7 @@ module.exports = function(itemClass){
       };
     },
     componentWillUpdate: function() {
+      this.log("will upd");
       var node = this.getDOMNode();
       this._scrollHeight = node.scrollHeight;
       this._scrollTop = node.scrollTop;
@@ -71,6 +72,7 @@ module.exports = function(itemClass){
       }
     },
     render : function(){
+      console.log("scroll rend");
       return <div className="messagesList" onScroll={this.onScroll} >
         <div style={{'padding-top': this._edge,'padding-bottom':this._edge }} ref='inner' >
           {this.props.renderedItems && this.props.renderedItems.models.map(itemClass)}

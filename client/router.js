@@ -36,7 +36,6 @@ module.exports = function(app){
           
           var Messages = require('./models/Messages');
           
-          
           app.bind('reconnected', function(){
             setTimeout(function(){messages.refresh();}, 500);
           });
@@ -50,9 +49,9 @@ module.exports = function(app){
             room: room,
             messages: messages,
             rooms: rooms});
-            
-          app.render();
+   
           composer.compose('room-props', {id: id, component: component, messages: messages, room: room});
+          app.render();
 
         } else {
           composer.compose('content', require('./reacts/Login'));

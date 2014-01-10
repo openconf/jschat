@@ -29,7 +29,9 @@ module.exports = function(app){
       room.fetch();
     }
     if(data.rid == id && messages && component){
+      console.log(messages);
       var model = messages.push(data);
+      console.log(messages);
       if(model.__user){
         var data = model.__user;
         // throw notification
@@ -46,10 +48,7 @@ module.exports = function(app){
           }
         }
       }
-      component.refs.messagesList.scrollToBottom();
+      //component.refs.messagesList.scrollToBottom();
     }
-
-  
-  
   });
 }
