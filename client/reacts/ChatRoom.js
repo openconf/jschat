@@ -14,7 +14,7 @@ var _ = require('underscore');
 
 
 module.exports = React.createClass({
-  mixins: [require('./BackboneMixin')],
+  mixins: [require('../models/ModelMixin')],
   handleTyping: function(evt){
     this.__textBoxValue = evt.target.value;
   },
@@ -61,11 +61,17 @@ module.exports = React.createClass({
             this.props.me
             ]
   },
+  componentDidMount: function(){
+    this.refresh();
+  },
+  componentDidUpdate: function(){
+    this.refresh();
+  },
   refresh: function(){
     this.props.room.fetch()
     this.props.rooms.fetch({attrs: {ids: this.props.me.get('rooms')}});
     this.props.messages.fetch({
-      success: function(){
+      success: function(data){
         this.refs.messagesList.scrollToBottom();
       }.bind(this)
     })
@@ -96,10 +102,10 @@ module.exports = React.createClass({
     this.sendWriting();
   },
   render: function(){
+    console.log("rendering", this.props.messages);
     return <div>
     <input type="checkbox" name="handler-right" className="handler" id="handler-right" />
     <input type="checkbox" name="handler-left" className="handler" id="handler-left" />
-    <Nav me={this.props.me}/>
     <div className="wrapper">
       <ContactList rooms={this.props.rooms} room={this.props.room} me={this.props.me} />
       <div className="chat">

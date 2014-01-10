@@ -9,6 +9,8 @@ require('bbsocker.sync')(backbone);
 var _ = require('underscore');
 var app = function(){
 }
+require('./renderer/renderer')(app);
+
 var started = false;
 _.extend(app, backbone.Events);
 _.extend(app,{

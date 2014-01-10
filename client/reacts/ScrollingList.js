@@ -7,6 +7,7 @@ module.exports = function(itemClass){
     mixins: [require('../models/ModelMixin')],
     _edge: 100,
     componentDidMount: function(){
+      console.log("mounting ScrollingList");
       this.controlEdges();
       // populate User model inside object
       this.props.renderedItems.models.forEach(function(model){
@@ -40,8 +41,12 @@ module.exports = function(itemClass){
       this.shouldStayTop = this._scrollTop <= this._edge;
       this.shouldScrollBottom = (this._scrollTop + node.offsetHeight) >= node.scrollHeight - this._edge;
     },
+    componentWillReceiveProps: function(){
+      console.log("is receiving props");
+    },
     //  hold items on adding top and bottom
     componentDidUpdate: function() {
+      this.injectModel(this.props.renderedItems);
       var node = this.getDOMNode();
       if(this.shouldScrollBottom){
         node.scrollTop = node.scrollHeight;

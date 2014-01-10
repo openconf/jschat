@@ -17,7 +17,8 @@
 <body>
   <div id="content"></div>
   <script>
-    window.host = location.origin;
+    var port = document.location.port?(":" + document.location.port):'';
+    window.host = document.location.protocol + "//" + document.location.hostname + port;
     window.isDesktop = false;
     if(window.require){//that means that we are inside node-webkit
       window.host = 'http://stormy-spire-5782.herokuapp.com';

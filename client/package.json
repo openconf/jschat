@@ -30,7 +30,8 @@
       "bscomp/buttons": "*",
       "chjj/marked": "*",
       "bscomp/jumbotron": "*",
-      "cayasso/engine.io-reconnect": "*"
+      "cayasso/engine.io-reconnect": "*",
+      "turbo-react/composer": "*"
     },
     "tests": {
       "plugins": [
