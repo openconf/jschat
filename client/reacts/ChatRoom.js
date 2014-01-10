@@ -70,11 +70,6 @@ module.exports = React.createClass({
   refresh: function(){
     this.props.room.fetch()
     this.props.rooms.fetch({attrs: {ids: this.props.me.get('rooms')}});
-    this.props.messages.fetch({
-      success: function(data){
-        this.refs.messagesList.scrollToBottom();
-      }.bind(this)
-    })
   },
   meJoinedTheRoom: function(){
     return !!_(this.props.me.get('rooms')).find(function(id){
@@ -102,7 +97,6 @@ module.exports = React.createClass({
     this.sendWriting();
   },
   render: function(){
-    console.log("rendering", this.props.messages);
     return <div>
     <input type="checkbox" name="handler-right" className="handler" id="handler-right" />
     <input type="checkbox" name="handler-left" className="handler" id="handler-left" />
