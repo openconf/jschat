@@ -10,7 +10,8 @@ module.exports = {
     // destroyed.
     this.__syncedModels.forEach(function(model) {
       model.off(null, model.__updater, this);
-    }, this); 
+    }, this);
+    this.__syncedModels = [];
   },
   componentDidMount: function() {
     this.log("didMount");
@@ -41,8 +42,12 @@ module.exports = {
     this.__removeListeners();
   },
   injectModel: function(model){
-    this.log('inject');
+    console.log('inject', model.get('id'));
     if(!~this.__syncedModels.indexOf(model)){
+      
+      model.on('add change remove', function(){
+          console.log("UPDAAA",arguments);
+        }, this);
       model.on('add change remove', this.forceUpdate.bind(this, null), this);
       this.__syncedModels.push(model);
     }

@@ -1,8 +1,14 @@
 /** @jsx React.DOM */
 module.exports = React.createClass({
+  mixins: [require('../models/ModelMixin')],
+  getBackboneModels: function(){
+    console.log(this.props.me, "<><><><");
+    return [this.props.me]
+  },
   render: function(){
     var that = this;
     var user = function(meModel){
+      console.log("FUUC",meModel);
       if(meModel && meModel.get('id')){
         return <li>
           <a href="#" target="_self">{meModel.get('displayName') || meModel.get('gh_username')}</a>
@@ -20,7 +26,7 @@ module.exports = React.createClass({
       
       <label htmlFor="handler-right" id="right" href="#" className="btn btn-default nav navbar-nav">⍣</label>
       <label htmlFor="handler-left" id="left" href="#" className="btn btn-default nav navbar-nav">☰</label>
-      <ul className="nav navbar-nav">
+      <ul className="nav navbar-nav" id="right">
         {user(this.props.me)}
       </ul>
     </nav>
