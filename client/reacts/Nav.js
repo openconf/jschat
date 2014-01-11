@@ -2,7 +2,6 @@
 module.exports = React.createClass({
   mixins: [require('../models/ModelMixin')],
   getBackboneModels: function(){
-    console.log(this.props.me, "<><><><");
     return [this.props.me]
   },
   render: function(){
