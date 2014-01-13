@@ -14,7 +14,7 @@ var _ = require('underscore');
 
 
 module.exports = React.createClass({
-  mixins: [require('./BackboneMixin')],
+  mixins: [require('../models/ModelMixin')],
   handleTyping: function(evt){
     this.__textBoxValue = evt.target.value;
   },
@@ -55,20 +55,21 @@ module.exports = React.createClass({
     });
   },
   getBackboneModels : function(){
-    return [
+    return [this.props.room]/*
             this.props.room,
             this.props.rooms,
             this.props.me
-            ]
+            ]*/
+  },
+  componentDidMount: function(){
+    this.refresh();
+  },
+  componentDidUpdate: function(){
+    this.refresh();
   },
   refresh: function(){
     this.props.room.fetch()
     this.props.rooms.fetch({attrs: {ids: this.props.me.get('rooms')}});
-    this.props.messages.fetch({
-      success: function(){
-        this.refs.messagesList.scrollToBottom();
-      }.bind(this)
-    })
   },
   meJoinedTheRoom: function(){
     return !!_(this.props.me.get('rooms')).find(function(id){
@@ -99,7 +100,6 @@ module.exports = React.createClass({
     return <div>
     <input type="checkbox" name="handler-right" className="handler" id="handler-right" />
     <input type="checkbox" name="handler-left" className="handler" id="handler-left" />
-    <Nav me={this.props.me}/>
     <div className="wrapper">
       <ContactList rooms={this.props.rooms} room={this.props.room} me={this.props.me} />
       <div className="chat">
@@ -109,9 +109,8 @@ module.exports = React.createClass({
         </div>
         <ScrollingList 
           renderedItems={this.props.messages}
-          ref="messagesList" 
+          ref="messagesList"
           writingStatus = {writingStatus(this.props.room.get('writing_users'))}/>
-
       </div>
       <div className="form">
         <textarea onChange={this.handleTyping} 

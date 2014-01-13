@@ -4,25 +4,9 @@ var ContactFactory = require('../models/ContactFactory');
 
 module.exports = function(itemClass){
   return React.createClass({
+    __name: "Scrolling",
     mixins: [require('../models/ModelMixin')],
     _edge: 100,
-    componentDidMount: function(){
-      this.controlEdges();
-      // populate User model inside object
-      this.props.renderedItems.models.forEach(function(model){
-        populateUser(model,this)
-      }.bind(this));
-      this.props.renderedItems.on('change add remove', function(){
-        this.props.renderedItems.models.forEach(function(model){
-          if(model.__user && !model.__user.injected) populateUser(model, this);
-        }.bind(this));
-      }.bind(this));
-
-      function populateUser(message, component){
-        message.__user.injected = true;
-        component.injectModel(message.__user);
-      };
-    },
     scrollToBottom: function(){
       var node = this.getDOMNode();
       node.scrollTop = node.scrollHeight;
@@ -30,8 +14,31 @@ module.exports = function(itemClass){
     onScroll: function(){
       this.controlEdges(true);
     },
-    getBackboneModels: function(){
-      return [this.props.renderedItems]
+    injectModels: function(){
+      if(this.props.renderedItems){
+        this.injectModel(this.props.renderedItems);
+
+        //prepare user model ontop of each message
+        this.controlEdges();
+        // populate User model inside object
+        this.props.renderedItems.models.forEach(function(model){
+          populateUser(model,this)
+        }.bind(this));
+        this.props.renderedItems.on('change add remove', function(){
+          this.props.renderedItems.models.forEach(function(model){
+            if(model.__user && !model.__user.injected) populateUser(model, this);
+          }.bind(this));
+        }.bind(this));
+        this.props.renderedItems.fetch({
+          success: function(){
+            this.scrollToBottom()
+          }.bind(this)
+        })
+      }
+      function populateUser(message, component){
+        message.__user.injected = true;
+        component.injectModel(message.__user);
+      };
     },
     componentWillUpdate: function() {
       var node = this.getDOMNode();
@@ -64,6 +71,7 @@ module.exports = function(itemClass){
       }
     },
     render : function(){
+      console.log("scroll rend");
       return <div className="messagesList" onScroll={this.onScroll} >
         <div style={{'padding-top': this._edge,'padding-bottom':this._edge }} ref='inner' >
           {this.props.renderedItems && this.props.renderedItems.models.map(itemClass)}

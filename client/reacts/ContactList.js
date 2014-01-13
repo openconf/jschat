@@ -10,6 +10,14 @@ var roomContact = function(roomId){
 }
 
 module.exports = React.createClass({
+  mixins: [require('../models/ModelMixin')],
+  getBackboneModels: function(){
+    return [
+      this.props.me,
+      this.props.room,
+      this.props.rooms
+      ]
+  },
   render: function(){
     var rooms = this.props.me.get('rooms');
     return <div className="contactList">

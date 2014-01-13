@@ -54,6 +54,7 @@ module.exports = React.createClass({
   fetchRooms: function(){
     this.props.rooms.fetch({
       success:function(model, data){
+        console.log(data);
         this.setState({rooms: data})
       }.bind(this)
     });
@@ -62,9 +63,7 @@ module.exports = React.createClass({
     this.fetchRooms();
   },
   render: function(){
-    console.log("RENDER HOME");
     return <div>
-      <Nav me={this.props.me}/>
       <div className="container">
         <div className = "row">
           {this.state.rooms.map(aRoom, this)}

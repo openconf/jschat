@@ -8,6 +8,10 @@ var ContactItem = function(item){
 }
 
 module.exports = React.createClass({
+  mixins: [require('../models/ModelMixin')],
+  getBackboneModels: function(){
+    return [this.props.room]
+  },
   render: function(){
     var participants = this.props.room.toJSON();
     participants.users = participants.users||[];
