@@ -4,7 +4,7 @@ module.exports = function(c){
     room: function(room){
       return {
         getById: function(id, cb){
-          return c.hgetall('c:r:' + room.id + ':' + id, gotMessage);
+          return c.hgetall('c:r:' + room.id + ':m:' + id, gotMessage);
           function gotMessage(err, result){
             if(err) return cb(err);
             if(!result) return cb();
@@ -17,7 +17,7 @@ module.exports = function(c){
           if(options && options.ids){
             var multi = c.multi();
             options.ids.forEach(function(id){
-              multi.hgetall('c:r:' + room.id + ':' + id);
+              multi.hgetall('c:r:' + room.id + ':m:' + id);
             })
             multi.exec(function(err, results){
               if (err) return cb(err);

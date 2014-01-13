@@ -73,7 +73,6 @@ describe("authenticate users", function(){
             message = JSON.parse(data);
           });
           sock1.serve('CREATE /api/rooms/' + room.id + '/messages',{ message:"testMessage"}, function(){
-            console.log(arguments);
             done();
           });
         })
@@ -81,7 +80,15 @@ describe("authenticate users", function(){
           expect(message).to.have.property("message", "testMessage");
           done();
         })
-        //TODO:check the message was saved in DB
+        it('the message should be saved in DB', function(done){
+          sock2.serve('READ /api/rooms/' + room.id + '/messages/' + message.id, function (err, msg) {
+            expect(msg).to.have.property("message",  message.message)
+            expect(msg).to.have.property("uid", String(message.uid))
+            expect(msg).to.have.property("id",  String(message.id))
+            expect(msg).to.have.property("tms", String(message.tms))
+            done()
+          })
+        })
       });
     });
   })
