@@ -3,9 +3,10 @@ module.exports = function(item, i, items){
   var user = function(message, previous){
     function shouldNotDisplayAuthor(previousMsg, currentMsg) {
       return previousMsg && currentMsg && previousMsg.__user && currentMsg.__user &&
-        currentMsg.__user === previousMsg.___user && previousMsg.get('action') != "JOIN"
+        currentMsg.__user === previousMsg.__user && previousMsg.get('action') != "JOIN"
     }
-    if(shouldNotDisplayAuthor(previous,message)) {
+    
+    if(shouldNotDisplayAuthor(previous, message)) {
         return;
     }
     var userData = message.__user;
@@ -17,7 +18,7 @@ module.exports = function(item, i, items){
       </div>
       <div className={cn}>
         <span className="status"></span>
-        {userData.name}:
+        <a href={"#user/"+userData.get('id')}>{userData.name}</a>:
       </div>
     </div>
   }

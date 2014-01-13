@@ -55,7 +55,7 @@ module.exports = React.createClass({
     });
   },
   getBackboneModels : function(){
-    return []/*
+    return [this.props.room]/*
             this.props.room,
             this.props.rooms,
             this.props.me

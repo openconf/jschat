@@ -41,7 +41,6 @@ module.exports = function(itemClass){
       };
     },
     componentWillUpdate: function() {
-      this.log("will upd");
       var node = this.getDOMNode();
       this._scrollHeight = node.scrollHeight;
       this._scrollTop = node.scrollTop;

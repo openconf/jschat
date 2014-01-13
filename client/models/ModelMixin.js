@@ -1,6 +1,5 @@
 module.exports = {
   __reinjectModels: false,
-  __syncedModels: [],
   __removeListeners: function(){
     // Ensure that we clean up any dangling references when the component is
     // destroyed.
@@ -34,6 +33,7 @@ module.exports = {
     this.__removeListeners();
   },
   injectModel: function(model){
+    if(!this.__syncedModels) this.__syncedModels = [];
     if(!~this.__syncedModels.indexOf(model)){
       model.on('add change remove', this.forceUpdate.bind(this, null), this);
       this.__syncedModels.push(model);

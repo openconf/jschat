@@ -16,12 +16,20 @@ module.exports = function(app){
   var router = backbone.Router.extend({
     routes: {
       '': 'main',
-      'room/:id': 'room'
+      'room/:id': 'room',
+      'user/:id': 'profile',
+      'profile': 'profile'
     },
     main: function () {
-      var Home = require('./reacts/Home');
       Me.fetch();
       composer.compose('content', require('./reacts/Home'), {rooms: new Rooms(), me: Me});
+      app.render();
+    },
+    profile: function(id){
+      var user;
+      user = (id === undefined) ? Me : ContactFactory.getContactModel(id);
+      user.fetch();
+      composer.compose('content', require('./reacts/Profile'), {user: user});
       app.render();
     },
     room: function (id){
