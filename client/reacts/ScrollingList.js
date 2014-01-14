@@ -1,10 +1,10 @@
 /** @jsx React.DOM */
 var ContactFactory = require('../models/ContactFactory');
-
+var _ = require('underscore');
 
 module.exports = function(itemClass){
   return React.createClass({
-    __name: "Scrolling",
+    displayName: "Scrolling",
     mixins: [require('../models/ModelMixin')],
     _edge: 100,
     scrollToBottom: function(){
@@ -71,13 +71,23 @@ module.exports = function(itemClass){
       }
     },
     render : function(){
-      console.log("scroll rend");
       return <div className="messagesList" onScroll={this.onScroll} >
         <div style={{'padding-top': this._edge,'padding-bottom':this._edge }} ref='inner' >
           {this.props.renderedItems && this.props.renderedItems.models.map(itemClass)}
-          <div className="writingBar">{this.props.writingStatus}</div>
+          <div className="writingBar">{writingStatus(this.props.renderedItems && this.props.renderedItems.writing_users)}</div>
         </div>
     </div>;
     }
   });
+}
+
+function writingStatus(usersWrite){
+  return <span>
+    {usersWrite && usersWrite.map(renderUserWrite)}
+    {usersWrite && !_(usersWrite).isEmpty() && " typing ..."}
+  </span>
+}
+
+function renderUserWrite(user, i){
+  return <span>{i !== 0 && ','}{user.name}</span>
 }

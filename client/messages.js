@@ -1,7 +1,7 @@
 var backbone = require('exoskeleton');
 var composer = require('composer')();
 var notification = require('./services/notification');
-
+var ContactFactory = require('./models/ContactFactory');
 module.exports = function(app){
   backbone.socket.addEventListener("message", function(data, type){
     try{
@@ -16,7 +16,7 @@ module.exports = function(app){
     var room = roomProps && roomProps.room;
 
     if(data.type == "WRITING" && id == data.rid){
-      room.writing(data.uid);
+      messages.userWriting(data.uid);
       return;
     }
     if(data.type == "STATUS" && data.uid){
@@ -29,9 +29,7 @@ module.exports = function(app){
       room.fetch();
     }
     if(data.rid == id && messages && component){
-      console.log(messages);
       var model = messages.push(data);
-      console.log(messages);
       if(model.__user){
         var data = model.__user;
         // throw notification

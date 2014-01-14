@@ -54,7 +54,7 @@ module.exports = function(app){
             room: room,
             messages: messages,
             rooms: rooms});
-   
+          room.switchto();
           composer.compose('room-props', {id: id, component: component, messages: messages, room: room});
           app.render();
 

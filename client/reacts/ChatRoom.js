@@ -55,11 +55,7 @@ module.exports = React.createClass({
     });
   },
   getBackboneModels : function(){
-    return [this.props.room]/*
-            this.props.room,
-            this.props.rooms,
-            this.props.me
-            ]*/
+    return [this.props.room];
   },
   componentDidMount: function(){
     this.refresh();
@@ -110,7 +106,7 @@ module.exports = React.createClass({
         <ScrollingList 
           renderedItems={this.props.messages}
           ref="messagesList"
-          writingStatus = {writingStatus(this.props.room.get('writing_users'))}/>
+          />
       </div>
       <div className="form">
         <textarea onChange={this.handleTyping} 
@@ -121,7 +117,7 @@ module.exports = React.createClass({
   </div>
   }
 })
-
+//writingStatus = {writingStatus(this.props.room.get('writing_users'))}
 function writingStatus(usersWrite){
   return <span>
     {usersWrite && usersWrite.map(renderUserWrite)}
