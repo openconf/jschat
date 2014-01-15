@@ -13,8 +13,9 @@ var Nav = require('./Nav.js');
 var _ = require('underscore');
 
 
+var RoomName = require('./RoomName');
+
 module.exports = React.createClass({
-  mixins: [require('../models/ModelMixin')],
   handleTyping: function(evt){
     this.__textBoxValue = evt.target.value;
   },
@@ -37,26 +38,6 @@ module.exports = React.createClass({
       }.bind(this)
     });
   },
-  joinRoom: function(){
-    notification.access()
-    this.props.room.join({
-      success: function(model, response){
-        this.props.me.fetch()
-        this.props.room.fetch()
-      }.bind(this)
-    });
-  },
-  leaveRoom: function(){
-    this.props.room.leave({
-      success: function(model, response){
-        this.props.me.fetch()
-        this.props.room.fetch()
-      }.bind(this)
-    });
-  },
-  getBackboneModels : function(){
-    return [this.props.room];
-  },
   componentDidMount: function(){
     this.refresh();
   },
@@ -71,13 +52,6 @@ module.exports = React.createClass({
     return !!_(this.props.me.get('rooms')).find(function(id){
       return this.props.room.get('id') === id;
     }.bind(this));
-  },
-  leaveJoinButton: function(){
-    if(this.meJoinedTheRoom()){
-      return <button onClick={this.leaveRoom}>leave</button>;
-    } else {
-      return <button onClick={this.joinRoom}>join</button>;
-    }
   },
   cleanTextBox: function(){
     this.refs.textbox.getDOMNode().value = '';
@@ -100,13 +74,12 @@ module.exports = React.createClass({
       <ContactList rooms={this.props.rooms} room={this.props.room} me={this.props.me} />
       <div className="chat">
         <div className="info">
-          <div>{this.props.room.get('name')} {this.leaveJoinButton()}</div>
+          <RoomName room = {this.props.room} me = {this.props.me}/>
           <ParticipantsList room={this.props.room}/>
         </div>
         <ScrollingList 
           renderedItems={this.props.messages}
-          ref="messagesList"
-          />
+          ref="messagesList"/>
       </div>
       <div className="form">
         <textarea onChange={this.handleTyping} 
@@ -117,14 +90,4 @@ module.exports = React.createClass({
   </div>
   }
 })
-//writingStatus = {writingStatus(this.props.room.get('writing_users'))}
-function writingStatus(usersWrite){
-  return <span>
-    {usersWrite && usersWrite.map(renderUserWrite)}
-    {usersWrite && !_(usersWrite).isEmpty() && " typing ..."}
-  </span>
-}
 
-function renderUserWrite(user, i){
-  return <span>{i !== 0 && ','}{user.name}</span>
-}
