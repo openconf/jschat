@@ -50,8 +50,9 @@ module.exports = function(itemClass){
     //  hold items on adding top and bottom
     componentDidUpdate: function() {
       var node = this.getDOMNode();
+      var bottom = this.refs.inner.getDOMNode().offsetHeight - this.getDOMNode().offsetHeight;
       if(this.shouldScrollBottom){
-        node.scrollTop = node.scrollHeight;
+        node.scrollTop = bottom - this._edge;
       }
       if(this.shouldStayTop){
         node.scrollTop = this._scrollTop + (node.scrollHeight - this._scrollHeight);

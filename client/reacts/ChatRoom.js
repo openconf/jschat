@@ -88,7 +88,7 @@ module.exports = React.createClass({
       if(!this.__textBoxValue || this.__textBoxValue == "\n") {
         return this.cleanTextBox();
       };
-      this.sendMessage();
+      return this.sendMessage();
     }
     this.sendWriting();
   },
