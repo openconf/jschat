@@ -36,7 +36,8 @@ module.exports = React.createClass({
   },
 
   render: function(){
-    return <div className="roomName"><strong>{this.props.room.get('name')}</strong> {this.leaveJoinButton()}: <small>{this.props.room.get('description')}</small> 
+    var count = this.props.room.get('users') && this.props.room.get('users').length;
+    return <div className="roomName"><strong className="count">{count}</strong><strong>{this.props.room.get('name')}</strong> {this.leaveJoinButton()}: <small>{this.props.room.get('description')}</small> 
     </div>
   }
 });

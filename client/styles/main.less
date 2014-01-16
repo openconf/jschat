@@ -185,6 +185,25 @@ a {
 .handler {
   display: none;
 }
+
+
+.handler {
+  &#handler-right:checked{
+    & ~ .wrapper {
+      .chat {
+        .info{
+          height: auto;
+          .participants{
+            height: auto;
+            max-height: 150px;
+            overflow-y: scroll;
+          }
+        }
+      }
+    }
+  }
+}
+
 @media @phone{
   .handler {
     &#handler-left:checked{
@@ -204,6 +223,12 @@ a {
         .chat {
           .info{
             display: block;
+            .participants{
+              max-height: none;
+            }
+            .open {
+              display: none;
+            }
           }
           .messagesList{
             -webkit-transform: translate3D(-@chatOffset,0,0);
@@ -225,14 +250,31 @@ a {
   z-index: 10;
   right: 0;
   left: 0;
+  .open{
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    height: 8px;
+    width: 35px;
+    line-height: 8px;
+    text-align: center;
+    background-color: @lightColor;
+    border: 1px solid @middleColor;
+    border-radius: 3px;
+  }
   .roomName{
     height: 1.4em;
     overflow: hidden;
     >*{
       vertical-align: middle;
     }
+    .count{
+      display: block;
+      float: right;
+      color: @borderColor;
+      font-size: 1.4em;
+    }
   }
-  overflow: hidden;
   position: absolute;
   .label {
     display: inline-block;
@@ -371,6 +413,8 @@ a {
 }
 
 .participants{
+  overflow: hidden;
+  height: 1.7em;
   > div {
     line-height: 3em;
     height: 3em;
