@@ -33,7 +33,7 @@ module.exports = React.createClass({
     if(!e.target.checked) return;
     this.handlers.forEach(function(item){
       if(item !== e.target) item.checked = false;
-    }).
+    })
   },
   render: function(){
     var scrollingList = <ScrollingList 
