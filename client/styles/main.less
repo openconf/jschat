@@ -225,7 +225,13 @@ a {
   z-index: 10;
   right: 0;
   left: 0;
-  
+  .roomName{
+    height: 1.4em;
+    overflow: hidden;
+    >*{
+      vertical-align: middle;
+    }
+  }
   overflow: hidden;
   position: absolute;
   .label {
@@ -242,6 +248,12 @@ a {
     overflow-y: scroll;
     > div {
       margin: 0 15px;
+    }
+    .roomName{
+      height: auto;
+      overflow: visible;
+      margin-top: 15px;
+      padding: 0 15px;
     }
   }
 }
@@ -367,8 +379,8 @@ a {
     @media @tabletAll{
       display: inline-block;
       padding: 0 3px;
-      line-height: 1.5em;
-      height: 1.5em;
+      line-height: 1.9em;
+      height: 1.9em;
     }
     .status{
       display: inline-block;

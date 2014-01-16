@@ -23,9 +23,7 @@ module.exports = React.createClass({
   },
   leaveJoinButton: function(){
     if(this.meJoinedTheRoom()){
-      return <button onClick={this.leaveRoom}>leave</button>;
-    } else {
-      return <button onClick={this.joinRoom}>join</button>;
+      return  <span>{" "}<button onClick={this.leaveRoom} className = "btn btn-default btn-xs">leave</button></span>;
     }
   },
   leaveRoom: function(){
@@ -38,7 +36,8 @@ module.exports = React.createClass({
   },
 
   render: function(){
-    return <div>{this.props.room.get('name')} {this.leaveJoinButton()}</div>
+    return <div className="roomName"><strong>{this.props.room.get('name')}</strong> {this.leaveJoinButton()}: <small>{this.props.room.get('description')}</small> 
+    </div>
   }
 });
 
