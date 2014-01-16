@@ -18,6 +18,8 @@ var RoomName = require('./RoomName');
 module.exports = React.createClass({
   displayName: "ChatRoom",
   componentDidMount: function(){
+    this.handlers = [this.refs.partHandler.getDOMNode(),
+     this.refs.roomsHandler.getDOMNode()];
     this.refresh();
   },
   componentDidUpdate: function(){
@@ -27,14 +29,20 @@ module.exports = React.createClass({
     this.props.room.fetch()
     this.props.rooms.fetch({attrs: {ids: this.props.me.get('rooms')}});
   },
+  changed: function(e){
+    if(!e.target.checked) return;
+    this.handlers.forEach(function(item){
+      if(item !== e.target) item.checked = false;
+    }).
+  },
   render: function(){
     var scrollingList = <ScrollingList 
           renderedItems={this.props.messages}
           ref="messagesList"/>;
 
     return <div>
-    <input type="checkbox" name="handler-right" className="handler" id="handler-right" />
-    <input type="checkbox" name="handler-left" className="handler" id="handler-left" />
+    <input type="checkbox" name="handler-right" ref="partHandler" className="handler" id="handler-right" onChange={this.changed}/>
+    <input type="checkbox" name="handler-left" ref="roomsHandler" className="handler" id="handler-left" onChange={this.changed}/>
     <div className="wrapper">
       <ContactList rooms={this.props.rooms} room={this.props.room} me={this.props.me} />
       <div className="chat">
