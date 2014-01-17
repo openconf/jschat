@@ -17,16 +17,18 @@ module.exports = function(text){
 function bringEmoticons(text) {
   var result = text;
   for(var i = 0; i < exps.length; i++){
-
     if(emoHash[exps[i]].test(text)){
-      result = result.replace(emoHash[exps[i]], injectEmotic(exps[i]));
+      result = result.replace(emoHash[exps[i]], function (title) {
+        return injectEmotic(exps[i], title)
+      });
     }
   }
   return result;
 }
 
-function injectEmotic(name){
-  return "<img src='/JSChat/images/emoticons/emoticon-" + name + ".gif'/>";
+function injectEmotic(name, title){
+  title = title || name;
+  return "<img title='"+ title + "'  src='/JSChat/images/emoticons/emoticon-" + name + ".gif'/>";
 }
 
 function escapeRegExp(str) {
