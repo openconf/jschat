@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "test": "npm run setup; npm run compile; node ./node_modules/grunt-cli/bin/grunti; node ./node_modules/compy/bin/compy -d client -o webapp test",
+    "test": "npm run setup; npm run compile; node ./node_modules/grunt-cli/bin/grunt; node ./node_modules/compy/bin/compy -d client -o webapp test",
     "t": "node ./node_modules/grunt-cli/bin/grunt",
     "setup": "cd tests/socketClientPatched && npm install && cd ../../client && npm install && cd .. && node ./node_modules/compy/bin/compy -d client install && node ./node_modules/compy/bin/compy -d mobile install",
     "compile": "node ./node_modules/compy/bin/compy -d client -o webapp compile",
