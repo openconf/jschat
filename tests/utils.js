@@ -81,7 +81,7 @@ module.exports = function(){
 
   function setUpAuthMock(user){
     nock('https://github.com:443')
-      .post('/login/oauth/access_token', "grant_type=authorization_code&redirect_uri=http%3A%2F%2F127.0.0.1%3A8080%2Fauth%2Fgithub%2Fcallback&client_id=0bb5305f1db7d2816fa3&client_secret=32d469aa1334e0a29caac7a20054fa57c0c26088&type=web_server&code=450bab02b3f9bf0dfd44")
+      .post('/login/oauth/access_token')
       .reply(200, "access_token=3af579594fcf37b9d9d646e6f0798e1674f7cfe9&token_type=bearer", { server: 'GitHub.com',
         'content-type': 'application/x-www-form-urlencoded; charset=utf-8',
         status: '200 OK',
