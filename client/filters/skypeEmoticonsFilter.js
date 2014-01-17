@@ -1,4 +1,4 @@
-var emoticons = require('./skypeEmoticons');
+var emoticons = require('./skypeEmoticons.dictionary');
 var emos = Object.keys(emoticons);
 var emoHash = {};
 for(var i = 0; i < emos.length; i++){

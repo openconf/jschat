@@ -3,5 +3,6 @@ module.exports = [
   require('./youtubeFilter.js'),
   require('./vimeoFilter.js'),
   require('./markdownFilter.js'),
-  require('./skypeEmoticonsFilter.js')
+  require('./skypeEmoticonsFilter.js'),
+  require('./emojiFilter.js')
 ]
