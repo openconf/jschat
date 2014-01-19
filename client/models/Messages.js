@@ -2,12 +2,14 @@ var Exo = require('exoskeleton');
 var MessageModel = require('./Message');
 var ContactFactory = require('./ContactFactory.js');
 var _ = require('underscore');
+var Storage = require('../services/storage');
 var MessageCollection = Exo.Collection.extend({
   url: function(){
     return "/api/rooms/" + this.roomId + "/messages";
   },
   initialize: function(models, options){
     this.roomId = options.roomId;
+    this.storage = new Storage(this.roomId);
   },
   writing: function(){
     this.sync('writing', this);
@@ -15,11 +17,22 @@ var MessageCollection = Exo.Collection.extend({
   addToTop: function(){
     if(this._isFetching) return;
     this._isFetching = true;
-    var oldest = this.models[0].get('id');
-    this.sync('read', this, {attrs:{
-      from: oldest-1,
-      count: -50
-    }, success: gotResult.bind(this)});
+    var oldest = this.models[0].get('id'),
+        params = {
+          attrs:{
+            from: oldest,
+            count: -50
+          },
+          success: stashResult.bind(this)
+        },
+        result;
+    if (result = this.storage.get(params)) return gotResult.call(this, result)
+    this.sync('read', this, params);
+
+    function stashResult(array) {
+      this.storage.unshift(array)
+      gotResult.call(this, array)
+    }
     function gotResult(array){
       this.unshift(array);
       this._isFetching = false;
