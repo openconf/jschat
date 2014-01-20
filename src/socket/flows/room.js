@@ -1,7 +1,6 @@
 var _ = require('underscore');
 var Room = require('../../models').room;
 var UserModel = require('../../models').user;
-var mongojs = require('mongojs');
 
 module.exports = function(server){
   server.sock.when('CREATE /api/rooms', createRoom);
