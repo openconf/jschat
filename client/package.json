@@ -17,7 +17,7 @@
       "edjafarov/socker": "*",
       "edjafarov/bbsocker.sync": "*",
       "jashkenas/underscore": "*",
-       "learnboost/engine.io-client": "0.8.0",
+       "learnboost/engine.io-client": "*",
       "paulmillr/exoskeleton": "master",
       "bscomp/forms": "*",
       "bscomp/normalize": "*",
