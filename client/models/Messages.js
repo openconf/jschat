@@ -30,10 +30,12 @@ var MessageCollection = Exo.Collection.extend({
     this.sync('read', this, params);
 
     function stashResult(array) {
+      console.log('Stashed ', array.length, ' messages.')
       this.storage.unshift(array)
       gotResult.call(this, array)
     }
     function gotResult(array){
+      console.log('Got back ', array.length, ' messages.')
       this.unshift(array);
       this._isFetching = false;
     }

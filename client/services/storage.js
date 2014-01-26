@@ -1,14 +1,15 @@
 var storagesPresent = {}
-var Storage = function (roomId) {
+var Storage = function (roomId, storageMechanism) {
+  if (!storageMechanism) {storageMechanism = localStorage}
   var key = 'room:' + roomId
   storagesPresent[key] = storagesPresent[key] || 0;
-  var dataFromStorage = JSON.parse(localStorage.getItem(key) || '[]')
+  var dataFromStorage = JSON.parse(storageMechanism.getItem(key) || '[]')
   function free() {
     var toTruncate,
         keys = Object.keys(storagesPresent).sort(function(a, b){return storagesPresent[a] - storagesPresent[b]})
     if (keys.length <= 1) return false
     toTruncate = (keys[0] == key) ? keys[1] : keys[0]
-    persist(trim(JSON.parse(localStorage.getItem(toTruncate))), toTruncate)
+    persist(trim(JSON.parse(storageMechanism.getItem(toTruncate) || '[]')), toTruncate)
     return true
   }
   function trim(data) {
@@ -17,14 +18,14 @@ var Storage = function (roomId) {
   function persist(data, roomKey) {
     if (!roomKey) roomKey = key
     try {
-      localStorage.setItem(roomKey, JSON.stringify(data))
+      storageMechanism.setItem(roomKey, JSON.stringify(data))
     } catch (e) {
-      console.log('localstorage limit reached')
+      console.warn('Storage limit reached')
       if (free()) {
-        localStorage.setItem(roomKey, JSON.stringify(data))
+        storageMechanism.setItem(roomKey, JSON.stringify(data))
       } else {
         data = trim(data)
-        localStorage.setItem(roomKey, JSON.stringify(data))
+        storageMechanism.setItem(roomKey, JSON.stringify(data))
       }
     }
     storagesPresent[roomKey] = data.length

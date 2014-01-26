@@ -2,7 +2,7 @@
 var MessageModel = require('../models/Message');
 var _ = require('underscore');
 var notification = require('../services/notification');
-
+var Storage = require('../services/storage');
 module.exports = React.createClass({
   mixins: [require('../models/ModelMixin')],
   getBackboneModels: function(){
@@ -27,12 +27,15 @@ module.exports = React.createClass({
       }),{
       success: function(){
         this.cleanTextBox();
+        console.log('this sendMessage', this)
+        this.storage.push(arguments[0]);
         this.props.list.scrollToBottom(200);
         this.props.list.forceUpdate();
       }.bind(this)
     });
   },
   meJoinedTheRoom: function(){
+    if (!this.storage) {this.storage = new Storage(this.props.room.get('id'))}
     return !!_(this.props.me.get('rooms')).find(function(id){
       return this.props.room.get('id') === id;
     }.bind(this));
@@ -58,6 +61,7 @@ module.exports = React.createClass({
         this.props.me.fetch()
         this.props.room.fetch({
           success:function(){
+            this.storage = new Storage(arguments[0].get('id'))
             this.refs.textbox.getDOMNode().focus();
           }.bind(this)
         })

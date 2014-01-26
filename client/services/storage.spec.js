@@ -100,44 +100,37 @@ describe('Storage', function(){
     })
   })
   describe('given one more record to overflow situations (@slow)', function () {
+    var fakeStorage;
     // this is awkward setup because we need it to be one more to overflow localstorage
-    beforeEach(function(done) {
-      for (x = 0; x < 10e8; x++) {
-        try {
-          var already = JSON.parse(localStorage.getItem(recordKey)) || fixture.map(function (el) {return el.id = 888})
-          localStorage.setItem(recordKey, JSON.stringify(already.concat(fixture)))
-
-        } catch (e) {
-            for (x = 0; x < fixture.length * 2; x++) {
-              var already = JSON.parse(localStorage.getItem(recordKey))
-              var randomItem = JSON.parse(JSON.stringify(fixture[~~((fixture.length - 1) * Math.random())]))
-              randomItem.id = 888
-              already = already.concat(randomItem)
-              try {
-                localStorage.setItem(recordKey, JSON.stringify(already))
-              } catch (e) {
-                console.log('overflowed localstorage');
-                [].splice.apply(already, [- fixture.length - 1 , fixture.length + 1].concat(fixture))
-                localStorage.setItem(recordKey, JSON.stringify(already))
-                return done()
-              }
-            }
+    beforeEach(function() {
+      calledAlready = false;
+      var fakeLongArray = []; for (var a = 0; a < 30000; a ++) { fakeLongArray.push('') }
+      fakeStorage = {
+        data: {'room:13': JSON.stringify(fakeLongArray)},
+        setItem: function (key, dataToPut) {
+          if (!calledAlready) {
+            calledAlready = true;
+            throw('QUOTA_EXCEEDED_ERR: DOM Exception 22');
+          }
+          return this.data[key] = dataToPut
+        },
+        getItem: function (key) {
+          return this.data[key]
         }
       }
     })
+
     it('should persist data in any case', function () {
-      var storage2 = new Storage(roomId)
+      var storage2 = new Storage(roomId, fakeStorage)
       var randomItem = {"text":"Message#199","uid":"4","tms":1389548133787,"id":999,"rid":"2"}
-      var fixtureFragment = fixture.slice(-9)
-      fixtureFragment.push(randomItem)
       storage2.push(randomItem)
-      expect(storage2.getLast(10)).to.eql(fixtureFragment)
+      expect(storage2.getLast(10)).to.eql([randomItem])
     })
     it('should trim longest data first', function () {
-      var storage2 = new Storage(15)
+      var storage2 = new Storage(15, fakeStorage)
       var randomItem = {"text":"Message#199","uid":"4","tms":1389548133787,"id":999,"rid":"2"}
       storage2.push(randomItem)
-      expect(storage.range(null, null, true).length).to.be.below(20000)
+      expect(JSON.parse(fakeStorage.getItem('room:12')).length).to.be.below(20000)
       expect(storage2.getLast(10)).to.eql([randomItem])
     })
   })
