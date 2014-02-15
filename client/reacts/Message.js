@@ -22,6 +22,25 @@ module.exports = function(item, i, items){
       </div>
     </div>
   }
+  var formatedDate = function(date){
+    return date.getUTCDate() + '/' + (+date.getUTCMonth() + 1)
+  }
+  var time = function(item, previous){
+    var stringDate = formatedDate(item.date),
+        shouldShow = !previous || (stringDate !== formatedDate(previous.date));
+
+    var date = {
+      hh:item.date.getHours(),
+      mm:item.date.getMinutes()
+    }
+    if(date.hh < 10) date.hh = '0' + date.hh;
+    if(date.mm < 10) date.mm = '0' + date.mm;
+    return <div><div title={stringDate} className="time">
+      {item.date && ([date.hh, date.mm].join(":"))}
+    </div><div className="time">
+      {shouldShow && stringDate}
+    </div></div>
+  }
   if(item.get('action') == "JOIN" || item.get('action') == "LEAVE"){
     return <div>
        <div className="nick text">
@@ -30,18 +49,10 @@ module.exports = function(item, i, items){
     </div>;
   }
   if(!item.get('id')) return;
-  var date = {
-    hh:item.date.getHours(),
-    mm:item.date.getMinutes()
-  }
-  if(date.hh < 10) date.hh = '0' + date.hh;
-  if(date.mm < 10) date.mm = '0' + date.mm;
   return <div>
     {user(item, items[i-1])}
     <div className='msg'>
-      <div className="time">
-        {item.date && ([date.hh, date.mm].join(":"))}
-      </div>
+      {time(item, items[i-1])}
       <div className="text" dangerouslySetInnerHTML={{__html:item.text}}>
       </div>
     </div>
