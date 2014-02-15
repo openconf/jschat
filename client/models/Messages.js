@@ -26,7 +26,7 @@ var MessageCollection = Exo.Collection.extend({
           success: stashResult.bind(this)
         },
         result;
-    if (result = this.storage.get(params)) return gotResult.call(this, result)
+    if ((result = this.storage.get(params)).length) return gotResult.call(this, result)
     this.sync('read', this, params);
 
     function stashResult(array) {

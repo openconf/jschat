@@ -44,7 +44,7 @@ var Storage = function (roomId, storageMechanism) {
       return dataFromStorage.slice(Math.max(startIndex - qty, 0), startIndex);
     },
     unshift: function(data) {
-      dataFromStorage.unshift(data)
+      [].unshift.apply(dataFromStorage, data)
       return dataFromStorage = persist(dataFromStorage)
     },
     getLast: function (n) {
