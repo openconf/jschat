@@ -5,7 +5,7 @@ var Me = require('./models/Me');
 var Rooms = require('./models/Rooms');
 var ContactFactory = require('./models/ContactFactory');
 var composer = require('composer')();
-
+var Storage = require('./services/storage');
 var processMessage;
 module.exports = function(app){
   require('./messages')(app);
@@ -40,15 +40,15 @@ module.exports = function(app){
           var ChatRoom = require('./reacts/ChatRoom');
           var RoomFactory = require('./models/RoomFactory');
           var Messages = require('./models/Messages');
-          
+
           app.bind('reconnected', function(){
             setTimeout(function(){messages.refresh();}, 500);
           });
- 
+
           var room = new RoomFactory.getRoomModel(id);
-          var messages = new Messages(null, {roomId: id});
+          var messages = new Messages((new Storage(id)).getLast(20), {roomId: id});
           var rooms = new Rooms();
-          
+
           var component = composer.compose('content', ChatRoom, {
             me:Me,
             room: room,
