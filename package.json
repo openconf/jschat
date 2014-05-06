@@ -31,7 +31,7 @@
     "redis": "~0.10.0",
     "parse-redis-url": "0.0.1",
     "connect-redis": "~1.4.6",
-    "grunt-node-webkit-builder": "~0.1.14",
+    "grunt-node-webkit-builder": "~0.1.21",
     "grunt-contrib-copy": "~0.5.0",
     "karma-script-launcher": "~0.1.0",
     "karma-chrome-launcher": "~0.1.2",
@@ -46,7 +46,7 @@
     "karma-mocha": "~0.1.1"
   },
   "devDependencies": {
-    "compy": "~0.1.24",
+    "compy": "~0.1.30",
     "mocha": "~1.12.1",
     "chai": "~1.7.2",
     "request": "~2.27.0",

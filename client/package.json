@@ -10,6 +10,9 @@
     "karma-mocha": "~0.1.1",
     "karma-chai": "latest"
   },
+  "window":{
+    "toolbar": false
+  },
   "main": "app://jschat/index.html",
   "compy": {
     "main": "Main.js",
@@ -17,7 +20,7 @@
       "edjafarov/socker": "*",
       "edjafarov/bbsocker.sync": "*",
       "jashkenas/underscore": "*",
-       "learnboost/engine.io-client": "*",
+       "learnboost/engine.io-client": "0.8.0",
       "paulmillr/exoskeleton": "master",
       "bscomp/forms": "*",
       "bscomp/normalize": "*",
