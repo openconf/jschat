@@ -2,7 +2,7 @@
 var ContactModel = require('../models/Contact');
 
 module.exports = React.createClass({
-  mixins: [require('./BackboneMixin')],
+  mixins: [require('../models/ModelMixin')],
   getBackboneModels : function(){
     return [this.props.user]
   },
