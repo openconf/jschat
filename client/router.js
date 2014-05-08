@@ -22,6 +22,7 @@ module.exports = function(app){
     },
     main: function () {
       Me.fetch();
+      console.log(Me);
       composer.compose('content', require('./reacts/Home'), {rooms: new Rooms(), me: Me});
       app.render();
     },

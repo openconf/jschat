@@ -55,6 +55,18 @@ module.exports = function(server){
     secret: 'secret' 
   }));
   server.on('session', function(socket, session){
+    if(!session.user && session.passport && session.passport.user){
+      UserModel.getById(session.passport.user, function(err, user){
+        UserModel.of(user).getRooms(function(err, rooms){
+          user.rooms = rooms;
+          session.user = user;
+          haveUser();
+        });
+      });
+    }else{
+      haveUser();
+    }
+    function haveUser(){
     socket.user = session.user;
     socker.attach(socket);
 
@@ -66,6 +78,7 @@ module.exports = function(server){
         socket.to(roomId).sendToActive(JSON.stringify({type: "STATUS", action:"ONLINE", uid: socket.user.id}));
       });
     });
+    }
     // TODO: socket on close
     // socket that was closed should find corresponding user and change it's status to offline.
     socket.on('close',function(){ 
