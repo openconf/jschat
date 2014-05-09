@@ -196,15 +196,24 @@ a {
       .chat {
         .info{
           height: auto;
+          max-height: 7.2em;
           .participants{
             height: auto;
-            max-height: 150px;
+            max-height: 6em;
             overflow-y: scroll;
           }
         }
       }
+      .open {
+        bottom: initial;
+        top: initial;
+        &:after {
+          content: '▴';
+        }
+      }
     }
   }
+
 }
 
 @media @phone{
@@ -253,9 +262,49 @@ a {
   z-index: 10;
   right: 0;
   left: 0;
+  overflow: hidden;
+  position: relative;
+  max-height: 5.2em;
+  .participants{
+    > div {
+      line-height: 3em;
+      height: 3em;
+      padding: 0 15px;
+      overflow: hidden;
+      @media @tabletAll{
+        display: inline-block;
+        padding: 0 3px;
+        line-height: 1.9em;
+        height: 1.9em;
+      }
+      .status{
+        display: inline-block;
+        width: .6em;
+        height: .6em;
+        border-radius: .3em;
+        margin-right: 5px;
+        background-color: grey;
+      }
+      &.online {
+        .status{
+          background-color: green;
+        }
+      }
+    }
+    img{
+      width: 30px;
+      height: 30px;
+      vertical-align: middle;
+      margin-right: 10px;
+      @media @tabletAll{
+        display: none;
+      }
+    }
+  }
   .open{
     position: absolute;
-    bottom: -10px;
+    top: 6.2em;
+    bottom: 0px;
     left: 50%;
     height: 8px;
     width: 35px;
@@ -264,6 +313,9 @@ a {
     background-color: @lightColor;
     border: 1px solid @middleColor;
     border-radius: 3px;
+    &:after {
+      content: '▾'
+    }
   }
   .roomName{
     height: 1.4em;
@@ -418,41 +470,4 @@ a {
   }
 }
 
-.participants{
-  overflow: hidden;
-  height: 1.7em;
-  > div {
-    line-height: 3em;
-    height: 3em;
-    padding: 0 15px;
-    overflow: hidden;
-    @media @tabletAll{
-      display: inline-block;
-      padding: 0 3px;
-      line-height: 1.9em;
-      height: 1.9em;
-    }
-    .status{
-      display: inline-block;
-      width: .6em;
-      height: .6em;
-      border-radius: .3em;
-      margin-right: 5px;
-      background-color: grey;
-    }
-    &.online {
-      .status{
-        background-color: green;
-      }
-    }
-  }
-  img{
-    width: 30px;
-    height: 30px;
-    vertical-align: middle;
-    margin-right: 10px;
-    @media @tabletAll{
-      display: none;
-    }
-  }
-}
+

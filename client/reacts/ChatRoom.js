@@ -46,9 +46,8 @@ module.exports = React.createClass({
     <div className="wrapper">
       <ContactList rooms={this.props.rooms} room={this.props.room} me={this.props.me} />
       <div className="chat">
-        
         <div className="info">
-          <label htmlFor="handler-right"  href="#" className="open">▾</label>
+          <label htmlFor="handler-right"  href="#" className="open"> </label>
           <RoomName room = {this.props.room} me = {this.props.me}/>
           <ParticipantsList room={this.props.room}/>
         </div>
