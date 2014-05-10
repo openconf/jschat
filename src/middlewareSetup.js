@@ -93,13 +93,11 @@ module.exports = function(app){
     passport.authenticate('github', {failureRedirect:"/auth/github/failure"}),
     function(req, res, next){
       if(req.session.backUrl && !!~req.session.backUrl.indexOf('app://')) { //app:/
-        console.log("inside APP");
         res.end('<script>window.history.back()</script>');
         delete req.session.backUrl;
         return;
       }
       if(req.session.backUrl) {
-        console.log("just back");
         res.redirect(decodeURIComponent(req.session.backUrl));
         delete req.session.backUrl;
         return;

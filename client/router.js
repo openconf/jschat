@@ -1,4 +1,5 @@
 /** @jsx React.DOM */
+
 var backbone = require('exoskeleton');
 var Me = require('./models/Me');
 //var RoomModel = require('./models/Room');
@@ -11,7 +12,15 @@ module.exports = function(app){
   require('./messages')(app);
   composer.compose('layout', require('./reacts/Layout'));
   composer.compose('nav-bar', require('./reacts/Nav'), {me:Me});
+  Me.fetch();
   app.render();
+
+if(isDesktop && localStorage.auth){ //desktop driven hack
+  delete localStorage.auth;
+  location.assign(window.host + '/auth/github?backUrl=' + encodeURIComponent(location.href)); 
+} else {
+  delete localStorage.auth;
+}
 
   var router = backbone.Router.extend({
     routes: {

@@ -22,6 +22,7 @@
     window.isDesktop = false;
     if(window.require){//that means that we are inside node-webkit
       window.host = 'http://stormy-spire-5782.herokuapp.com';
+      //window.host = 'http://127.0.0.1:8080';
       window.requireNode = window.require;
       window.require = undefined;
       window.isDesktop = true;
