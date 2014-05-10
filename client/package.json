@@ -8,9 +8,10 @@
     "component-lesser": "latest",
     "component-jsx": "latest",
     "karma-mocha": "~0.1.1",
-    "karma-chai": "latest"
+    "karma-chai": "latest",
+    "karma-phantomjs-launcher": "^0.1.4"
   },
-  "window":{
+  "window": {
     "toolbar": false
   },
   "main": "app://jschat/index.html",
@@ -20,7 +21,7 @@
       "edjafarov/socker": "*",
       "edjafarov/bbsocker.sync": "*",
       "jashkenas/underscore": "*",
-       "learnboost/engine.io-client": "0.8.0",
+      "learnboost/engine.io-client": "0.8.0",
       "paulmillr/exoskeleton": "master",
       "bscomp/forms": "*",
       "bscomp/normalize": "*",
@@ -38,7 +39,10 @@
       "turbo-react/composer": "*"
     },
     "tests": {
-      "frameworks":["mocha","chai"],
+      "frameworks": [
+        "mocha",
+        "chai"
+      ],
       "plugins": [
         "karma-phantomjs-launcher",
         "karma-mocha",
