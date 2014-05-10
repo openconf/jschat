@@ -11,7 +11,7 @@
     "karma-chai": "latest"
   },
   "window":{
-    "toolbar": true
+    "toolbar": false
   },
   "main": "app://jschat/index.html",
   "compy": {
