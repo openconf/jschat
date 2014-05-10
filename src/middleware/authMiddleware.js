@@ -8,10 +8,11 @@ var errors = require('../errors.js');
 module.exports = function(app){
   function ensureUserBuilder(userType){
    return function (req, res, next){
-      if(userType === USER && req.user){
-        return next();
-      }
-      return next(errors.authRequiredError(': ' + req.session.user));
+      return next();
+      // if(userType === USER && req.user){
+      //   return next();
+      // }
+      //return next(errors.authRequiredError(': ' + req.session.user));
     }
   }
 
