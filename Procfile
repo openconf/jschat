@@ -1,1 +1,1 @@
-web: NODE_ENV=staging node server.js
+web: APP_ENV=staging node server.js
