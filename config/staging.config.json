@@ -6,8 +6,8 @@
     "salt":"geekchat"
   },
   "server": {
-    "host":"http://desolate-headland-6278.herokuapp.com",
-    "callbackurl":"http://desolate-headland-6278.herokuapp.com/auth/github/callback"
+    "host":"stormy-spire-5782.herokuapp.com",
+    "callbackurl":"http://stormy-spire-5782.herokuapp.com/auth/github/callback"
   },
   "github":{
     "GITHUB_CLIENT_ID":"0bb5305f1db7d2816fa3",
