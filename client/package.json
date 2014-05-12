@@ -8,8 +8,7 @@
     "component-lesser": "latest",
     "component-jsx": "latest",
     "karma-mocha": "~0.1.1",
-    "karma-chai": "latest",
-    "karma-phantomjs-launcher": "^0.1.4"
+    "karma-chai": "latest"
   },
   "window": {
     "toolbar": false
