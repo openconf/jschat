@@ -1,5 +1,10 @@
 module.exports = {
   show: function(img, title, text){
+    if (!window.webkitNotifications){
+      console.log('Notifications are not supported');
+      return;
+    }
+
     if (window.webkitNotifications.checkPermission() == 0) {
       var notification = window.webkitNotifications.createNotification(img, title, text);
       notification.show();
@@ -9,6 +14,11 @@ module.exports = {
     }
   },
   access: function(){
+    if (!window.webkitNotifications){
+      console.log('Notifications are not supported');
+      return;
+    }
+
     if (window.webkitNotifications.checkPermission() != 0) {
       window.webkitNotifications.requestPermission();
     }
