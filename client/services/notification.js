@@ -1,3 +1,6 @@
+/* global console, module */
+"use strict";
+
 module.exports = {
   show: function(img, title, text){
     if (!window.webkitNotifications){
@@ -5,7 +8,7 @@ module.exports = {
       return;
     }
 
-    if (window.webkitNotifications.checkPermission() == 0) {
+    if (window.webkitNotifications.checkPermission() === 0) {
       var notification = window.webkitNotifications.createNotification(img, title, text);
       notification.show();
       return notification;
@@ -19,12 +22,11 @@ module.exports = {
       return;
     }
 
-    if (window.webkitNotifications.checkPermission() != 0) {
+    if (window.webkitNotifications.checkPermission() !== 0) {
       window.webkitNotifications.requestPermission();
     }
   },
   shouldNotify: function(){
     return document.hidden || document.mozHidden || document.msHidden || document.webkitHidden;
   }
-}
-
+};
