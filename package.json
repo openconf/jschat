@@ -46,7 +46,7 @@
     "karma-mocha": "~0.1.1"
   },
   "devDependencies": {
-    "compy": "~0.1.30",
+    "compy": "~0.1.31",
     "mocha": "~1.12.1",
     "chai": "~1.7.2",
     "request": "~2.27.0",
