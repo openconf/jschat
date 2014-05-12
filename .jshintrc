@@ -1,0 +1,5 @@
+{
+    "browser"       : true,   // Standard browser globals e.g. `window`, `document`.
+    "node"          : true,   // Standard node globals e.g. `module`, `require`.
+    "strict"        : false   // Obey rule to add 'use strict' pragma
+}
