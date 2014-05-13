@@ -1,6 +1,3 @@
-/* global console, module */
-"use strict";
-
 module.exports = {
   show: function(img, title, text){
     if (!window.webkitNotifications){
