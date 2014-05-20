@@ -2,12 +2,21 @@
 
 var backbone = require('exoskeleton');
 var Me = require('./models/Me');
-//var RoomModel = require('./models/Room');
 var Rooms = require('./models/Rooms');
 var ContactFactory = require('./models/ContactFactory');
 var composer = require('composer')();
 var Storage = require('./services/storage');
 var processMessage;
+
+/*
+TODO: refactoring of router:
+1) router should support async middlewares as in express (let's take page.js, drop ie<10)
+2) those urls that require /Me should have it, we can route if something goes wrong
+3) It would be great to cover the page with spinner
+*/
+
+
+
 module.exports = function(app){
   require('./messages')(app);
   composer.compose('layout', require('./reacts/Layout'));

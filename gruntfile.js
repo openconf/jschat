@@ -1,3 +1,14 @@
+var APP_ENV = process.env.APP_ENV || 'development';
+
+nconf = require('nconf');
+nconf.argv()
+     .env()
+     .file({ file: __dirname + '/config/' + APP_ENV + '.config.json' });
+
+nconf.set("server:port", nconf.get("server:port") || process.env.PORT);
+nconf.set("server:hostname", nconf.get("server:port")?nconf.get("server:host") + ":" +  nconf.get("server:port") : nconf.get("host"));
+
+
 module.exports = function(grunt){
   grunt.initConfig({
     nodewebkit: {
@@ -51,9 +62,18 @@ module.exports = function(grunt){
     grunt.option('tag', tag)
     return grunt.task.run(['run','mochaTest:tag'])
   })
+
+  grunt.registerTask('index-processing', function(){
+    var index = grunt.file.read('./webapp/index.html');
+    index = index.replace('//REAL HOST', 'window.host = "http://' + nconf.get('server:hostname') + '" //generted by index-processing');
+    grunt.file.write('./webapp/index.html', index);
+    return;
+  })
+ 
+  
   grunt.registerTask('test', ['run','mochaTest:integration']);
   
-  grunt.registerTask('buildapp', ['copy:main','nodewebkit']);
+  grunt.registerTask('buildapp', ['copy:main','index-processing','nodewebkit']);
 
   grunt.registerTask('default', 'test');
 }

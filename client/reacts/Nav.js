@@ -13,7 +13,7 @@ module.exports = React.createClass({
         </li>;
       } else {
         return <li>
-          <a className='btn btn-default' onClick={function(){localStorage.auth=true}} href={window.host + "/auth/github?backUrl=" + encodeURIComponent(location.href)}  target="_self">Login with GitHub</a>
+          <a className='' onClick={function(){localStorage.auth=true}} href={window.host + "/auth/github?backUrl=" + encodeURIComponent(location.href)}  target="_self">Login with GitHub</a>
         </li> 
       }
     }
