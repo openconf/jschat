@@ -23,7 +23,7 @@ module.exports = function(item, i, items){
     </div>
   }
   var formatedDate = function(date){
-    return date.getUTCDate() + '/' + (+date.getUTCMonth() + 1)
+    return date && (date.getUTCDate() + '/' + (+date.getUTCMonth() + 1));
   }
   var time = function(item, previous){
     var stringDate = formatedDate(item.date),
@@ -42,8 +42,10 @@ module.exports = function(item, i, items){
     </div></div>
   }
   if(item.get('action') == "JOIN" || item.get('action') == "LEAVE"){
+    var avatar = item.__user.get('gh_avatar');
     return <div>
-       <div className="nick text">
+       <div className="userActionMessage">
+        <span className="avatar"><img src={avatar} /></span>
         {item.__user.name + ' '} <span dangerouslySetInnerHTML={{__html:item.get('text')}}></span>
        </div>
     </div>;
