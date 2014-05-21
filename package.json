@@ -12,7 +12,7 @@
     "watch": "node ./node_modules/compy/bin/compy -d client -o webapp -s server.js server watch",
     "ctest": "node ./node_modules/compy/bin/compy -d client -o webapp test",
     "build-app": "node ./node_modules/compy/bin/compy -d client -o webapp compile;node node_modules/grunt-cli/bin/grunt buildapp;",
-    "package": "node node_modules/grunt-cli/bin/grunt packageMac"
+    "package": "node node_modules/grunt-cli/bin/grunt packageMac;node node_modules/grunt-cli/bin/grunt compress:win; node node_modules/grunt-cli/bin/grunt compress:linux;"
   },
   "dependencies": {
     "express": "~3.4.8",
@@ -34,6 +34,7 @@
     "connect-redis": "~1.4.6",
     "grunt-node-webkit-builder": "~0.1.21",
     "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-compress": "~0.9.1",
     "karma-script-launcher": "~0.1.0",
     "karma-chrome-launcher": "~0.1.2",
     "karma-firefox-launcher": "~0.1.3",

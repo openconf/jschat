@@ -17,6 +17,10 @@ module.exports = React.createClass({
         </li> 
       }
     }
+    var download;
+    if(!isDesktop){
+      download = <li><a href="#download">Download</a></li>;
+    }
     return <nav className="navbar navbar-default" role="navigation">
       <div className="appName">
         <a className="navbar-brand" href="#" target="_self">JSchat</a>
@@ -25,7 +29,7 @@ module.exports = React.createClass({
       <label htmlFor="handler-right" id="right" href="#" className="btn btn-default nav navbar-nav">⍣</label>
       <label htmlFor="handler-left" id="left" href="#" className="btn btn-default nav navbar-nav">☰</label>
       <ul className="nav navbar-nav" id="right">
-        <li><a href="#download">Download</a></li>
+        {download}
         {user(this.props.me)}
       </ul>
     </nav>

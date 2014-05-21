@@ -12,6 +12,28 @@ nconf.set("server:hostname", nconf.get("server:port")?nconf.get("server:host") +
 
 module.exports = function(grunt){
   grunt.initConfig({
+    compress:{
+      win:{
+        options: {
+          mode: 'zip',
+          archive: './webapp/desktop/releases/JSChat/win/JSChat.zip'
+        },
+        expand: true,
+        cwd: './webapp/desktop/releases/JSChat/',
+        src: ['win/JSChat/**'],
+        dest: 'win/'
+      },
+      linux:{
+        options: {
+          mode: 'tgz',
+          archive: './webapp/desktop/releases/JSChat/linux32/JSChat.tar.gz'
+        },
+        expand: true,
+        cwd: './webapp/desktop/releases/JSChat/',
+        src: ['linux32/JSChat/**'],
+        dest: 'linux32/'
+      }
+    },
     nodewebkit: {
       options: {
         build_dir: './webapp/desktop', // Where the build version of my node-webkit app is saved
@@ -50,6 +72,7 @@ module.exports = function(grunt){
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-node-webkit-builder');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-compress');
   
   grunt.registerTask('run', function(){
     require("./server.js");
