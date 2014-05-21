@@ -25,6 +25,7 @@ module.exports = React.createClass({
       <label htmlFor="handler-right" id="right" href="#" className="btn btn-default nav navbar-nav">⍣</label>
       <label htmlFor="handler-left" id="left" href="#" className="btn btn-default nav navbar-nav">☰</label>
       <ul className="nav navbar-nav" id="right">
+        <li><a href="#download">Download</a></li>
         {user(this.props.me)}
       </ul>
     </nav>

@@ -11,7 +11,8 @@
     "compile": "node ./node_modules/compy/bin/compy -d client -o webapp compile",
     "watch": "node ./node_modules/compy/bin/compy -d client -o webapp -s server.js server watch",
     "ctest": "node ./node_modules/compy/bin/compy -d client -o webapp test",
-    "build-app": "node ./node_modules/compy/bin/compy -d client -o webapp compile;node node_modules/grunt-cli/bin/grunt buildapp;"
+    "build-app": "node ./node_modules/compy/bin/compy -d client -o webapp compile;node node_modules/grunt-cli/bin/grunt buildapp;",
+    "package": "node node_modules/grunt-cli/bin/grunt packageMac"
   },
   "dependencies": {
     "express": "~3.4.8",

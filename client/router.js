@@ -36,12 +36,17 @@ if(isDesktop && localStorage.auth){ //desktop driven hack
       '': 'main',
       'room/:id': 'room',
       'user/:id': 'profile',
-      'profile': 'profile'
+      'profile': 'profile',
+      'download': 'download'
     },
     main: function () {
       Me.fetch();
       console.log(Me);
       composer.compose('content', require('./reacts/Home'), {rooms: new Rooms(), me: Me});
+      app.render();
+    },
+    download: function(){
+      composer.compose('content', require('./reacts/Download'));
       app.render();
     },
     profile: function(id){

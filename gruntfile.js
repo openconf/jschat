@@ -1,4 +1,5 @@
 var APP_ENV = process.env.APP_ENV || 'development';
+var exec = require('child_process').exec;
 
 nconf = require('nconf');
 nconf.argv()
@@ -15,8 +16,8 @@ module.exports = function(grunt){
       options: {
         build_dir: './webapp/desktop', // Where the build version of my node-webkit app is saved
         mac: true, // We want to build it for mac
-        win: false, // We want to build it for win
-        linux32: false, // We don't need linux32
+        win: true, // We want to build it for win
+        linux32: true, // We don't need linux32
         linux64: false, // We don't need linux64
         version: '0.8.2',
         toolbar: false,
@@ -53,6 +54,19 @@ module.exports = function(grunt){
   grunt.registerTask('run', function(){
     require("./server.js");
   });
+
+  grunt.registerTask('packageMac', function(){
+    var done = this.async();
+    console.log('packaging...');
+    exec('hdiutil create -format UDZO -srcfolder ./webapp/desktop/releases/JSChat/mac/JSChat.app ./webapp/desktop/releases/JSChat/mac/JSChat.dmg',function(error, stdout, stderr){
+       console.log('stdout: ' + stdout);
+      console.log('stderr: ' + stderr);
+      if (error !== null) {
+        console.log('exec error: ' + error);
+      }
+      done()
+    })
+  })
 
   grunt.registerTask('tagged', function(tag){
     if (!tag) {
