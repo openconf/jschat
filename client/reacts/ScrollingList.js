@@ -4,7 +4,7 @@ var _ = require('underscore');
 
 module.exports = function(itemClass){
   return React.createClass({
-    displayName: "Scrolling",
+    displayName: 'Scrolling',
     mixins: [require('../models/ModelMixin')],
     _edge: 100,
     scrollToBottom: function(){
@@ -38,7 +38,7 @@ module.exports = function(itemClass){
       function populateUser(message, component){
         message.__user.injected = true;
         component.injectModel(message.__user);
-      };
+      }
     },
     componentWillUpdate: function() {
       var node = this.getDOMNode();
@@ -59,8 +59,12 @@ module.exports = function(itemClass){
       }
     },
     controlEdges: function(update){
-      var scrolledFromTop = this.getDOMNode().scrollTop;
-      var bottom = this.refs.inner.getDOMNode().offsetHeight - this.getDOMNode().offsetHeight;
+      var list = this.getDOMNode();
+      var scrolledFromTop = list.scrollTop;
+      var bottom = this.refs.inner.getDOMNode().offsetHeight - list.offsetHeight;
+
+      processUnreadMessages(list, this);
+
       if(scrolledFromTop < this._edge) {
         //fix jumping of chat when getting to a full viewport
         if(scrolledFromTop > bottom/2 - this._edge) return;
@@ -80,6 +84,27 @@ module.exports = function(itemClass){
     </div>;
     }
   });
+}
+
+function processUnreadMessages(list, that){
+  var visibleBottom = list.scrollTop + list.offsetHeight;
+   _.forEach(list.querySelectorAll('.message'), function(elem){
+        var elemBottom = elem.offsetTop + elem.offsetHeight;
+        if (elemBottom >= list.scrollTop && elemBottom  <= visibleBottom){
+           var message = that.props.renderedItems.models.filter(function(model){
+             return model.get('id') === +elem.id;
+           })[0];
+
+          if (message.get('is_new')){
+            var room = that.props.room;
+            var new_messages = room.get('new_messages');
+            if (new_messages){
+              room.set('new_messages', new_messages > 1 ? --new_messages : null);  
+            }
+            message.set('is_new', false);
+          } 
+        }
+      });
 }
 
 function writingStatus(usersWrite){

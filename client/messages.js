@@ -32,6 +32,8 @@ module.exports = function(app){
     }
     if(data.rid == id && messages && component){
       var model = messages.push(data);
+      var unread_messages = room.get('new_messages') || 0;
+      room.set('new_messages', unread_messages + 1);
       storage.push(model);
       if(model.__user){
         var data = model.__user;

@@ -33,6 +33,7 @@
       "bscomp/navs": "*",
       "bscomp/labels": "*",
       "bscomp/buttons": "*",
+      "bscomp/badges": "*",
       "chjj/marked": "*",
       "bscomp/jumbotron": "*",
       "cayasso/engine.io-reconnect": "*",
