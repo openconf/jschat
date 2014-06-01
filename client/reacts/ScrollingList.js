@@ -1,7 +1,5 @@
 /** @jsx React.DOM */
 var ContactFactory = require('../models/ContactFactory');
-var _ = require('underscore');
-
 module.exports = function(itemClass){
   return React.createClass({
     displayName: 'Scrolling',
@@ -22,7 +20,7 @@ module.exports = function(itemClass){
         this.controlEdges();
         // populate User model inside object
         this.props.renderedItems.models.forEach(function(model){
-          populateUser(model,this)
+          populateUser(model,this);
         }.bind(this));
         this.props.renderedItems.on('change add remove', function(){
           this.props.renderedItems.models.forEach(function(model){
@@ -31,9 +29,9 @@ module.exports = function(itemClass){
         }.bind(this));
         this.props.renderedItems.fetch({
           success: function(){
-            this.scrollToBottom()
+            this.scrollToBottom();
           }.bind(this)
-        })
+        });
       }
       function populateUser(message, component){
         message.__user.injected = true;
@@ -88,7 +86,9 @@ module.exports = function(itemClass){
 
 function processUnreadMessages(list, that){
   var visibleBottom = list.scrollTop + list.offsetHeight;
-   _.forEach(list.querySelectorAll('.message'), function(elem){
+  var messagesList = list.querySelectorAll('.message');
+  for(var i = 0; i < messagesList.length; i++){
+        var elem = messagesList[i];
         var elemBottom = elem.offsetTop + elem.offsetHeight;
         if (elemBottom >= list.scrollTop && elemBottom  <= visibleBottom){
            var message = that.props.renderedItems.models.filter(function(model){
@@ -102,9 +102,12 @@ function processUnreadMessages(list, that){
               room.set('new_messages', new_messages > 1 ? --new_messages : null);  
             }
             message.set('is_new', false);
-          } 
+          }
+        } else if (elemBottom > visibleBottom){
+          // don't travers invisible messages
+          break;
         }
-      });
+      }
 }
 
 function writingStatus(usersWrite){
