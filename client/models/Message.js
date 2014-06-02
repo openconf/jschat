@@ -4,9 +4,10 @@ var _ = require('underscore');
 var filters = require('../filters');
 
 var Message = Exo.Model.extend({
+  defaults: {
+    is_new : false
+  },
   initialize: function(){
-    this.set('is_new', true);
-
     this.transformData();
     this.on('change', this.transformData.bind(this));
   },

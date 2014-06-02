@@ -57,6 +57,8 @@ if(isDesktop && localStorage.auth){ //desktop driven hack
       app.render();
     },
     room: function (id){
+      // todo: use single room-props
+      composer.compose('room-props:' + id, {id: id});
       composer.compose('room-props', {id: id});
       Me.fetch({success: gotProfile, error: gotProfile});
       function gotProfile(){
@@ -71,7 +73,7 @@ if(isDesktop && localStorage.auth){ //desktop driven hack
 
           var room = new RoomFactory.getRoomModel(id);
           var messages = new Messages((new Storage(id)).getLast(20), {roomId: id});
-          var rooms = new Rooms();
+          var rooms = new RoomFactory.getRoomsCollection(Me.get('rooms'));
 
           var component = composer.compose('content', ChatRoom, {
             me:Me,
@@ -79,7 +81,9 @@ if(isDesktop && localStorage.auth){ //desktop driven hack
             messages: messages,
             rooms: rooms});
           room.switchto();
-          composer.compose('room-props', {id: id, component: component, messages: messages, room: room});
+          // todo: use single room-props
+          composer.compose('room-props', {id: id, component: component, messages: messages, room: room, rooms: rooms});
+          composer.compose('room-props:' + id, {id: id, component: component, messages: messages, room: room, rooms: rooms});
           app.render();
 
         } else {

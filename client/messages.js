@@ -10,12 +10,15 @@ module.exports = function(app){
     }catch(e){
       console.log('cant parse data', data);
     }
-    var roomProps = composer.compose('room-props');
+
+    // todo: use single room-props
+    var roomProps = (data.rid) ? composer.compose('room-props:' + data.rid) 
+                               : composer.compose('room-props');
     var id = roomProps && roomProps.id;
     var storage = new Storage(id);
     var messages = roomProps && roomProps.messages;
     var component = roomProps && roomProps.component;
-    var room = roomProps && roomProps.room;
+    var room = roomProps && roomProps.rooms && roomProps.rooms.get(id);
 
     if(data.type == "WRITING" && id == data.rid){
       messages.userWriting(data.uid);
@@ -32,6 +35,9 @@ module.exports = function(app){
     }
     if(data.rid == id && messages && component){
       var model = messages.push(data);
+
+      model.set('is_new', true);
+
       var unread_messages = room.get('new_messages') || 0;
       room.set('new_messages', unread_messages + 1);
       storage.push(model);

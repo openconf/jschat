@@ -2,15 +2,8 @@ var roomModelsCache = {};
 var RoomModel = require('./Room');
 var RoomsCollection = require('./Rooms');
 var _ = require('underscore');
-/**
- * this Factory should minimize calls to server for contacts information:
- * - any new cache model with ID defined will be fetched
- * - any model that doesn't have ID will be watched untill it get's the ID
- * - any collection will be watched untill it get's models with ID's and those will be saved 
- *   in cache
- */
-module.exports = {
-  getRoomModel: function(id){
+
+var getRoomModel = function(id){
     if(id && roomModelsCache[id]){
       return roomModelsCache[id];
     }
@@ -21,16 +14,25 @@ module.exports = {
     }
     room.on('change', putInCache, room);
     return room;
-  },
+  };
+/**
+ * this Factory should minimize calls to server for contacts information:
+ * - any new cache model with ID defined will be fetched
+ * - any model that doesn't have ID will be watched untill it get's the ID
+ * - any collection will be watched untill it get's models with ID's and those will be saved 
+ *   in cache
+ */
+module.exports = {
+  getRoomModel: getRoomModel,
   getRoomsCollection: function(ids){
     var roomsArray = _(ids).map(function(id){
-      return {id: id};
+      return getRoomModel(id);
     });
     var collection = new RoomsCollection(roomsArray);
     collection.on('change', processCollection, collection);
     return collection;
   }
-}
+};
 
 /**
  * on change of collection, get all elements and put them in chache if required

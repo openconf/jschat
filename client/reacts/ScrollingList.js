@@ -1,5 +1,7 @@
 /** @jsx React.DOM */
 var ContactFactory = require('../models/ContactFactory');
+var _ = require('underscore');
+
 module.exports = function(itemClass){
   return React.createClass({
     displayName: 'Scrolling',
@@ -85,6 +87,13 @@ module.exports = function(itemClass){
 }
 
 function processUnreadMessages(list, that){
+  var room = that.props.room,
+      new_messages = room.get('new_messages');
+
+  if (!new_messages || +new_messages < 1){
+    return;
+  }
+
   var visibleBottom = list.scrollTop + list.offsetHeight;
   var messagesList = list.querySelectorAll('.message');
   for(var i = 0; i < messagesList.length; i++){
@@ -96,18 +105,17 @@ function processUnreadMessages(list, that){
            })[0];
 
           if (message.get('is_new')){
-            var room = that.props.room;
-            var new_messages = room.get('new_messages');
             if (new_messages){
               room.set('new_messages', new_messages > 1 ? --new_messages : null);  
             }
+
             message.set('is_new', false);
           }
         } else if (elemBottom > visibleBottom){
           // don't travers invisible messages
           break;
         }
-      }
+  }
 }
 
 function writingStatus(usersWrite){
