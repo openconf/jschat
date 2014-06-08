@@ -3,6 +3,7 @@ var composer = require('composer')();
 var notification = require('./services/notification');
 var ContactFactory = require('./models/ContactFactory');
 var Storage = require('./services/storage');
+var RoomFactory = require('./models/RoomFactory');
 module.exports = function(app){
   backbone.socket.addEventListener("message", function(data, type){
     try{
@@ -11,10 +12,8 @@ module.exports = function(app){
       console.log('cant parse data', data);
     }
 
-    // todo: use single room-props
-    var roomProps = (data.rid) ? composer.compose('room-props:' + data.rid) 
-                               : composer.compose('room-props');
-    var id = roomProps && roomProps.id;
+    var id = (data.rid) ? data.rid: RoomFactory.getCurrentRoomId();
+    var roomProps = composer.compose('room-props:' + id);
     var storage = new Storage(id);
     var messages = roomProps && roomProps.messages;
     var component = roomProps && roomProps.component;

@@ -2,6 +2,7 @@ var roomModelsCache = {};
 var RoomModel = require('./Room');
 var RoomsCollection = require('./Rooms');
 var _ = require('underscore');
+var currentRoomId;
 
 var getRoomModel = function(id){
     if(id && roomModelsCache[id]){
@@ -31,6 +32,14 @@ module.exports = {
     var collection = new RoomsCollection(roomsArray);
     collection.on('change', processCollection, collection);
     return collection;
+  },
+
+  getCurrentRoomId: function(){
+    return currentRoomId;
+  },
+
+  setCurrentRoomId: function(roomId){
+    currentRoomId = roomId;
   }
 };
 
