@@ -11,12 +11,13 @@ function emojifyText(text) {
   var matchName;
   result = result.replace(emojiPresent, function (match) {
     matchName = match.slice(1, -1);
-    return injectEmoji(matchName, match);
+    return injectEmoji(matchName, match) || match;
   })
   return result;
 }
 
 function injectEmoji(name, title){
+  if (!emojis[name]) return null;
   title = title || name;
   return "<img class='emoji' title='"+ title + "'  src='/JSChat/images/emojis/" + name + ".png'/>";
 }
