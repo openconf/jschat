@@ -1,0 +1,21 @@
+{
+  "mongo": {
+    "url": "localhost:27017/",
+    "db": "chat"
+  },
+  "redis":{
+    "db": 3
+  },
+  "security": {
+    "salt":"geekchat"
+  },
+  "server": {
+    "host":"127.0.0.1",
+    "port": 80,
+    "callbackurl":"http://127.0.0.1:80/auth/github/callback"
+  },
+  "github":{
+    "GITHUB_CLIENT_ID":"0bb5305f1db7d2816fa3",
+    "GITHUB_CLIENT_SECRET":"32d469aa1334e0a29caac7a20054fa57c0c26088"
+  }
+}
