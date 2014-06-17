@@ -44,8 +44,9 @@
     "requirejs": "~2.1.10",
     "karma-requirejs": "~0.2.1",
     "karma-phantomjs-launcher": "~0.1.1",
-    "karma": "~0.10.9",
-    "karma-mocha": "~0.1.1"
+    "karma": "~0.12.16",
+    "karma-mocha": "~0.1.1",
+    "webkit-updater": "0.0.1"
   },
   "devDependencies": {
     "compy": "~0.1.31",
