@@ -5,6 +5,7 @@ var redis = require('redis');
 var errors = require('./src/errors.js');
 var APP_ENV = process.env.APP_ENV || 'development';
 
+
 var redisUrl = require('parse-redis-url')(redis);
 var options = redisUrl.parse(process.env.REDISTOGO_URL);
 options.pass = options.password;
