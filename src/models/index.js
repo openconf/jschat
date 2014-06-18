@@ -1,7 +1,7 @@
 var redis = require('redis');
 
 var redisUrl = require('parse-redis-url')(redis);
-var options = redisUrl.parse(process.env.REDISTOGO_URL);
+var options = redisUrl.parse(process.env.REDIS_URL);
 
 var client = redis.createClient(options.port, options.host);
 
@@ -14,7 +14,7 @@ if(options.password){
   })
 }
 
-if(!process.env.REDISTOGO_URL){
+if(!process.env.REDIS_URL){
 client.select(options.database || nconf.get('redis:db'), function(){
 });
 }
