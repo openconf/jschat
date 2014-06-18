@@ -15,7 +15,7 @@ nconf.argv()
      .env()
      .file({ file: __dirname + '/config/' + APP_ENV + '.config.json' });
 
-nconf.set("server:port", nconf.get("server:port") || process.env.PORT);
+nconf.set("server:port", process.env.PORT  || nconf.get("server:port"));
 nconf.set("server:hostname", nconf.get("server:port")?nconf.get("server:host") + ":" +  nconf.get("server:port") : nconf.get("host"));
 
 // Setup app

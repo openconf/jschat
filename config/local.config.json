@@ -1,8 +1,4 @@
 {
-  "mongo": {
-    "url": "localhost:27017/",
-    "db": "chat"
-  },
   "redis":{
     "db": 3
   },
@@ -10,9 +6,8 @@
     "salt":"geekchat"
   },
   "server": {
-    "host":"127.0.0.1",
-    "port": 5000,
-    "callbackurl":"http://127.0.0.1:80/auth/github/callback"
+    "hostname":"jschat.dokku.me",
+    "callbackurl":"http://jschat.dokku.me/auth/github/callback"
   },
   "github":{
     "GITHUB_CLIENT_ID":"0bb5305f1db7d2816fa3",
