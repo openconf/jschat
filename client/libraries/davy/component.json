@@ -1,7 +1,0 @@
-{
-  "name": "davy",
-  "description": "promises",
-  "version": "0.0.1",
-  "scripts": ["davy.js","subsequent.js"],
-  "main":"davy.js"
-}

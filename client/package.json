@@ -4,13 +4,6 @@
   "description": "The client part of JSChat project.",
   "author": "Eldar Djafarov <djkojb@gmail.com>",
   "license": "MIT",
-  "dependencies": {
-    "component-lesser": "latest",
-    "component-jsx": "latest",
-    "karma-mocha": "~0.1.1",
-    "karma-chai": "latest",
-    "karma-phantomjs-launcher": "^0.1.4"
-  },
   "window": {
     "toolbar": false
   },

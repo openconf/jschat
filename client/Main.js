@@ -14,7 +14,7 @@ require('./renderer/renderer')(app);
 var started = false;
 _.extend(app, backbone.Events);
 _.extend(app,{
-  router: require('./router.js')(app),
+  router: require('./router')(app),
   run: function () {
     backbone.history.start({
       pushState: false,
