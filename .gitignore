@@ -13,10 +13,8 @@ logs
 results
 
 node_modules
-client/components
-mobile/components
+components
 tests/socketClientPatched/node_modules
-mobapp
 webapp
 
 npm-debug.log

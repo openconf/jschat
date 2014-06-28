@@ -1,0 +1,20 @@
+{
+  "name": "d",
+  "repo": "edj/d",
+  "description": "",
+  "version": "0.0.1",
+  "keywords": [],
+  "main": "Main.js",
+  "dependencies": {
+    "edjafarov/socker": "*",
+    "edjafarov/bbsocker.sync": "*",
+    "jashkenas/underscore": "*",
+    "learnboost/engine.io-client": "0.8.0",
+    "paulmillr/exoskeleton": "master",
+    "chjj/marked": "*",
+    "cayasso/engine.io-reconnect": "*",
+    "turbo-react/composer": "*"
+  },
+  "development": {},
+  "license": "MIT"
+}

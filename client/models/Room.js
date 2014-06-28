@@ -1,6 +1,6 @@
 var Exo = require('exoskeleton');
 var _ = require('underscore');
-var ContactFactory = require('./ContactFactory.js');
+var ContactFactory = require('./ContactFactory');
 var Room = Exo.Model.extend({
   urlRoot: "/api/rooms",
   initialize: function(){

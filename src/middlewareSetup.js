@@ -78,12 +78,7 @@ module.exports = function(app){
     next();
   });
   
-  if(!process.env.APP_ENV || process.env.APP_ENV == 'development'){
-    var compy = require('compy');
-    app.use(compy.middleware(__dirname + "/../webapp/"));
-  } else {
-    app.use(express.static(__dirname + "/../webapp/"));
-  }
+  app.use(express.static(__dirname + "/../webapp/"));
   
   
   app.get('/auth/github', app.access.free, rememberBackUrl,

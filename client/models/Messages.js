@@ -1,6 +1,6 @@
 var Exo = require('exoskeleton');
 var MessageModel = require('./Message');
-var ContactFactory = require('./ContactFactory.js');
+var ContactFactory = require('./ContactFactory');
 var _ = require('underscore');
 var Storage = require('../services/storage');
 var MessageCollection = Exo.Collection.extend({
