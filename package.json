@@ -12,7 +12,7 @@
     "watch": "node ./node_modules/brunch/bin/brunch watch --server",
     "ctest": "echo 'TODO: setup'",
     "build-app": "node ./node_modules/brunch/bin/brunch build;node node_modules/grunt-cli/bin/grunt buildapp;",
-    "package": "node node_modules/grunt-cli/bin/grunt packageMac;node node_modules/grunt-cli/bin/grunt compress:win; node node_modules/grunt-cli/bin/grunt compress:linux;"
+    "package": "node node_modules/grunt-cli/bin/grunt packageMac compress:win compress:linux32 compress:linux64;"
   },
   "dependencies": {
     "express": "~3.4.8",
