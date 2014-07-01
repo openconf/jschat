@@ -25,9 +25,11 @@ exports.config = {
     },
     stylesheets: {
       joinTo: {
-        'css/app.css': /^client/,
-        'css/vendor.css': /^components/
+        'css/app.css': /^client/
       }
     }
+  },
+  server: {
+    path: 'index.js'
   }
 }
