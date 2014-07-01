@@ -7,11 +7,11 @@
     "start": "node server.js",
     "test": "npm run setup; npm run compile; node ./node_modules/grunt-cli/bin/grunt; node ./node_modules/compy/bin/compy -d client -o webapp test",
     "t": "node ./node_modules/grunt-cli/bin/grunt",
-    "setup": "cd tests/socketClientPatched && npm install && cd ../../client && npm install && cd .. && node ./node_modules/compy/bin/compy -d client install && node ./node_modules/compy/bin/compy -d mobile install",
-    "compile": "node ./node_modules/compy/bin/compy -d client -o webapp compile",
-    "watch": "node ./node_modules/compy/bin/compy -d client -o webapp -s server.js server watch",
-    "ctest": "node ./node_modules/compy/bin/compy -d client -o webapp test",
-    "build-app": "node ./node_modules/compy/bin/compy -d client -o webapp compile;node node_modules/grunt-cli/bin/grunt buildapp;",
+    "setup": "cd tests/socketClientPatched && npm install && cd ../../client && npm install && cd ../client && node ../node_modules/component/bin/component install",
+    "compile": "node ./node_modules/brunch/bin/brunch build",
+    "watch": "node ./node_modules/brunch/bin/brunch watch --server",
+    "ctest": "echo 'TODO: setup'",
+    "build-app": "node ./node_modules/brunch/bin/brunch build;node node_modules/grunt-cli/bin/grunt buildapp;",
     "package": "node node_modules/grunt-cli/bin/grunt packageMac;node node_modules/grunt-cli/bin/grunt compress:win; node node_modules/grunt-cli/bin/grunt compress:linux;"
   },
   "dependencies": {
@@ -37,9 +37,12 @@
     "grunt-contrib-compress": "~0.9.1",
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.9",
+
     "less-brunch": "~1.7.2",
     "react-brunch": "~1.0.6",
-    "auto-reload-brunch": "~1.7.3"
+    "auto-reload-brunch": "~1.7.3",
+    "component": "~0.19.9",
+    "brunch": "git+https://git@github.com/edjafarov/brunch.git"
   },
   "devDependencies": {
     "mocha": "~1.12.1",

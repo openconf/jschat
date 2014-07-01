@@ -1,7 +1,7 @@
 {
-  "name": "d",
-  "repo": "edj/d",
-  "description": "",
+  "name": "jsChat",
+  "repo": "edjafarov/jschat",
+  "description": "javascript chat",
   "version": "0.0.1",
   "keywords": [],
   "main": "Main.js",
@@ -13,7 +13,19 @@
     "paulmillr/exoskeleton": "master",
     "chjj/marked": "*",
     "cayasso/engine.io-reconnect": "*",
-    "turbo-react/composer": "*"
+    "turbo-react/composer": "*",
+    "components/bootstrap": "*",
+    "bscomp/normalize": "*",
+    "bscomp/forms": "*",
+    "bscomp/type": "*",
+    "bscomp/responsive-utilities": "*",
+    "bscomp/grid": "*",
+    "bscomp/variables": "*",
+    "bscomp/navbar": "*",
+    "bscomp/navs": "*",
+    "bscomp/labels": "*",
+    "bscomp/buttons": "*",
+    "bscomp/jumbotron": "*"
   },
   "development": {},
   "license": "MIT"
