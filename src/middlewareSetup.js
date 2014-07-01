@@ -79,7 +79,7 @@ module.exports = function(app){
   });
   
   app.use(express.static(__dirname + "/../webapp/"));
-  
+  app.use(express.static(__dirname + "/../desktop/releases"));
   
   app.get('/auth/github', app.access.free, rememberBackUrl,
     passport.authenticate('github'),

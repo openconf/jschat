@@ -10,38 +10,56 @@ nconf.set("server:port", nconf.get("server:port") || process.env.PORT);
 nconf.set("server:hostname", nconf.get("server:port")?nconf.get("server:host") + ":" +  nconf.get("server:port") : nconf.get("host"));
 
 
+var isWin = /^win/.test(process.platform);
+var isMac = /^darwin/.test(process.platform);
+var isLinux = /^linux/.test(process.platform);
+var is32 = process.arch == 'ia32';
+var is64 = process.arch == 'x64';
+
+var dest = "./desktop"
+
 module.exports = function(grunt){
   grunt.initConfig({
     compress:{
       win:{
         options: {
           mode: 'zip',
-          archive: './webapp/desktop/releases/JSChat/win/JSChat.zip'
+          archive: dest + '/releases/JSChat/win/JSChat.zip'
         },
         expand: true,
-        cwd: './webapp/desktop/releases/JSChat/',
-        src: ['win/JSChat/**'],
-        dest: 'win/'
+        cwd: dest + '/releases/JSChat/win/JSChat',
+        src: ['**/**'],
+        dest: '/JSChat'
       },
-      linux:{
+      linux32:{
         options: {
           mode: 'tgz',
-          archive: './webapp/desktop/releases/JSChat/linux32/JSChat.tar.gz'
+          archive: dest + '/releases/JSChat/linux32/JSChat.tar.gz'
         },
         expand: true,
-        cwd: './webapp/desktop/releases/JSChat/',
-        src: ['linux32/JSChat/**'],
-        dest: 'linux32/'
+        cwd: dest + '/releases/JSChat/linux32/JSChat',
+        src: ['**/**'],
+        dest: 'JSChat/'
+      },
+      linux64:{
+        options: {
+          mode: 'tgz',
+          archive: dest + '/releases/JSChat/linux64/JSChat.tar.gz'
+        },
+        expand: true,
+        cwd: dest + '/releases/JSChat/linux64/JSChat',
+        src: ['**/**'],
+        dest: 'JSChat/'
       }
     },
     nodewebkit: {
       options: {
-        build_dir: './webapp/desktop', // Where the build version of my node-webkit app is saved
+        build_dir: dest, // Where the build version of my node-webkit app is saved
         mac: true, // We want to build it for mac
         win: true, // We want to build it for win
         linux32: true, // We don't need linux32
-        linux64: false, // We don't need linux64
-        version: '0.8.2',
+        linux64: true, // We don't need linux64
+        version: '0.9.2',
         toolbar: false,
         frame: false
       },
@@ -80,9 +98,10 @@ module.exports = function(grunt){
 
   grunt.registerTask('packageMac', function(){
     var done = this.async();
-    console.log('packaging...');
-    exec('hdiutil create -format UDZO -srcfolder ./webapp/desktop/releases/JSChat/mac/JSChat.app ./webapp/desktop/releases/JSChat/mac/JSChat.dmg',function(error, stdout, stderr){
-       console.log('stdout: ' + stdout);
+    console.log('packaging...', 'hdiutil create -format UDZO -srcfolder ' + dest + '/releases/JSChat/mac/JSChat.app ' + dest + '/releases/JSChat/mac/JSChat.dmg');
+    
+    exec('hdiutil create -format UDZO -srcfolder ' + dest + '/releases/JSChat/mac/JSChat.app ' + dest + '/releases/JSChat/mac/JSChat.dmg',function(error, stdout, stderr){
+      console.log('stdout: ' + stdout);
       console.log('stderr: ' + stderr);
       if (error !== null) {
         console.log('exec error: ' + error);
