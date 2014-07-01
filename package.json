@@ -7,7 +7,7 @@
     "start": "node server.js",
     "test": "npm run setup; npm run compile; node ./node_modules/grunt-cli/bin/grunt; node ./node_modules/compy/bin/compy -d client -o webapp test",
     "t": "node ./node_modules/grunt-cli/bin/grunt",
-    "setup": "cd tests/socketClientPatched && npm install && cd ../../client && npm install && cd ../client && node ../node_modules/component/bin/component install",
+    "setup": "cd tests/socketClientPatched && npm install && cd ../../ && node ./node_modules/component/bin/component install",
     "compile": "node ./node_modules/brunch/bin/brunch build",
     "watch": "node ./node_modules/brunch/bin/brunch watch --server",
     "ctest": "echo 'TODO: setup'",
