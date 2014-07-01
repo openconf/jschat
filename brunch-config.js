@@ -13,7 +13,7 @@ exports.config = {
         js: true,
         assets: false
       },
-      port: [6379]
+      port: [33333]
     }
   },
   files: {
