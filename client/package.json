@@ -7,51 +7,5 @@
   "window": {
     "toolbar": false
   },
-  "main": "app://jschat/index.html",
-  "compy": {
-    "main": "Main.js",
-    "dependencies": {
-      "edjafarov/socker": "*",
-      "edjafarov/bbsocker.sync": "*",
-      "jashkenas/underscore": "*",
-      "learnboost/engine.io-client": "0.8.0",
-      "paulmillr/exoskeleton": "master",
-      "bscomp/forms": "*",
-      "bscomp/normalize": "*",
-      "bscomp/type": "*",
-      "bscomp/responsive-utilities": "*",
-      "bscomp/grid": "*",
-      "bscomp/variables": "*",
-      "bscomp/navbar": "*",
-      "bscomp/navs": "*",
-      "bscomp/labels": "*",
-      "bscomp/buttons": "*",
-      "bscomp/badges": "*",
-      "chjj/marked": "*",
-      "bscomp/jumbotron": "*",
-      "cayasso/engine.io-reconnect": "*",
-      "turbo-react/composer": "*"
-    },
-    "tests": {
-      "frameworks": [
-        "mocha",
-        "chai"
-      ],
-      "plugins": [
-        "karma-phantomjs-launcher",
-        "karma-mocha",
-        "karma-chai"
-      ]
-    },
-    "local": [
-      "IScroll",
-      "davy"
-    ],
-    "paths": [
-      "libraries"
-    ],
-    "files": [
-      "./libraries/React/react.js"
-    ]
-  }
+  "main": "app://jschat/index.html"
 }
