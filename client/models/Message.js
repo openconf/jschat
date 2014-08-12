@@ -4,16 +4,19 @@ var _ = require('underscore');
 var filters = require('../filters');
 
 var Message = Exo.Model.extend({
+  defaults: {
+    is_new : false
+  },
   initialize: function(){
     this.transformData();
     this.on('change', this.transformData.bind(this));
   },
   transformData: function(){
-    if(this.get('tms')) this.date = new Date(+this.get('tms'));
-    if(this.get('uid') && !this.__user) this.__user = ContactFactory.getContactModel(this.get('uid'));
-    if(this.get('text')) this.text = _.reduce(filters, iterator, this.get('text'), this);
+    if (this.get('tms')) this.date = new Date(+this.get('tms'));
+    if (this.get('uid') && !this.__user) this.__user = ContactFactory.getContactModel(this.get('uid'));
+    if (this.get('text')) this.text = _.reduce(filters, iterator, this.get('text'), this);    
   }
-})
+});
 
 function iterator(memo, filter){
   return filter(memo);

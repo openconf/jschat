@@ -1,12 +1,12 @@
 /** @jsx React.DOM */
 
+var _ = require('underscore');
 var backbone = require('exoskeleton');
 var Me = require('./models/Me');
 var Rooms = require('./models/Rooms');
 var ContactFactory = require('./models/ContactFactory');
 var composer = require('composer')();
 var Storage = require('./services/storage');
-var processMessage;
 
 /*
 TODO: refactoring of router:
@@ -57,21 +57,21 @@ if(isDesktop && localStorage.auth){ //desktop driven hack
       app.render();
     },
     room: function (id){
-      composer.compose('room-props', {id: id});
+      composer.compose('room-props:' + id, {id: id});
       Me.fetch({success: gotProfile, error: gotProfile});
       function gotProfile(){
         if(Me.get('id')){
           var ChatRoom = require('./reacts/ChatRoom');
           var RoomFactory = require('./models/RoomFactory');
-          var Messages = require('./models/Messages');
-
           app.bind('reconnected', function(){
             setTimeout(function(){messages.refresh();}, 500);
           });
 
           var room = new RoomFactory.getRoomModel(id);
-          var messages = new Messages((new Storage(id)).getLast(20), {roomId: id});
-          var rooms = new Rooms();
+          var messages = getMessages(id);
+          var rooms = new RoomFactory.getRoomsCollection(Me.get('rooms'));
+
+          RoomFactory.setCurrentRoomId(id);
 
           var component = composer.compose('content', ChatRoom, {
             me:Me,
@@ -79,16 +79,46 @@ if(isDesktop && localStorage.auth){ //desktop driven hack
             messages: messages,
             rooms: rooms});
           room.switchto();
-          composer.compose('room-props', {id: id, component: component, messages: messages, room: room});
+          composer.compose('room-props:' + id, {
+            id: id, 
+            component: component, 
+            messages: messages, 
+            room: room, 
+            rooms: rooms});
           app.render();
+
+          // compose other joined rooms to recieve unread messages notification
+          _.forEach(rooms.models, function(room){
+            if (!composer.compose('room-props:' + room.get('id'))){
+              var messages = getMessages(room.get('id'));
+              var component = composer.compose('content', ChatRoom, {
+                me:Me,
+                room: room,
+                messages: messages,
+                rooms: rooms});
+
+              composer.compose('room-props:' + room.get('id'), {
+                id: room.get('id'), 
+                component: component, 
+                messages: messages, 
+                room: room, 
+                rooms: rooms});
+            }
+          });
 
         } else {
           composer.compose('content', require('./reacts/Login'));
           app.render();
         }
       }
+
+      function getMessages(roomId){
+        var Messages = require('./models/Messages');
+
+        return new Messages((new Storage(roomId)).getLast(20), {roomId: roomId});
+      }
     }
   });
 
   return new router();
-}
+};

@@ -51,7 +51,7 @@ module.exports = function(item, i, items){
     </div>;
   }
   if(!item.get('id')) return;
-  return <div>
+  return <div id={item.get('id')} className='message'>
     {user(item, items[i-1])}
     <div className='msg'>
       {time(item, items[i-1])}
