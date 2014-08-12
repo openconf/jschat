@@ -2,11 +2,12 @@ var redis = require('redis');
 
 var redisUrl = require('parse-redis-url')(redis);
 var options = redisUrl.parse(process.env.REDIS_URL);
-
+console.log(options);
 var client;
 
 
 function strongConnect(){
+  console.log(options);
   client = redis.createClient(options.port, options.host);
   client.on('error', function(err){
     console.log("global redis error: " + err);
@@ -21,8 +22,7 @@ function strongConnect(){
   }
 
   if(!process.env.REDIS_URL){
-  client.select(options.database || nconf.get('redis:db'), function(){
-  });
+    client.select(options.database || nconf.get('redis:db'), function(){});
   }
   if(module.exports){
     module.exports.db = client;
