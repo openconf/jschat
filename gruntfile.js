@@ -113,4 +113,10 @@ module.exports = function(grunt){
   grunt.registerTask('buildapp', ['copy:main','index-processing','nodewebkit']);
 
   grunt.registerTask('default', 'test');
+
+  // build app
+  // compile client
+  // serve server
+  // watch changes
+
 }

@@ -38,6 +38,7 @@ module.exports = React.createClass({
   render: function(){
     var scrollingList = <ScrollingList 
           renderedItems={this.props.messages}
+          room={this.props.room}
           ref="messagesList"/>;
 
     return <div>

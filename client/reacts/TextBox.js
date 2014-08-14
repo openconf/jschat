@@ -27,10 +27,14 @@ module.exports = React.createClass({
       }),{
       success: function(){
         this.cleanTextBox();
-        console.log('this sendMessage', this)
+        console.log('this sendMessage', this);
         this.storage.push(arguments[0]);
-        this.props.list.scrollToBottom(200);
-        this.props.list.forceUpdate();
+
+        // todo: investigate the case when UNMOUNTED
+        if (this.props.list._lifeCycleState === 'MOUNTED'){
+          this.props.list.scrollToBottom(200);
+          this.props.list.forceUpdate();  
+        }
       }.bind(this)
     });
   },
