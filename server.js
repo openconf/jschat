@@ -5,8 +5,9 @@ var redis = require('redis');
 var errors = require('./src/errors.js');
 var APP_ENV = process.env.APP_ENV || 'development';
 
+
 var redisUrl = require('parse-redis-url')(redis);
-var options = redisUrl.parse(process.env.REDISTOGO_URL);
+var options = redisUrl.parse(process.env.REDIS_URL);
 options.pass = options.password;
 
 nconf = require('nconf');
@@ -14,7 +15,7 @@ nconf.argv()
      .env()
      .file({ file: __dirname + '/config/' + APP_ENV + '.config.json' });
 
-nconf.set("server:port", nconf.get("server:port") || process.env.PORT);
+nconf.set("server:port", process.env.PORT  || nconf.get("server:port"));
 nconf.set("server:hostname", nconf.get("server:port")?nconf.get("server:host") + ":" +  nconf.get("server:port") : nconf.get("host"));
 
 // Setup app
