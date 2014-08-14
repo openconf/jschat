@@ -14,8 +14,6 @@
     "port": 8080,
     "callbackurl":"http://127.0.0.1:8080/auth/github/callback"
   },
-  "github":{
-    "GITHUB_CLIENT_ID":"0bb5305f1db7d2816fa3",
-    "GITHUB_CLIENT_SECRET":"32d469aa1334e0a29caac7a20054fa57c0c26088"
-  }
+  "GITHUB_CLIENT_ID":"0bb5305f1db7d2816fa3",
+  "GITHUB_CLIENT_SECRET":"32d469aa1334e0a29caac7a20054fa57c0c26088"
 }

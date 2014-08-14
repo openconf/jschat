@@ -14,8 +14,8 @@ var nock = require('nock');
 
 module.exports = function(app){
   passport.use(new GitHubStrategy({
-    clientID: nconf.get('github:GITHUB_CLIENT_ID'),
-    clientSecret: nconf.get('github:GITHUB_CLIENT_SECRET'),
+    clientID: nconf.get('GITHUB_CLIENT_ID'),
+    clientSecret: nconf.get('GITHUB_CLIENT_SECRET'),
     callbackURL: nconf.get('server:callbackurl')
     },
     function(token, tokenSecret, profile, done) {

@@ -9,8 +9,6 @@
     "hostname":"jschat.dokku.me",
     "callbackurl":"http://jschat.dokku.me/auth/github/callback"
   },
-  "github":{
-    "GITHUB_CLIENT_ID":"161b6b64629fc1b77144",
-    "GITHUB_CLIENT_SECRET":"f40cfdbeb39de360feae327633be743f651ceb5d"
-  }
+  "GITHUB_CLIENT_ID":"161b6b64629fc1b77144",
+  "GITHUB_CLIENT_SECRET":"f40cfdbeb39de360feae327633be743f651ceb5d"
 }
