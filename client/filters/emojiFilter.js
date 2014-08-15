@@ -19,5 +19,5 @@ function emojifyText(text) {
 function injectEmoji(name, title){
   if (!emojis[name]) return null;
   title = title || name;
-  return "<img class='emoji' title='"+ title + "'  src='/JSChat/images/emojis/" + name + ".png'/>";
+  return "<img class='emoji' title='"+ title + "'  src='/images/emojis/" + name + ".png'/>";
 }

@@ -5,6 +5,5 @@ module.exports = [
   require('./youtubeFilter'),
   require('./vimeoFilter'),
   require('./markdownFilter'),
-  skipPreCode(require('./skypeEmoticonsFilter')),
   skipPreCode(require('./emojiFilter'))
 ]
