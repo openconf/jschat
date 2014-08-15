@@ -24,42 +24,42 @@ module.exports = function(grunt){
       win:{
         options: {
           mode: 'zip',
-	  archive: dest + '/releases/JSChat/win/JSChat.zip'
-	},
-	expand: true,
-	cwd: dest + '/releases/JSChat/win/JSChat',
-	src: ['**/**'],
-	dest: '/JSChat'
-      },
-      linux32:{
-	options: {
-	  mode: 'tgz',
-	  archive: dest + '/releases/JSChat/linux32/JSChat.tar.gz'
+          archive: dest + '/releases/JSChat/win/JSChat.zip'
         },
         expand: true,
-	cwd: dest + '/releases/JSChat/linux32/JSChat',
-	src: ['**/**'],
-	dest: 'JSChat/'
+        cwd: dest + '/releases/JSChat/win/JSChat',
+        src: ['**/**'],
+        dest: '/JSChat'
+      },
+      linux32:{
+        options: {
+          mode: 'tgz',
+          archive: dest + '/releases/JSChat/linux32/JSChat.tar.gz'
+        },
+        expand: true,
+        cwd: dest + '/releases/JSChat/linux32/JSChat',
+        src: ['**/**'],
+        dest: 'JSChat/'
       },
       linux64:{
         options: {
           mode: 'tgz',
-	  archive: dest + '/releases/JSChat/linux64/JSChat.tar.gz'
+          archive: dest + '/releases/JSChat/linux64/JSChat.tar.gz'
         },
         expand: true,
-	cwd: dest + '/releases/JSChat/linux64/JSChat',
-	src: ['**/**'],
-	dest: 'JSChat/'
+        cwd: dest + '/releases/JSChat/linux64/JSChat',
+        src: ['**/**'],
+        dest: 'JSChat/'
       }
     },
     nodewebkit: {
       options: {
-	build_dir: dest, // Where the build version of my node-webkit app is saved
+        build_dir: dest, // Where the build version of my node-webkit app is saved
         mac: true, // We want to build it for mac
         win: true, // We want to build it for win
         linux32: true, // We don't need linux32
-	linux64: true, // We don't need linux64
-	version: '0.9.2',
+        linux64: true, // We don't need linux64
+        version: '0.9.2',
         toolbar: false,
         frame: false
       },
@@ -98,8 +98,7 @@ module.exports = function(grunt){
 
   grunt.registerTask('packageMac', function(){
     var done = this.async();
-    console.log('packaging...', 'hdiutil create -format UDZO -srcfolder ' + dest + '/releases/JSChat/mac/JSChat.app ' + dest + '/releases/JSChat/mac/JSChat.dmg');
-
+    
     exec('hdiutil create -format UDZO -srcfolder ' + dest + '/releases/JSChat/mac/JSChat.app ' + dest + '/releases/JSChat/mac/JSChat.dmg',function(error, stdout, stderr){
       console.log('stdout: ' + stdout);
       console.log('stderr: ' + stderr);

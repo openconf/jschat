@@ -9,9 +9,9 @@ exports.config = {
     },
     autoReload: {
       enabled: {
-	css: true,
-	js: true,
-	assets: false
+        css: true,
+        js: true,
+        assets: false
       },
       port: [33333]
     }
@@ -19,13 +19,13 @@ exports.config = {
   files: {
     javascripts: {
       joinTo: {
-	'js/app.js': /^client/,
-	'js/vendor.js': /^components/
+        'js/app.js': /^client/,
+        'js/vendor.js': /^components/
       }
     },
     stylesheets: {
       joinTo: {
-	'css/app.css': /^client/
+        'css/app.css': /^client/
       }
     }
   },
