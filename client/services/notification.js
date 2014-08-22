@@ -1,26 +1,25 @@
 module.exports = {
   show: function(img, title, text){
-    if (!window.webkitNotifications){
+    if (!Notification){
       console.log("Notifications are not supported");
       return;
     }
 
-    if (window.webkitNotifications.checkPermission() === 0) {
-      var notification = window.webkitNotifications.createNotification(img, title, text);
-      notification.show();
+    if (Notification.permission === "granted") {
+      var notification = new Notification(title, {icon:img,  body:text});
       return notification;
     } else {
       console.log("No premission for notification");
     }
   },
   access: function(){
-    if (!window.webkitNotifications){
+    if (!Notification){
       console.log("Notifications are not supported");
       return;
     }
 
-    if (window.webkitNotifications.checkPermission() !== 0) {
-      window.webkitNotifications.requestPermission();
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission();
     }
   },
   shouldNotify: function(){

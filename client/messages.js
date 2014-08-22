@@ -51,7 +51,7 @@ module.exports = function(app){
           }
           if(note){
             setTimeout(function(){
-              note.cancel();
+              note.close();
             }, 2000);
           }
         }
