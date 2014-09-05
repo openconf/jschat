@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "test": "npm run setup; npm run compile; node ./node_modules/grunt-cli/bin/grunt; node ./node_modules/compy/bin/compy -d client -o webapp test",
+    "test": "npm run setup; npm run compile; node ./node_modules/grunt-cli/bin/grunt;",
     "t": "node ./node_modules/grunt-cli/bin/grunt",
     "setup": "cd tests/socketClientPatched && npm install && cd ../../ && node ./node_modules/component/bin/component install",
     "client": "node ./node_modules/brunch/bin/brunch build",
