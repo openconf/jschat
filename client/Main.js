@@ -24,7 +24,7 @@ _.extend(app,{
   }
 });
 
-
+//console.log();
 
 backbone.socket.onopen = function(){
   if(!started) app.run();

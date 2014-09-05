@@ -20,9 +20,24 @@ Prerequisites:
 Five steps to start developing:
   - `npm install`
   - `npm run setup`
-  - `npm run compile` or `npm run compilemob`
-  - `npm run watch` or `npm run watchmob`
+  - `npm run compile`
+  - `npm run watch` 
   - Go to [http://localhost:8080](http://localhost:8080)
+
+To build desktop app:
+
+  - `npm run build-app`
+
+To package desktop app:
+
+  - `npm run package`
+
+To publish desktop app:
+
+  - *update version* for client, build and package an app
+  - commit and push new desktop packages to git@github.com:openconf/jschatapp.git
+  - update version in package.json
+  - commit and push into repo
 
 If you have any troubles, try to do the same with administrator permissions.
 
@@ -30,9 +45,7 @@ If you have any troubles, try to do the same with administrator permissions.
   - `npm start` - just starts server
   - `npm test` - runs server tests
   - `npm run compile` - compiles client folder
-  - `npm run compilemob` - same for mobile
   - `npm run watch` - watches client folder changes and refresh browser (server is also running)
-  - `npm run watchmod` - same for mobile
 
 ## Contributors
 Ordered by date of first contribution.

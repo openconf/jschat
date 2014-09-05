@@ -1,6 +1,21 @@
 {
   "name": "JSChat",
   "version": "0.0.1",
+  "manifestUrl": "https://raw.githubusercontent.com/openconf/jschat/master/client/package.json",
+  "packages": {
+    "mac": {
+      "url": "https://raw.githubusercontent.com/openconf/jschatapp/master/JSChat/mac/JSChat.zip"
+    },
+    "win": {
+      "url": "https://raw.githubusercontent.com/openconf/jschatapp/master/JSChat/win/JSChat.zip"
+    },
+    "linux32": {
+      "url": "https://raw.githubusercontent.com/openconf/jschatapp/master/JSChat/linux32/JSChat.tar.gz"
+    },
+    "linux64": {
+      "url": "https://raw.githubusercontent.com/openconf/jschatapp/master/JSChat/linux64/JSChat.tar.gz"
+    }
+  },
   "description": "The client part of JSChat project.",
   "author": "Eldar Djafarov <djkojb@gmail.com>",
   "license": "MIT",

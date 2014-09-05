@@ -16,38 +16,49 @@ var isLinux = /^linux/.test(process.platform);
 var is32 = process.arch == 'ia32';
 var is64 = process.arch == 'x64';
 
-var dest = "./desktop"
+var src = nconf.get("src") || "./desktop"
+var dest = nconf.get("dest") || "./desktop"
 
 module.exports = function(grunt){
   grunt.initConfig({
     compress:{
+       mac:{
+        options: {
+          mode: 'zip',
+          archive: dest + '/JSChat/osx/JSChat.zip'
+        },
+        expand: true,
+        cwd: src + '/JSChat/osx/',
+        src: ['**/**'],
+        dest: '/JSChat'
+      },
       win:{
         options: {
           mode: 'zip',
-          archive: dest + '/releases/JSChat/win/JSChat.zip'
+          archive: dest + '/JSChat/win/JSChat.zip'
         },
         expand: true,
-        cwd: dest + '/releases/JSChat/win/JSChat',
+        cwd: src + '/JSChat/win/',
         src: ['**/**'],
         dest: '/JSChat'
       },
       linux32:{
         options: {
           mode: 'tgz',
-          archive: dest + '/releases/JSChat/linux32/JSChat.tar.gz'
+          archive: dest + '/JSChat/linux32/JSChat.tar.gz'
         },
         expand: true,
-        cwd: dest + '/releases/JSChat/linux32/JSChat',
+        cwd: src + '/JSChat/linux32/',
         src: ['**/**'],
         dest: 'JSChat/'
       },
       linux64:{
         options: {
           mode: 'tgz',
-          archive: dest + '/releases/JSChat/linux64/JSChat.tar.gz'
+          archive: dest + '/JSChat/linux64/JSChat.tar.gz'
         },
         expand: true,
-        cwd: dest + '/releases/JSChat/linux64/JSChat',
+        cwd: src + '/JSChat/linux64/',
         src: ['**/**'],
         dest: 'JSChat/'
       }
@@ -55,10 +66,7 @@ module.exports = function(grunt){
     nodewebkit: {
       options: {
         build_dir: dest, // Where the build version of my node-webkit app is saved
-        mac: true, // We want to build it for mac
-        win: true, // We want to build it for win
-        linux32: true, // We don't need linux32
-        linux64: true, // We don't need linux64
+        platforms: ['osx', 'win', 'linux32', 'linux64'],
         version: '0.9.2',
         toolbar: false,
         frame: false

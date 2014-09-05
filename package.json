@@ -2,6 +2,7 @@
   "name": "angular-app-server",
   "description": "Back end server to support our angular app",
   "version": "0.0.1",
+
   "private": true,
   "scripts": {
     "start": "node server.js",
@@ -10,9 +11,8 @@
     "setup": "cd tests/socketClientPatched && npm install && cd ../../ && node ./node_modules/component/bin/component install",
     "client": "node ./node_modules/brunch/bin/brunch build",
     "watch": "node ./node_modules/brunch/bin/brunch watch --server",
-    "ctest": "echo 'TODO: setup'",
-    "build-app": "node ./node_modules/brunch/bin/brunch build;node node_modules/grunt-cli/bin/grunt buildapp;",
-    "package": "node node_modules/grunt-cli/bin/grunt packageMac compress:win compress:linux32 compress:linux64;"
+    "build-app": "node ./node_modules/brunch/bin/brunch build;node node_modules/grunt-cli/bin/grunt buildapp --dest=./desktop",
+    "package": "node node_modules/grunt-cli/bin/grunt compress:mac compress:win compress:linux32 compress:linux64 --src=./desktop --dest=../desktop"
   },
   "dependencies": {
     "express": "~3.4.8",
@@ -32,7 +32,7 @@
     "redis": "~0.10.0",
     "parse-redis-url": "0.0.1",
     "connect-redis": "~1.4.6",
-    "grunt-node-webkit-builder": "~0.1.21",
+    "grunt-node-webkit-builder": "~0.2.2",
     "grunt-contrib-copy": "~0.5.0",
     "grunt-contrib-compress": "~0.9.1",
     "grunt": "~0.4.1",
