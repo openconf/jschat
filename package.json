@@ -8,7 +8,7 @@
     "start": "node server.js",
     "test": "npm run setup; npm run compile; node ./node_modules/grunt-cli/bin/grunt;",
     "t": "node ./node_modules/grunt-cli/bin/grunt",
-    "setup": "cd tests/socketClientPatched && npm install && cd ../../ && node ./node_modules/component/bin/component install",
+    "setup": "cd tests/socketClientPatched && npm install && cd ../../ && node ./node_modules/component/bin/component install && npm install --prefix ./client/assets/ node-webkit-updater",
     "client": "node ./node_modules/brunch/bin/brunch build",
     "watch": "node ./node_modules/brunch/bin/brunch watch --server",
     "build-app": "node ./node_modules/brunch/bin/brunch build;node node_modules/grunt-cli/bin/grunt buildapp --dest=./desktop",
@@ -37,7 +37,7 @@
     "grunt-contrib-compress": "~0.9.1",
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.9",
-
+    "node-webkit-updater": "0.2.0",
     "less-brunch": "~1.7.2",
     "react-brunch": "~1.0.6",
     "auto-reload-brunch": "~1.7.3",

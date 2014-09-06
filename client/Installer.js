@@ -1,0 +1,1 @@
+React.renderComponent(require('./reascts/Installer/Installer'), document.body);

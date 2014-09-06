@@ -23,7 +23,7 @@ module.exports = React.createClass({
     }
     return <nav className="navbar navbar-default" role="navigation">
       <div className="appName">
-	<a className="navbar-brand" href="#" target="_self">JSchat</a>
+	<a className="navbar-brand" href="#" target="_self">JSchat <small>{window.pkg && window.pkg.version}</small></a>
       </div>
 
       <label htmlFor="handler-right" id="right" href="#" className="btn btn-default nav navbar-nav">⍣</label>

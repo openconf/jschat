@@ -20,7 +20,7 @@
   "author": "Eldar Djafarov <djkojb@gmail.com>",
   "license": "MIT",
   "window": {
-    "toolbar": false
+    "toolbar": true
   },
   "main": "app://jschat/index.html"
 }
