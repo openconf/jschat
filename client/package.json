@@ -4,10 +4,12 @@
   "manifestUrl": "https://raw.githubusercontent.com/openconf/jschat/master/client/package.json",
   "packages": {
     "mac": {
-      "url": "https://raw.githubusercontent.com/openconf/jschatapp/master/JSChat/osx/JSChat.zip"
+      "url": "https://raw.githubusercontent.com/openconf/jschatapp/master/JSChat/osx/JSChat.zip",
+      "execPath": "JSChat/JSChat.app"
     },
     "win": {
-      "url": "https://raw.githubusercontent.com/openconf/jschatapp/master/JSChat/win/JSChat.zip"
+      "url": "https://raw.githubusercontent.com/openconf/jschatapp/master/JSChat/win/JSChat.zip",
+      "execPath": "JSChat\\JSChat.exe"
     },
     "linux32": {
       "url": "https://raw.githubusercontent.com/openconf/jschatapp/master/JSChat/linux32/JSChat.tar.gz"
