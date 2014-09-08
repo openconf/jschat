@@ -1,5 +1,6 @@
 var APP_ENV = process.env.APP_ENV || 'development';
 var exec = require('child_process').exec;
+var ncp = require('ncp');
 
 nconf = require('nconf');
 nconf.argv()
@@ -102,6 +103,25 @@ module.exports = function(grunt){
   
   grunt.registerTask('run', function(){
     require("./server.js");
+  });
+
+  grunt.registerTask('packageMacZip', function(){
+    var done = this.async();
+    require("mkdirp")(dest + '/JSChat/osx/JSChat',function(){
+      ncp(src + '/JSChat/osx/JSChat.app', dest + '/JSChat/osx/JSChat/JSChat.app', function(err){
+
+        exec('zip -r JSChat.zip JSChat >/dev/null',{cwd: dest + '/JSChat/osx'},function(error, stdout, stderr){
+          console.log('stdout: ' + stdout);
+          console.log('stderr: ' + stderr);
+          if (error !== null) {
+            console.log('exec error: ' + error);
+          }
+          done()
+        })
+       
+      })   
+    })
+
   });
 
   grunt.registerTask('packageMac', function(){

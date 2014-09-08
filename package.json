@@ -12,7 +12,7 @@
     "client": "node ./node_modules/brunch/bin/brunch build",
     "watch": "node ./node_modules/brunch/bin/brunch watch --server",
     "build-app": "node ./node_modules/brunch/bin/brunch build;node node_modules/grunt-cli/bin/grunt buildapp --dest=./desktop",
-    "package": "node node_modules/grunt-cli/bin/grunt compress:mac compress:win compress:linux32 compress:linux64 --src=./desktop --dest=../desktop"
+    "package": "node node_modules/grunt-cli/bin/grunt packageMacZip compress:win compress:linux32 compress:linux64 --src=./desktop --dest=../desktop"
   },
   "dependencies": {
     "express": "~3.4.8",
@@ -49,6 +49,8 @@
     "chai": "~1.7.2",
     "request": "~2.27.0",
     "ws": "~0.4.31",
-    "rewire": "~2.0.0"
+    "rewire": "~2.0.0",
+    "ncp": "*",
+    "mkdirp": "*"
   }
 }
