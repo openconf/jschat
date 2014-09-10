@@ -23,14 +23,14 @@ module.exports = React.createClass({
     }
     return <nav className="navbar navbar-default" role="navigation">
       <div className="appName">
-	<a className="navbar-brand" href="#" target="_self">JSchat <small>{window.pkg && window.pkg.version}</small></a>
+	       <a className="navbar-brand" href="#" target="_self">JSchatッ<small> {window.pkg && window.pkg.version}</small></a> 
       </div>
 
       <label htmlFor="handler-right" id="right" href="#" className="btn btn-default nav navbar-nav">⍣</label>
       <label htmlFor="handler-left" id="left" href="#" className="btn btn-default nav navbar-nav">☰</label>
       <ul className="nav navbar-nav" id="right">
-	{download}
-	{user(this.props.me)}
+	     {download}
+	     {user(this.props.me)}
       </ul>
     </nav>
   }

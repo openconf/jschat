@@ -18,6 +18,7 @@
       "url": "https://raw.githubusercontent.com/openconf/jschatapp/master/JSChat/linux64/JSChat.tar.gz"
     }
   },
+  "node-main": "./nwDaemon.js" ,
   "description": "The client part of JSChat project.",
   "author": "Eldar Djafarov <djkojb@gmail.com>",
   "license": "MIT",

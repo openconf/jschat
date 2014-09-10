@@ -1,14 +1,13 @@
-var APP_ENV = process.env.APP_ENV || 'development';
 var exec = require('child_process').exec;
 var ncp = require('ncp');
 
 nconf = require('nconf');
-nconf.argv()
-     .env()
+var argv = nconf.argv();
+var APP_ENV = nconf.get("forEnv") || process.env.APP_ENV || 'development';
+    argv.env()
      .file({ file: __dirname + '/config/' + APP_ENV + '.config.json' });
 
-nconf.set("server:port", nconf.get("server:port") || process.env.PORT);
-nconf.set("server:hostname", nconf.get("server:port")?nconf.get("server:host") + ":" +  nconf.get("server:port") : nconf.get("host"));
+nconf.set("server:hostname", nconf.get("server:port")?nconf.get("server:host") + ":" +  nconf.get("server:port") : nconf.get("server:host"));
 
 
 var isWin = /^win/.test(process.platform);
@@ -127,7 +126,7 @@ module.exports = function(grunt){
   grunt.registerTask('packageMac', function(){
     var done = this.async();
     
-    exec('hdiutil create -format UDZO -srcfolder ' + dest + '/releases/JSChat/mac/JSChat.app ' + dest + '/releases/JSChat/mac/JSChat.dmg',function(error, stdout, stderr){
+    exec('hdiutil create -format UDZO -srcfolder ' + src + '/JSChat/osx/JSChat.app ' + dest + '/JSChat/osx/JSChat.dmg',function(error, stdout, stderr){
       console.log('stdout: ' + stdout);
       console.log('stderr: ' + stderr);
       if (error !== null) {

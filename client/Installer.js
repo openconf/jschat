@@ -1,1 +1,1 @@
-React.renderComponent(require('./reascts/Installer/Installer'), document.body);
+React.renderComponent(require('./reacts/Installer/Installer'), document.body);

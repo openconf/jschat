@@ -34,7 +34,8 @@ module.exports = {
   },
   injectModel: function(model){
     if(!this.__syncedModels) this.__syncedModels = [];
-    if(!~this.__syncedModels.indexOf(model)){
+    if(model && !~this.__syncedModels.indexOf(model)){
+
       model.on('add change remove', this.forceUpdate.bind(this, null), this);
       this.__syncedModels.push(model);
     }
