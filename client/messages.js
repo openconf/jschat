@@ -46,8 +46,10 @@ module.exports = function(app){
         if(notification.shouldNotify()){
           var note = notification.show(data.get('gh_avatar'), data.get('displayName') || data.get('gh_username'), model.get('text'));
           // focus on window if notification is clicked
-          note.onclick = function(){
-            window.focus();
+          if(note && note.onclick) {
+            note.onclick = function(){
+              window.focus();
+            }
           }
           if(note){
             setTimeout(function(){

@@ -19,7 +19,7 @@
     window.host = document.location.protocol + "//" + document.location.hostname + port;
     window.isDesktop = false;
     if(window.require){//that means that we are inside node-webkit
-      var gui = require('nw.gui');
+      var gui = global.window.nwDispatcher.requireNwGui();
       //run autoupdate 
       process.mainModule.exports.updateDaemon(gui.App.argv, gui.App.quit);
       //run auto launch for the app 

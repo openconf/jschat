@@ -1,10 +1,11 @@
+var isVisible = require('./isVisible');
+
 module.exports = {
   show: function(img, title, text){
     if (!Notification){
       console.log("Notifications are not supported");
       return;
     }
-
     if (Notification.permission === "granted") {
       var notification = new Notification(title, {icon:img,  body:text});
       return notification;
@@ -22,7 +23,5 @@ module.exports = {
       Notification.requestPermission();
     }
   },
-  shouldNotify: function(){
-    return document.hidden || document.mozHidden || document.msHidden || document.webkitHidden;
-  }
+  shouldNotify: isVisible
 };
