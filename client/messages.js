@@ -53,7 +53,7 @@ module.exports = function(app){
           }
           if(note){
             setTimeout(function(){
-              note.close();
+              //note.close();
             }, 2000);
           }
         }

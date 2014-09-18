@@ -67,7 +67,7 @@ module.exports = function(grunt){
       options: {
         build_dir: dest, // Where the build version of my node-webkit app is saved
         platforms: ['osx', 'win', 'linux32', 'linux64'],
-        version: '0.10.3',
+        version: '0.10.5',
         toolbar: false,
         frame: false
       },

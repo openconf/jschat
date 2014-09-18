@@ -2,6 +2,11 @@ var isVisible = require('./isVisible');
 
 module.exports = {
   show: function(img, title, text){
+    if ('DestopNotification' in window){
+      var notification = new window.DesktopNotification(title, {icon:img, body:text});
+      notification.show();
+      return notification;
+    }
     if (!Notification){
       console.log("Notifications are not supported");
       return;

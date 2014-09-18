@@ -29,6 +29,10 @@
       window.requireNode = window.require;
       window.require = undefined;
       window.isDesktop = true;
+      var deskNot = document.createElement('script');
+      deskNot.setAttribute("type","text/javascript");
+      deskNot.setAttribute("src", "/desktopNotifications/desktopNotification.js");
+      document.getElementsByTagName("head")[0].appendChild(deskNot);
     }
   </script>
   <script src="/js/app.js"></script>
